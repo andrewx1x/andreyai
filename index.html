@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Андрей — Разработчик ИИ-продуктов</title>
     <meta name="description" content="Создаю ботов, сайты и приложения с искусственным интеллектом">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Андрей — Разработчик ИИ-продуктов">
+    <meta property="og:description" content="Создаю ботов, сайты и приложения с искусственным интеллектом">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://andeyai.ru">
+    <meta property="og:locale" content="ru_RU">
+
     <style>
         * {
             margin: 0;
@@ -13,6 +21,23 @@
         }
 
         :root {
+            color-scheme: light;
+            --bg: #f6f7ff;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f1f5ff;
+            --text: #0b1220;
+            --text-muted: #475569;
+            --accent: #4f46e5;
+            --accent-hover: #4338ca;
+            --border: #e2e8f0;
+            --shadow-sm: 0 10px 30px rgba(15, 23, 42, 0.08);
+            --shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.12);
+            --headline-from: #0b1220;
+            --headline-to: #4f46e5;
+        }
+
+        [data-theme="dark"] {
+            color-scheme: dark;
             --bg: #0a0a0f;
             --bg-card: #12121a;
             --bg-card-hover: #1a1a25;
@@ -21,11 +46,15 @@
             --accent: #6366f1;
             --accent-hover: #818cf8;
             --border: #1e1e2e;
+            --shadow-sm: 0 10px 30px rgba(0, 0, 0, 0.35);
+            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.45);
+            --headline-from: #ffffff;
+            --headline-to: #a5b4fc;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: var(--bg);
+            background: radial-gradient(1200px 600px at 50% -10%, rgba(79, 70, 229, 0.14), transparent 60%), var(--bg);
             color: var(--text);
             line-height: 1.6;
             min-height: 100vh;
@@ -35,6 +64,50 @@
             max-width: 1100px;
             margin: 0 auto;
             padding: 0 24px;
+        }
+
+        .hidden { display: none; }
+
+        .theme-toggle {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .theme-toggle svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 3px solid rgba(79, 70, 229, 0.35);
+            outline-offset: 3px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .animate {
+                animation: none !important;
+                opacity: 1 !important;
+            }
         }
 
         /* Hero Section */
@@ -58,7 +131,7 @@
             font-size: clamp(36px, 6vw, 56px);
             font-weight: 700;
             margin-bottom: 16px;
-            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            background: linear-gradient(135deg, var(--headline-from) 0%, var(--headline-to) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -147,13 +220,14 @@
             border-radius: 20px;
             padding: 28px;
             transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
         }
 
         .project-card:hover {
             background: var(--bg-card-hover);
             border-color: rgba(99, 102, 241, 0.3);
             transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--shadow-lg);
         }
 
         .project-icon {
@@ -251,6 +325,15 @@
         .footer-text {
             color: var(--text-muted);
             font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .footer-privacy {
+            color: var(--text-muted);
+            font-size: 12px;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.6;
         }
 
         .footer-link {
@@ -307,6 +390,18 @@
     </style>
 </head>
 <body>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Переключить тему" title="Тема">
+        <!-- Sun (switch to light) -->
+        <svg class="icon-sun hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+        </svg>
+        <!-- Moon (switch to dark) -->
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+    </button>
+
     <!-- Hero -->
     <section class="hero">
         <div class="container">
@@ -315,7 +410,7 @@
             <p class="hero-subtitle animate delay-2">
                 Создаю ботов, сайты и приложения с искусственным интеллектом
             </p>
-            <a href="https://t.me/andrewqaz" class="hero-cta animate delay-3" target="_blank">
+            <a href="https://t.me/andrewqaz" class="hero-cta animate delay-3" target="_blank" rel="noopener">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
                 </svg>
@@ -393,7 +488,7 @@
                     <div class="project-icon">🎬</div>
                     <h3 class="project-title">Конспекты видео за секунды</h3>
                     <p class="project-problem">
-                        Вставляешь ссылку на YouTube — получаешь короткий конспект. ИИ выделяет главное из часового видео.
+                        Вставляешь ссылку на YouTube — получаешь короткий конспект. ИИ выделяет главное из видео.
                     </p>
                     <span class="project-benefit">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -408,7 +503,7 @@
                     <div class="project-icon">🎮</div>
                     <h3 class="project-title">Онлайн-игра для компаний</h3>
                     <p class="project-problem">
-                        Игра для друзей или команды: викторина + "Сломанный телефон" с рисованием. До 8 игроков со своих телефонов.
+                        Игра для друзей или команды: викторина + "Сломанный телефон" с рисованием. До 8 игроков со своими телефонами.
                     </p>
                     <span class="project-benefit">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -458,7 +553,7 @@
                         ИИ-инструмент под задачу
                     </div>
                 </div>
-                <a href="https://t.me/andrewqaz" class="hero-cta" target="_blank">
+                <a href="https://t.me/andrewqaz" class="hero-cta" target="_blank" rel="noopener">
                     <svg viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
                     </svg>
@@ -472,25 +567,71 @@
     <footer class="footer">
         <div class="container">
             <p class="footer-text">
-                Telegram: <a href="https://t.me/andrewqaz" class="footer-link" target="_blank">@andrewqaz</a>
+                Telegram: <a href="https://t.me/andrewqaz" class="footer-link" target="_blank" rel="noopener">@andrewqaz</a>
+            </p>
+            <p class="footer-privacy">
+                Сайт не собирает и не обрабатывает персональные данные, не использует cookies и сторонние трекеры. При переходе по внешним ссылкам действуют политики соответствующих сервисов.
             </p>
         </div>
     </footer>
 
     <script>
-        // Animate elements on scroll
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animationPlayState = 'running';
-                }
-            });
-        }, { threshold: 0.1 });
+        // Theme toggle (light by default, dark optional)
+        (() => {
+            const storageKey = 'theme';
+            const root = document.documentElement;
+            const toggle = document.getElementById('themeToggle');
+            const iconSun = toggle?.querySelector('.icon-sun');
+            const iconMoon = toggle?.querySelector('.icon-moon');
 
-        document.querySelectorAll('.animate').forEach(el => {
-            el.style.animationPlayState = 'paused';
-            observer.observe(el);
-        });
+            const systemPrefersDark = () =>
+                window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            const applyTheme = (theme) => {
+                if (theme === 'dark') root.setAttribute('data-theme', 'dark');
+                else root.removeAttribute('data-theme');
+
+                const isDark = theme === 'dark';
+                iconSun?.classList.toggle('hidden', !isDark);
+                iconMoon?.classList.toggle('hidden', isDark);
+                toggle?.setAttribute('aria-label', isDark ? 'Включить светлую тему' : 'Включить тёмную тему');
+                toggle?.setAttribute('title', isDark ? 'Светлая тема' : 'Тёмная тема');
+            };
+
+            const saved = localStorage.getItem(storageKey);
+            const initial = saved || (systemPrefersDark() ? 'dark' : 'light');
+            applyTheme(initial);
+
+            toggle?.addEventListener('click', () => {
+                const currentDark = root.getAttribute('data-theme') === 'dark';
+                const next = currentDark ? 'light' : 'dark';
+                localStorage.setItem(storageKey, next);
+                applyTheme(next);
+            });
+        })();
+
+        // Animate elements on scroll (respects reduced motion)
+        const prefersReducedMotion = window.matchMedia &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (!prefersReducedMotion) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.animate').forEach(el => {
+                el.style.animationPlayState = 'paused';
+                observer.observe(el);
+            });
+        } else {
+            document.querySelectorAll('.animate').forEach(el => {
+                el.style.opacity = '1';
+            });
+        }
     </script>
 </body>
 </html>
