@@ -356,20 +356,38 @@
         border-style: dashed;
       }
 
-      details.project-details {
+      .project-details {
         border-top: 1px dashed var(--border);
         padding-top: 12px;
       }
 
-      details.project-details summary {
-        cursor: pointer;
-        list-style: none;
+      .details-toggle {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        border: none;
+        background: none;
+        padding: 0;
         font-weight: 700;
         color: #0f172a;
+        cursor: pointer;
       }
 
-      details.project-details summary::-webkit-details-marker {
-        display: none;
+      .details-toggle::after {
+        content: "+";
+        font-size: 18px;
+        line-height: 1;
+        color: var(--accent);
+      }
+
+      .details-toggle[aria-expanded="true"]::after {
+        content: "—";
+      }
+
+      .details-content {
+        margin-top: 12px;
       }
 
       .details-grid {
@@ -613,17 +631,21 @@
                 <span class="btn disabled">Демо по запросу</span>
                 <span class="btn disabled">Код не публичный</span>
               </div>
-              <details class="project-details">
-                <summary>Подробнее</summary>
-                <div class="details-grid">
+              <div class="project-details">
+                <button class="details-toggle" type="button" aria-expanded="false" aria-controls="details-bot">
+                  Подробнее
+                </button>
+                <div class="details-content" id="details-bot" hidden>
+                  <div class="details-grid">
                   <div><strong>Задача:</strong> убрать ручные напоминания о запланированных эфирах.</div>
                   <div><strong>Решение:</strong> бот парсит сайт и рассылает уведомления по расписанию.</div>
                   <div><strong>Что умеет:</strong> подписка, команда /start, подсказки, ответы по расписанию, напоминания.</div>
                   <div><strong>Результат:</strong> расписание и напоминания уходят без ручной работы.</div>
                   <div><strong>Стек:</strong> Cloudflare Workers, TypeScript, D1, Telegram Bot API, Gemini API.</div>
                   <div><strong>Ссылки:</strong> демо и код по запросу.</div>
+                  </div>
                 </div>
-              </details>
+              </div>
             </article>
 
             <article class="project-card reveal" data-tags="ai integrations web">
@@ -645,17 +667,21 @@
                 <span class="btn disabled">Посмотреть (нет ссылки)</span>
                 <span class="btn disabled">Код не публичный</span>
               </div>
-              <details class="project-details">
-                <summary>Подробнее</summary>
-                <div class="details-grid">
+              <div class="project-details">
+                <button class="details-toggle" type="button" aria-expanded="false" aria-controls="details-assistant">
+                  Подробнее
+                </button>
+                <div class="details-content" id="details-assistant" hidden>
+                  <div class="details-grid">
                   <div><strong>Задача:</strong> ускорить работу с информацией в браузере.</div>
                   <div><strong>Решение:</strong> сайд-панель, которая отправляет контекст вкладки в LLM.</div>
                   <div><strong>Что умеет:</strong> чтение страницы, чат, потоковые статусы, поиск фактов.</div>
                   <div><strong>Результат:</strong> быстрые ответы без переключения между вкладками.</div>
                   <div><strong>Стек:</strong> FastAPI, LangGraph, React, Vite, WebSocket, Gemini API.</div>
                   <div><strong>Ссылки:</strong> демо и код по запросу.</div>
+                  </div>
                 </div>
-              </details>
+              </div>
             </article>
 
             <article class="project-card reveal" data-tags="ai web integrations">
@@ -677,17 +703,21 @@
                 <span class="btn disabled">Посмотреть (нет ссылки)</span>
                 <span class="btn disabled">Код не публичный</span>
               </div>
-              <details class="project-details">
-                <summary>Подробнее</summary>
-                <div class="details-grid">
+              <div class="project-details">
+                <button class="details-toggle" type="button" aria-expanded="false" aria-controls="details-summary">
+                  Подробнее
+                </button>
+                <div class="details-content" id="details-summary" hidden>
+                  <div class="details-grid">
                   <div><strong>Задача:</strong> получать суть видео без полного просмотра.</div>
                   <div><strong>Решение:</strong> сервис берёт транскрипт и делает краткий конспект.</div>
                   <div><strong>Что умеет:</strong> суммаризация, лимиты доступа, быстрые настройки.</div>
                   <div><strong>Результат:</strong> экономит время на разборе длинных роликов.</div>
                   <div><strong>Стек:</strong> Next.js, Gemini API, RapidAPI, Vercel KV.</div>
                   <div><strong>Ссылки:</strong> демо и код по запросу.</div>
+                  </div>
                 </div>
-              </details>
+              </div>
             </article>
 
             <article class="project-card reveal" data-tags="web">
@@ -708,17 +738,21 @@
                 <span class="btn disabled">Посмотреть (нет ссылки)</span>
                 <span class="btn disabled">Код не публичный</span>
               </div>
-              <details class="project-details">
-                <summary>Подробнее</summary>
-                <div class="details-grid">
+              <div class="project-details">
+                <button class="details-toggle" type="button" aria-expanded="false" aria-controls="details-quiz">
+                  Подробнее
+                </button>
+                <div class="details-content" id="details-quiz" hidden>
+                  <div class="details-grid">
                   <div><strong>Задача:</strong> сделать онлайн-игру для удалённых команд.</div>
                   <div><strong>Решение:</strong> веб-приложение с комнатами, ролями и совместным рисованием.</div>
                   <div><strong>Что умеет:</strong> анонимный вход, коды комнат, realtime-состояние, admin-доступ.</div>
                   <div><strong>Результат:</strong> командные игры запускаются без сложной настройки.</div>
                   <div><strong>Стек:</strong> Next.js, Supabase (Auth, Realtime, Storage).</div>
                   <div><strong>Ссылки:</strong> демо и код по запросу.</div>
+                  </div>
                 </div>
-              </details>
+              </div>
             </article>
 
             <article class="project-card reveal" data-tags="web">
@@ -738,17 +772,21 @@
                 <span class="btn disabled">Посмотреть (нет ссылки)</span>
                 <span class="btn disabled">Код не публичный</span>
               </div>
-              <details class="project-details">
-                <summary>Подробнее</summary>
-                <div class="details-grid">
+              <div class="project-details">
+                <button class="details-toggle" type="button" aria-expanded="false" aria-controls="details-coffee">
+                  Подробнее
+                </button>
+                <div class="details-content" id="details-coffee" hidden>
+                  <div class="details-grid">
                   <div><strong>Задача:</strong> представить кофейню и показать меню в одном месте.</div>
                   <div><strong>Решение:</strong> адаптивный одностраничник с блоками меню, преимуществ и контактов.</div>
                   <div><strong>Что умеет:</strong> быстрый просмотр меню, акценты на позициях, контактные CTA.</div>
                   <div><strong>Результат:</strong> гостям легко найти информацию и связаться.</div>
                   <div><strong>Стек:</strong> HTML, CSS, Vanilla JS.</div>
                   <div><strong>Ссылки:</strong> демо и код по запросу.</div>
+                  </div>
                 </div>
-              </details>
+              </div>
             </article>
           </div>
         </div>
@@ -856,6 +894,18 @@
             const matches = filter === "all" || tags.includes(filter);
             card.style.display = matches ? "flex" : "none";
           });
+        });
+      });
+
+      document.querySelectorAll(".details-toggle").forEach((button) => {
+        button.addEventListener("click", () => {
+          const isOpen = button.getAttribute("aria-expanded") === "true";
+          const targetId = button.getAttribute("aria-controls");
+          const content = targetId ? document.getElementById(targetId) : null;
+          button.setAttribute("aria-expanded", String(!isOpen));
+          if (content) {
+            content.hidden = isOpen;
+          }
         });
       });
 
