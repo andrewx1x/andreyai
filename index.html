@@ -356,49 +356,58 @@
         border-style: dashed;
       }
 
-      .project-details {
-        border-top: 1px dashed var(--border);
-        padding-top: 12px;
-      }
-
-      .details-toggle {
-        width: 100%;
-        display: flex;
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.45);
+        display: none;
         align-items: center;
-        justify-content: space-between;
-        gap: 12px;
+        justify-content: center;
+        padding: 24px;
+        z-index: 100;
+      }
+
+      .modal[aria-hidden="false"] {
+        display: flex;
+      }
+
+      .modal-dialog {
+        background: #fff;
+        border-radius: 24px;
+        width: min(720px, 100%);
+        max-height: 85vh;
+        overflow: auto;
+        padding: 28px;
+        box-shadow: var(--shadow-lg);
+        position: relative;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 40px;
+        height: 40px;
         border: none;
-        background: none;
-        padding: 0;
-        font-weight: 700;
-        color: #0f172a;
+        border-radius: 12px;
+        background: rgba(15, 23, 42, 0.06);
         cursor: pointer;
+        font-size: 20px;
       }
 
-      .details-toggle::after {
-        content: "+";
-        font-size: 18px;
-        line-height: 1;
-        color: var(--accent);
+      .modal-title {
+        font-size: 22px;
+        margin: 0 0 12px;
       }
 
-      .details-toggle[aria-expanded="true"]::after {
-        content: "—";
-      }
-
-      .details-content {
-        margin-top: 12px;
-      }
-
-      .details-grid {
+      .modal-grid {
         display: grid;
         gap: 10px;
-        margin-top: 12px;
         color: var(--muted);
         font-size: 14px;
       }
 
-      .details-grid strong {
+      .modal-grid strong {
         color: var(--ink);
       }
 
@@ -630,21 +639,7 @@
               <div class="project-actions">
                 <span class="btn disabled">Демо по запросу</span>
                 <span class="btn disabled">Код не публичный</span>
-              </div>
-              <div class="project-details">
-                <button class="details-toggle" type="button" aria-expanded="false" aria-controls="details-bot">
-                  Подробнее
-                </button>
-                <div class="details-content" id="details-bot" hidden>
-                  <div class="details-grid">
-                  <div><strong>Задача:</strong> убрать ручные напоминания о запланированных эфирах.</div>
-                  <div><strong>Решение:</strong> бот парсит сайт и рассылает уведомления по расписанию.</div>
-                  <div><strong>Что умеет:</strong> подписка, команда /start, подсказки, ответы по расписанию, напоминания.</div>
-                  <div><strong>Результат:</strong> расписание и напоминания уходят без ручной работы.</div>
-                  <div><strong>Стек:</strong> Cloudflare Workers, TypeScript, D1, Telegram Bot API, Gemini API.</div>
-                  <div><strong>Ссылки:</strong> демо и код по запросу.</div>
-                  </div>
-                </div>
+                <button class="btn" type="button" data-modal="bot">Подробнее</button>
               </div>
             </article>
 
@@ -666,21 +661,7 @@
               <div class="project-actions">
                 <span class="btn disabled">Посмотреть (нет ссылки)</span>
                 <span class="btn disabled">Код не публичный</span>
-              </div>
-              <div class="project-details">
-                <button class="details-toggle" type="button" aria-expanded="false" aria-controls="details-assistant">
-                  Подробнее
-                </button>
-                <div class="details-content" id="details-assistant" hidden>
-                  <div class="details-grid">
-                  <div><strong>Задача:</strong> ускорить работу с информацией в браузере.</div>
-                  <div><strong>Решение:</strong> сайд-панель, которая отправляет контекст вкладки в LLM.</div>
-                  <div><strong>Что умеет:</strong> чтение страницы, чат, потоковые статусы, поиск фактов.</div>
-                  <div><strong>Результат:</strong> быстрые ответы без переключения между вкладками.</div>
-                  <div><strong>Стек:</strong> FastAPI, LangGraph, React, Vite, WebSocket, Gemini API.</div>
-                  <div><strong>Ссылки:</strong> демо и код по запросу.</div>
-                  </div>
-                </div>
+                <button class="btn" type="button" data-modal="assistant">Подробнее</button>
               </div>
             </article>
 
@@ -702,21 +683,7 @@
               <div class="project-actions">
                 <span class="btn disabled">Посмотреть (нет ссылки)</span>
                 <span class="btn disabled">Код не публичный</span>
-              </div>
-              <div class="project-details">
-                <button class="details-toggle" type="button" aria-expanded="false" aria-controls="details-summary">
-                  Подробнее
-                </button>
-                <div class="details-content" id="details-summary" hidden>
-                  <div class="details-grid">
-                  <div><strong>Задача:</strong> получать суть видео без полного просмотра.</div>
-                  <div><strong>Решение:</strong> сервис берёт транскрипт и делает краткий конспект.</div>
-                  <div><strong>Что умеет:</strong> суммаризация, лимиты доступа, быстрые настройки.</div>
-                  <div><strong>Результат:</strong> экономит время на разборе длинных роликов.</div>
-                  <div><strong>Стек:</strong> Next.js, Gemini API, RapidAPI, Vercel KV.</div>
-                  <div><strong>Ссылки:</strong> демо и код по запросу.</div>
-                  </div>
-                </div>
+                <button class="btn" type="button" data-modal="summary">Подробнее</button>
               </div>
             </article>
 
@@ -737,21 +704,7 @@
               <div class="project-actions">
                 <span class="btn disabled">Посмотреть (нет ссылки)</span>
                 <span class="btn disabled">Код не публичный</span>
-              </div>
-              <div class="project-details">
-                <button class="details-toggle" type="button" aria-expanded="false" aria-controls="details-quiz">
-                  Подробнее
-                </button>
-                <div class="details-content" id="details-quiz" hidden>
-                  <div class="details-grid">
-                  <div><strong>Задача:</strong> сделать онлайн-игру для удалённых команд.</div>
-                  <div><strong>Решение:</strong> веб-приложение с комнатами, ролями и совместным рисованием.</div>
-                  <div><strong>Что умеет:</strong> анонимный вход, коды комнат, realtime-состояние, admin-доступ.</div>
-                  <div><strong>Результат:</strong> командные игры запускаются без сложной настройки.</div>
-                  <div><strong>Стек:</strong> Next.js, Supabase (Auth, Realtime, Storage).</div>
-                  <div><strong>Ссылки:</strong> демо и код по запросу.</div>
-                  </div>
-                </div>
+                <button class="btn" type="button" data-modal="quiz">Подробнее</button>
               </div>
             </article>
 
@@ -771,21 +724,7 @@
               <div class="project-actions">
                 <span class="btn disabled">Посмотреть (нет ссылки)</span>
                 <span class="btn disabled">Код не публичный</span>
-              </div>
-              <div class="project-details">
-                <button class="details-toggle" type="button" aria-expanded="false" aria-controls="details-coffee">
-                  Подробнее
-                </button>
-                <div class="details-content" id="details-coffee" hidden>
-                  <div class="details-grid">
-                  <div><strong>Задача:</strong> представить кофейню и показать меню в одном месте.</div>
-                  <div><strong>Решение:</strong> адаптивный одностраничник с блоками меню, преимуществ и контактов.</div>
-                  <div><strong>Что умеет:</strong> быстрый просмотр меню, акценты на позициях, контактные CTA.</div>
-                  <div><strong>Результат:</strong> гостям легко найти информацию и связаться.</div>
-                  <div><strong>Стек:</strong> HTML, CSS, Vanilla JS.</div>
-                  <div><strong>Ссылки:</strong> демо и код по запросу.</div>
-                  </div>
-                </div>
+                <button class="btn" type="button" data-modal="coffee">Подробнее</button>
               </div>
             </article>
           </div>
@@ -874,6 +813,57 @@
       </div>
     </footer>
 
+    <div class="modal" id="projectModal" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="modal-dialog" role="document" tabindex="-1">
+        <button class="modal-close" type="button" aria-label="Закрыть">×</button>
+        <h3 class="modal-title" id="modalTitle"></h3>
+        <div class="modal-grid" id="modalBody"></div>
+      </div>
+    </div>
+
+    <div hidden>
+      <div id="modal-content-bot" data-title="Telegram-бот расписания трансляций">
+        <div><strong>Задача:</strong> убрать ручные напоминания о запланированных эфирах.</div>
+        <div><strong>Решение:</strong> бот парсит сайт и рассылает уведомления по расписанию.</div>
+        <div><strong>Что умеет:</strong> подписка, команда /start, подсказки, ответы по расписанию, напоминания.</div>
+        <div><strong>Результат:</strong> расписание и напоминания уходят без ручной работы.</div>
+        <div><strong>Стек:</strong> Cloudflare Workers, TypeScript, D1, Telegram Bot API, Gemini API.</div>
+        <div><strong>Ссылки:</strong> демо и код по запросу.</div>
+      </div>
+      <div id="modal-content-assistant" data-title="ИИ-помощник в браузере">
+        <div><strong>Задача:</strong> ускорить работу с информацией в браузере.</div>
+        <div><strong>Решение:</strong> сайд-панель, которая отправляет контекст вкладки в LLM.</div>
+        <div><strong>Что умеет:</strong> чтение страницы, чат, потоковые статусы, поиск фактов.</div>
+        <div><strong>Результат:</strong> быстрые ответы без переключения между вкладками.</div>
+        <div><strong>Стек:</strong> FastAPI, LangGraph, React, Vite, WebSocket, Gemini API.</div>
+        <div><strong>Ссылки:</strong> демо и код по запросу.</div>
+      </div>
+      <div id="modal-content-summary" data-title="Конспекты видео за минуту">
+        <div><strong>Задача:</strong> получать суть видео без полного просмотра.</div>
+        <div><strong>Решение:</strong> сервис берёт транскрипт и делает краткий конспект.</div>
+        <div><strong>Что умеет:</strong> суммаризация, лимиты доступа, быстрые настройки.</div>
+        <div><strong>Результат:</strong> экономит время на разборе длинных роликов.</div>
+        <div><strong>Стек:</strong> Next.js, Gemini API, RapidAPI, Vercel KV.</div>
+        <div><strong>Ссылки:</strong> демо и код по запросу.</div>
+      </div>
+      <div id="modal-content-quiz" data-title="Онлайн-игра для компаний">
+        <div><strong>Задача:</strong> сделать онлайн-игру для удалённых команд.</div>
+        <div><strong>Решение:</strong> веб-приложение с комнатами, ролями и совместным рисованием.</div>
+        <div><strong>Что умеет:</strong> анонимный вход, коды комнат, realtime-состояние, admin-доступ.</div>
+        <div><strong>Результат:</strong> командные игры запускаются без сложной настройки.</div>
+        <div><strong>Стек:</strong> Next.js, Supabase (Auth, Realtime, Storage).</div>
+        <div><strong>Ссылки:</strong> демо и код по запросу.</div>
+      </div>
+      <div id="modal-content-coffee" data-title="Сайт для кофейни">
+        <div><strong>Задача:</strong> представить кофейню и показать меню в одном месте.</div>
+        <div><strong>Решение:</strong> адаптивный одностраничник с блоками меню, преимуществ и контактов.</div>
+        <div><strong>Что умеет:</strong> быстрый просмотр меню, акценты на позициях, контактные CTA.</div>
+        <div><strong>Результат:</strong> гостям легко найти информацию и связаться.</div>
+        <div><strong>Стек:</strong> HTML, CSS, Vanilla JS.</div>
+        <div><strong>Ссылки:</strong> демо и код по запросу.</div>
+      </div>
+    </div>
+
     <script>
       const yearEl = document.getElementById("year");
       if (yearEl) {
@@ -897,16 +887,80 @@
         });
       });
 
-      document.querySelectorAll(".details-toggle").forEach((button) => {
+      const modal = document.getElementById("projectModal");
+      const modalDialog = modal ? modal.querySelector(".modal-dialog") : null;
+      const modalClose = modal ? modal.querySelector(".modal-close") : null;
+      const modalTitle = document.getElementById("modalTitle");
+      const modalBody = document.getElementById("modalBody");
+      let lastFocused = null;
+
+      const getFocusable = (root) =>
+        root
+          ? Array.from(
+              root.querySelectorAll(
+                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+              )
+            )
+          : [];
+
+      const openModal = (key, trigger) => {
+        const template = document.getElementById(`modal-content-${key}`);
+        if (!modal || !template || !modalTitle || !modalBody) return;
+        modalTitle.textContent = template.getAttribute("data-title") || "Подробнее";
+        modalBody.innerHTML = template.innerHTML;
+        modal.setAttribute("aria-hidden", "false");
+        lastFocused = trigger || document.activeElement;
+        const focusable = getFocusable(modalDialog);
+        if (focusable.length) {
+          focusable[0].focus();
+        }
+      };
+
+      const closeModal = () => {
+        if (!modal) return;
+        modal.setAttribute("aria-hidden", "true");
+        if (lastFocused && typeof lastFocused.focus === "function") {
+          lastFocused.focus();
+        }
+      };
+
+      document.querySelectorAll("[data-modal]").forEach((button) => {
         button.addEventListener("click", () => {
-          const isOpen = button.getAttribute("aria-expanded") === "true";
-          const targetId = button.getAttribute("aria-controls");
-          const content = targetId ? document.getElementById(targetId) : null;
-          button.setAttribute("aria-expanded", String(!isOpen));
-          if (content) {
-            content.hidden = isOpen;
+          const key = button.getAttribute("data-modal");
+          openModal(key, button);
+        });
+      });
+
+      if (modalClose) {
+        modalClose.addEventListener("click", closeModal);
+      }
+
+      if (modal) {
+        modal.addEventListener("click", (event) => {
+          if (event.target === modal) {
+            closeModal();
           }
         });
+      }
+
+      document.addEventListener("keydown", (event) => {
+        if (!modal || modal.getAttribute("aria-hidden") === "true") return;
+        if (event.key === "Escape") {
+          closeModal();
+          return;
+        }
+        if (event.key !== "Tab" || !modalDialog) return;
+        const focusable = getFocusable(modalDialog);
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
       });
 
       const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
