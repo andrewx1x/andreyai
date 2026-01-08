@@ -19,6 +19,7 @@
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="ru_RU" />
     <meta name="theme-color" content="#0ea5e9" />
+    <link rel="icon" type="image/x-icon" href="/logo.ico" sizes="any" />
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
     <style>
       :root {
@@ -96,13 +97,11 @@
         width: 44px;
         height: 44px;
         border-radius: 14px;
-        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        background: #fff;
+        border: 1px solid rgba(226, 232, 240, 0.9);
         box-shadow: var(--shadow-sm);
-        display: grid;
-        place-items: center;
-        color: #fff;
-        font-family: var(--font-display);
-        font-size: 20px;
+        display: block;
+        object-fit: cover;
       }
 
       .nav-links {
@@ -133,6 +132,27 @@
         grid-template-columns: 1.1fr 0.9fr;
         gap: 40px;
         align-items: center;
+      }
+
+      .hero-right {
+        display: grid;
+        gap: 16px;
+      }
+
+      .hero-visual {
+        background: linear-gradient(135deg, rgba(14, 165, 233, 0.12), rgba(34, 197, 94, 0.12));
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        border-radius: 20px;
+        padding: 12px;
+        box-shadow: var(--shadow-lg);
+      }
+
+      .hero-visual img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 16px;
+        object-fit: contain;
       }
 
       .badge {
@@ -525,7 +545,15 @@
     <header>
       <div class="container nav">
         <div class="logo">
-          <div class="logo-mark">A</div>
+          <img
+            class="logo-mark"
+            src="logo.png"
+            alt="Логотип Андрея"
+            width="44"
+            height="44"
+            loading="eager"
+            decoding="async"
+          />
           <span>Андрей · автоматизация</span>
         </div>
         <nav class="nav-links" aria-label="Навигация">
@@ -557,13 +585,18 @@
               Написать в Telegram
             </a>
           </div>
-          <div class="hero-card reveal">
-            <h3>Что важно для клиентов</h3>
-            <ul>
-              <li>Быстро показываю рабочий прототип.</li>
-              <li>Объясняю простыми словами, без перегруза.</li>
-              <li>Сайт остаётся статичным: без форм и трекеров.</li>
-            </ul>
+          <div class="hero-right reveal">
+            <div class="hero-visual">
+              <img src="assets/bot.png" alt="Иллюстрация бота" width="768" height="512" loading="eager" decoding="async" />
+            </div>
+            <div class="hero-card">
+              <h3>Что важно для клиентов</h3>
+              <ul>
+                <li>Быстро показываю рабочий прототип.</li>
+                <li>Объясняю простыми словами, без перегруза.</li>
+                <li>Сайт остаётся статичным: без форм и трекеров.</li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
@@ -665,7 +698,7 @@
 
   <article class="project-card reveal" data-tags="ai web integrations">
     <div class="project-image">
-      <img src="assets/projects/summary.svg" alt="Сервис кратких конспектов" />
+      <img src="assets/projects/koncpect.png" alt="Сервис кратких конспектов" />
     </div>
     <div class="project-tags">
       <span>Приоритет</span>
@@ -686,7 +719,7 @@
 
   <article class="project-card reveal" data-tags="web">
     <div class="project-image">
-      <img src="assets/projects/quiz.svg" alt="Онлайн-игра для компаний" />
+      <img src="assets/projects/quiz.jpeg" alt="Онлайн-игра для компаний" />
     </div>
     <div class="project-tags">
       <span>Веб</span>
@@ -768,7 +801,7 @@
         <div class="container">
           <h2 class="section-title reveal">Контакты</h2>
           <p class="section-subtitle reveal">
-            Можно написать в Telegram или посмотреть код на GitHub (если есть).
+            Можно написать в Telegram.
           </p>
           <div class="contact-grid">
             <div class="panel reveal">
@@ -781,10 +814,6 @@
                 >
                   Telegram
                   <span>@andrewqaz</span>
-                </a>
-                <a class="contact-link" href="https://github.com/andrewx1x" target="_blank" rel="noopener noreferrer">
-                  GitHub
-                  <span>andrewx1x</span>
                 </a>
               </div>
             </div>
