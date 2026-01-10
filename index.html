@@ -672,6 +672,27 @@
     </div>
   </article>
 
+  <article class="project-card reveal" data-tags="bots integrations">
+    <div class="project-image">
+      <img src="assets/projects/cf-metrics-bot.png" alt="Бот мониторинга Cloudflare" />
+    </div>
+    <div class="project-tags">
+      <span>Приоритет</span>
+      <span>Бот</span>
+      <span>Интеграции</span>
+      <span>Мониторинг</span>
+    </div>
+    <h3 class="project-title">Бот мониторинга Cloudflare</h3>
+    <p class="project-desc">
+      Telegram-бот для еженедельных отчётов об использовании ресурсов Cloudflare
+      с алертами при приближении к лимитам Free Tier.
+    </p>
+    <div class="project-actions">
+      <a class="btn" href="https://t.me/andrewqaz" target="_blank" rel="noopener noreferrer">Демо по запросу</a>
+      <button class="btn" type="button" data-modal="cf-metrics">Подробнее</button>
+    </div>
+  </article>
+
   <article class="project-card reveal" data-tags="ai integrations web">
     <div class="project-image">
       <img src="assets/projects/assistant.png" alt="ИИ-помощник в браузере" />
@@ -849,6 +870,14 @@
         <div><strong>Что умеет:</strong> подписка, команда /start, подсказки, ответы по расписанию, напоминания.</div>
         <div><strong>Результат:</strong> расписание и напоминания уходят без ручной работы.</div>
         <div><strong>Стек:</strong> Cloudflare Workers, TypeScript, D1, Telegram Bot API, Gemini API.</div>
+        <div><strong>Ссылки:</strong> <a href="https://t.me/andrewqaz" target="_blank" rel="noopener noreferrer">демо по запросу в Telegram</a>.</div>
+      </div>
+      <div id="modal-content-cf-metrics" data-title="Бот мониторинга Cloudflare">
+        <div><strong>Задача:</strong> автоматизировать мониторинг использования ресурсов Cloudflare и получать алерты до превышения лимитов.</div>
+        <div><strong>Решение:</strong> Telegram-бот на Cloudflare Workers с еженедельными отчётами и трёхуровневой системой алертов.</div>
+        <div><strong>Что умеет:</strong> мониторинг R2, Workers, KV, D1, Pages; алерты OK/Warning/Critical; команды /start, /status, /report, /help.</div>
+        <div><strong>Результат:</strong> контроль над расходами без ручной проверки дашборда Cloudflare.</div>
+        <div><strong>Стек:</strong> Cloudflare Workers, TypeScript, KV Storage, Telegram Bot API, Cloudflare GraphQL API.</div>
         <div><strong>Ссылки:</strong> <a href="https://t.me/andrewqaz" target="_blank" rel="noopener noreferrer">демо по запросу в Telegram</a>.</div>
       </div>
       <div id="modal-content-assistant" data-title="ИИ-помощник в браузере">
