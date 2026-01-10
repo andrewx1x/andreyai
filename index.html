@@ -284,7 +284,7 @@
 
       .projects-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(290px, 380px));
+        grid-template-columns: repeat(3, 1fr);
         gap: 24px;
       }
 
@@ -513,6 +513,10 @@
           grid-template-columns: 1fr;
         }
 
+        .projects-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
         .nav {
           flex-direction: column;
           align-items: flex-start;
@@ -526,6 +530,10 @@
 
         .hero {
           padding: 56px 0 32px;
+        }
+
+        .projects-grid {
+          grid-template-columns: 1fr;
         }
 
         .project-image {
