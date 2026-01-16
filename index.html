@@ -310,13 +310,12 @@
         overflow: hidden;
         border: 1px solid rgba(226, 232, 240, 0.7);
         background: #f1f5f9;
-        height: 240px;
       }
 
       .project-image img {
         width: 100%;
-        height: 100%;
-        object-fit: cover;
+        height: auto;
+        object-fit: contain;
       }
 
       .project-tags {
@@ -534,10 +533,6 @@
 
         .projects-grid {
           grid-template-columns: 1fr;
-        }
-
-        .project-image {
-          height: 160px;
         }
       }
 
