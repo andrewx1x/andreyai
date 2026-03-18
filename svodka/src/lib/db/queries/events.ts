@@ -44,8 +44,8 @@ export async function getEventsByUser(
 
   if (userProjects.length === 0) return [];
 
-  const projectIds = userProjects.map((p) => p.id);
-  const projectMap = new Map(userProjects.map((p) => [p.id, p]));
+  const projectIds = userProjects.map((p: { id: number }) => p.id);
+  const projectMap = new Map(userProjects.map((p: { id: number; name: string; type: string }) => [p.id, p] as const));
 
   const rows = await db.query.events.findMany({
     where: inArray(events.projectId, projectIds),
@@ -53,7 +53,7 @@ export async function getEventsByUser(
     limit,
   });
 
-  return rows.map((row) => ({
+  return rows.map((row: { id: number; projectId: number; type: string; severity: "info" | "warning" | "critical"; message: string; dataJson: string | null; createdAt: string }) => ({
     ...row,
     project: projectMap.get(row.projectId),
   }));
