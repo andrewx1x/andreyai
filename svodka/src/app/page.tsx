@@ -8,8 +8,9 @@ export default async function Home() {
       redirect("/overview");
     }
   } catch {
-    // Auth not configured yet — go to login
+    // Auth not configured yet
   }
 
-  redirect("/login");
+  // Not authenticated — show landing page
+  redirect("/landing/svodka/");
 }
