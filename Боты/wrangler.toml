@@ -1,0 +1,35 @@
+name = "telegram-bots-analytics"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+minify = true
+
+# D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "analytics-db"
+database_id = "b65a6efa-d2fd-4731-8ded-dfd2e852b166"
+
+# Environment variables (set via wrangler secret)
+# TELEGRAM_BOT_TOKEN_METRIKA
+# TELEGRAM_BOT_TOKEN_DIRECT
+# TELEGRAM_BOT_TOKEN_SUPPORT
+# TELEGRAM_BOT_TOKEN_LANDING
+# METRIKA_ADMIN_GROUP_ID
+# DIRECT_ADMIN_GROUP_ID
+# SUPPORT_GROUP_ID
+# ADMIN_IDS
+# LANDING_URL
+# DIRECT_LANDING_URL
+# DASHBOARD_DEMO_URL
+# YANDEX_OAUTH_CLIENT_ID
+# YANDEX_DIRECT_CLIENT_ID
+# ENCRYPTION_KEY
+# DASHBOARD_SESSION_SECRET
+
+# Cron Triggers (for scheduled reports)
+[triggers]
+crons = [
+  "0 7 * * *",   # Morning reports 07:00 UTC (10:00 MSK)
+  "0 16 * * *",  # Evening reports 16:00 UTC (19:00 MSK)
+  "*/15 * * * *" # Alerts check every 15 minutes
+]
