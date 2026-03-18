@@ -11,6 +11,6 @@ export default async function Home() {
     // Auth not configured yet
   }
 
-  // Not authenticated — show landing page
+  // Not authenticated — redirect to landing on Vercel
   redirect("/landing/svodka/");
 }

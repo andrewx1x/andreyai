@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Сводка.Трафик сайта в Telegram</title>
-    <meta name="description" content="Конструктор отчётов из веб-аналитики → Telegram. Получайте нужные данные по расписанию без ручных проверок. Интеграция через официальный API Яндекс.Метрики.">
+    <title>Сводка.Реклама — Контроль рекламы в Telegram</title>
+    <meta name="description" content="Контроль рекламного бюджета в Telegram: расход, CTR, CPA и алерты. Интеграция с Яндекс.Директом через официальный API, без ручных таблиц.">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Сводка.Трафик сайта в Telegram">
-    <meta property="og:description" content="Отчёты из веб-аналитики в Telegram: расписание, алерты и понятные выводы. Интеграция с Яндекс.Метрикой через официальный API.">
+    <meta property="og:title" content="Сводка.Реклама — Контроль рекламы в Telegram">
+    <meta property="og:description" content="Отчёты по рекламным метрикам в Telegram: расход, CTR, CPA, остаток бюджета. Интеграция с Яндекс.Директом через официальный API.">
     <meta property="og:image" content="../../assets/og-image.jpg">
-    <link rel="canonical" href="https://andreyai.ru/svodka/traffic/">
+    <link rel="canonical" href="https://andreyai.ru/svodka/ads/">
 
     <!-- Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,12 +31,12 @@
                     },
                     colors: {
                         brand: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            900: '#1e3a8a',
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            500: '#f97316',
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            900: '#7c2d12',
                         }
                     },
                 }
@@ -58,13 +58,13 @@
 
         .gradient-bg {
             background:
-                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59,130,246,0.18) 0%, transparent 60%),
-                radial-gradient(ellipse 60% 40% at 100% 0%, rgba(99,102,241,0.12) 0%, transparent 50%);
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(249,115,22,0.14) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 100% 0%, rgba(234,88,12,0.08) 0%, transparent 50%);
         }
         .dark .gradient-bg {
             background:
-                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59,130,246,0.10) 0%, transparent 60%),
-                radial-gradient(ellipse 60% 40% at 100% 0%, rgba(99,102,241,0.06) 0%, transparent 50%);
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(249,115,22,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 100% 0%, rgba(234,88,12,0.04) 0%, transparent 50%);
         }
 
         ::-webkit-scrollbar { width: 8px; }
@@ -83,19 +83,18 @@
         .delay-100 { animation-delay: .1s; }
         .delay-200 { animation-delay: .2s; }
         .delay-300 { animation-delay: .3s; }
-
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300">
 
     <!-- CONFIG -->
     <script>
-        const APP_NAME = "Сводка.Трафик";
-        const PRIMARY_URL = "https://t.me/TrafficInsightBot_bot";
-        const DEMO_URL = "https://t.me/PulseDemo_bot";
+        const APP_NAME = "Сводка.Реклама";
+        const PRIMARY_URL = "https://andreyai.vercel.app/login";
+        const DEMO_URL = "https://andreyai.vercel.app/login";
         const CTA_TEXT = "Попробовать бесплатно";
         const DEMO_TEXT = "Посмотреть демо";
-        const PRICE = "990";
+        const PRICE = "1 490";
         const BETA_USERS = "0";
         const BETA_CASES = "0";
     </script>
@@ -105,19 +104,20 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <a href="#" class="flex-shrink-0 flex items-center gap-2">
-                    <span class="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white js-app-name">Сводка.Трафик</span>
+                    <span class="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white js-app-name">Сводка.Реклама</span>
                 </a>
 
                 <!-- Desktop -->
                 <div class="hidden md:flex items-center space-x-6">
                     <a href="#features" class="text-sm font-medium text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-white transition">Возможности</a>
                     <a href="#examples" class="text-sm font-medium text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-white transition">Примеры</a>
+                    <a href="#dashboard" class="text-sm font-medium text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-white transition">Дашборд</a>
                     <a href="#how-it-works" class="text-sm font-medium text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-white transition">Подключение</a>
                     <a href="#security" class="text-sm font-medium text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-white transition">Безопасность</a>
                     <a href="#pricing" class="text-sm font-medium text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-white transition">Цена</a>
                     <a href="#compare" class="text-sm font-medium text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-white transition">Сравнение</a>
                     <a href="#faq" class="text-sm font-medium text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-white transition">FAQ</a>
-                    <a href="/svodka/ads/" class="text-sm font-medium text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-white transition">Сводка.Реклама</a>
+                    <a href="/svodka/traffic/" class="text-sm font-medium text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-white transition">Сводка.Трафик</a>
                     <a href="/svodka/" class="text-sm font-medium text-slate-600 hover:text-brand-600 dark:text-slate-300 dark:hover:text-white transition">Все продукты</a>
                 </div>
 
@@ -129,7 +129,7 @@
                     </button>
 
                     <a href="#" class="js-cta-link hidden md:inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold rounded-xl text-white bg-brand-600 hover:bg-brand-700 shadow-lg shadow-brand-500/20 transition-all hover:scale-105 js-cta-text" target="_blank" rel="noopener noreferrer">
-                        Получить первый отчёт
+                        Попробовать бесплатно
                     </a>
 
                     <!-- Mobile burger -->
@@ -145,14 +145,15 @@
             <div class="px-4 pt-2 pb-4 space-y-1">
                 <a href="#features" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Возможности</a>
                 <a href="#examples" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Примеры</a>
+                <a href="#dashboard" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Дашборд</a>
                 <a href="#how-it-works" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Подключение</a>
                 <a href="#security" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Безопасность</a>
                 <a href="#pricing" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Цена</a>
                 <a href="#compare" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Сравнение</a>
                 <a href="#faq" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">FAQ</a>
-                <a href="/svodka/ads/" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Сводка.Реклама</a>
+                <a href="/svodka/traffic/" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Сводка.Трафик</a>
                 <a href="/svodka/" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800">Все продукты</a>
-                <a href="#" class="js-cta-link block w-full text-center mt-3 px-5 py-3 rounded-xl font-semibold text-white bg-brand-600 js-cta-text" target="_blank" rel="noopener noreferrer">Получить первый отчёт</a>
+                <a href="#" class="js-cta-link block w-full text-center mt-3 px-5 py-3 rounded-xl font-semibold text-white bg-brand-600 js-cta-text" target="_blank" rel="noopener noreferrer">Попробовать бесплатно</a>
             </div>
         </div>
     </nav>
@@ -165,48 +166,44 @@
                 <!-- Left: Content -->
                 <div class="max-w-2xl fade-in-up">
                     <!-- Badge -->
-                    <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-300 mb-6 border border-brand-200 dark:border-brand-700/50">
+                    <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 mb-6 border border-amber-200 dark:border-amber-700/50">
                         <span class="flex h-2 w-2 relative mr-2">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
                         </span>
-                        Интеграция: Яндекс.Метрика → Telegram
+                        Интеграция: Яндекс.Директ → Telegram
                     </div>
 
                     <h1 class="text-4xl lg:text-[3.25rem] font-extrabold tracking-tight text-slate-900 dark:text-white mb-4 leading-[1.1]">
-                        Конструктор отчётов из веб-аналитики → <span class="text-brand-600 dark:text-brand-400">Telegram</span>
+                        Конструктор отчётов по рекламе → <span class="text-brand-600 dark:text-brand-500">Telegram</span>
                     </h1>
 
                     <!-- ЦА-строка -->
                     <p class="text-base font-medium text-slate-500 dark:text-slate-400 mb-4">
-                        Для владельца бизнеса, который хочет контролировать трафик и заявки — без таблиц и кабинетов.
+                        Для владельца бизнеса, который тратит на рекламу и хочет контролировать бюджет — без кабинетов и таблиц.
                     </p>
 
                     <p class="text-lg text-slate-600 dark:text-slate-300 mb-6 leading-relaxed">
-                        Получайте нужные данные по расписанию — без входа в Метрику. Короткий статус в Telegram, алерты при отклонениях и подсказка «что проверить».
+                        Контролируйте расход, CTR, CPA и остаток бюджета по расписанию — без постоянного входа в рекламный кабинет. Алерты приходят раньше, чем заканчиваются деньги.
                     </p>
 
                     <!-- Mini benefits -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
                         <div class="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
-                            <span class="flex items-center gap-1 flex-shrink-0">
-                                <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
-                                <span class="w-3 h-3 rounded-full bg-amber-400"></span>
-                                <span class="w-3 h-3 rounded-full bg-rose-500"></span>
-                            </span>
-                            Светофор: ок / риск / пожар
+                            <svg class="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Контроль расхода и CPA
                         </div>
                         <div class="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
-                            <svg class="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            Утро и вечер — отчёт сам приходит
+                            <svg class="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                            WebApp-дашборд в 1 клик
                         </div>
                         <div class="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
                             <svg class="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                             Алерты каждые 15 минут
                         </div>
                         <div class="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
-                            <svg class="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                            Настройка по шагам — без боли
+                            <svg class="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Только чтение — бот не меняет рекламу
                         </div>
                     </div>
 
@@ -214,11 +211,11 @@
                     <div class="flex flex-col gap-4 mb-4">
                         <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                             <a href="#" class="js-cta-link inline-flex justify-center items-center px-8 py-4 text-base font-bold rounded-2xl text-white bg-brand-600 hover:bg-brand-700 shadow-lg shadow-brand-500/30 transition-all hover:-translate-y-0.5 js-cta-text" target="_blank" rel="noopener noreferrer">
-                                Получить первый отчёт
+                                Попробовать бесплатно
                             </a>
                             <div>
-                                <span class="text-2xl font-extrabold text-slate-900 dark:text-white">990 &#8381;/мес</span>
-                                <span class="text-sm text-slate-500 dark:text-slate-400 ml-1">(бета для первых 100)</span>
+                                <span class="text-2xl font-extrabold text-slate-900 dark:text-white">1 490 &#8381;/мес</span>
+                                <span class="text-sm text-slate-500 dark:text-slate-400 ml-1">(бета для первых 50)</span>
                             </div>
                         </div>
                         <p class="text-sm text-slate-500 dark:text-slate-400">3–5 минут &#183; доступ только на чтение</p>
@@ -229,12 +226,12 @@
                             <p class="text-xs text-slate-400 dark:text-slate-500">Без подключения &#183; просто пример отчётов</p>
                         </div>
                     </div>
-                    <p class="text-xs text-slate-400 dark:text-slate-500 mb-6">Стартовая цена беты — 990 &#8381;/мес. Далее — стандартный тариф 1 990 &#8381;/мес.</p>
+                    <p class="text-xs text-slate-400 dark:text-slate-500 mb-6">Стартовая цена беты — 1 490 &#8381;/мес. Далее — стандартный тариф 2 490 &#8381;/мес.</p>
 
                     <!-- Первый отчёт -->
-                    <div class="bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-700/40 rounded-xl px-4 py-3 mb-6">
-                        <p class="text-sm text-brand-800 dark:text-brand-200 font-medium">
-                            Первый отчёт сразу после подключения: визиты, цели, отказы, источники + подсказка, что проверить.
+                    <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/40 rounded-xl px-4 py-3 mb-6">
+                        <p class="text-sm text-amber-800 dark:text-amber-200 font-medium">
+                            Первый отчёт сразу после подключения: расход, клики, CPA, конверсии, топ кампаний + подсказка, что проверить.
                         </p>
                     </div>
 
@@ -247,63 +244,63 @@
 
                 <!-- Right: Telegram Mockup -->
                 <div class="relative mx-auto w-full max-w-md fade-in-up delay-200">
-                    <div class="absolute -top-10 -right-10 w-72 h-72 bg-purple-300 dark:bg-purple-900/30 rounded-full blur-3xl opacity-30 animate-pulse"></div>
+                    <div class="absolute -top-10 -right-10 w-72 h-72 bg-amber-300 dark:bg-amber-900/30 rounded-full blur-3xl opacity-30 animate-pulse"></div>
                     <div class="absolute -bottom-10 -left-10 w-72 h-72 bg-brand-300 dark:bg-brand-900/30 rounded-full blur-3xl opacity-30 animate-pulse" style="animation-delay:1s;"></div>
 
                     <div class="relative bg-white dark:bg-slate-800 rounded-[2.5rem] shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
                         <!-- Chat header -->
                         <div class="bg-slate-50 dark:bg-slate-900 px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white font-bold text-sm">TI</div>
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white font-bold text-sm">AR</div>
                             <div>
-                                <div class="font-semibold text-sm text-slate-900 dark:text-white">Сводка.Трафик</div>
+                                <div class="font-semibold text-sm text-slate-900 dark:text-white">Сводка.Реклама</div>
                                 <div class="text-xs text-brand-500">bot</div>
                             </div>
                         </div>
 
                         <!-- Messages -->
                         <div class="p-4 space-y-4 bg-[#EFEFEF] dark:bg-[#0f172a] h-[480px] overflow-hidden flex flex-col justify-end">
-                            <!-- Green -->
-                            <div class="bg-white dark:bg-slate-700 p-3 rounded-2xl rounded-tl-none shadow-sm max-w-[90%]">
-                                <div class="flex items-center gap-2 mb-2 text-emerald-600 dark:text-emerald-400 font-bold text-sm">
-                                    <div class="w-2 h-2 rounded-full bg-emerald-500"></div> Сайт: всё ок
+                            <!-- Report -->
+                            <div class="bg-white dark:bg-slate-700 p-3 rounded-2xl rounded-tl-none shadow-sm max-w-[95%]">
+                                <div class="flex items-center gap-2 mb-2 text-slate-900 dark:text-white font-bold text-sm">
+                                    <div class="w-2 h-2 rounded-full bg-emerald-500"></div> Отчёт за вчера
                                 </div>
-                                <div class="space-y-1 text-xs sm:text-sm text-slate-700 dark:text-slate-200">
-                                    <p>Визиты: <span class="font-semibold text-emerald-600">+12% к вчера</span></p>
-                                    <p>Цели: <span class="font-semibold text-emerald-600">+8%</span></p>
-                                    <p>Отказы: без изменений</p>
-                                    <p class="mt-2 text-slate-500 text-xs">Источник роста: поиск</p>
-                                    <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-600 text-xs text-slate-500">
-                                        Что проверить: цель «Заявка» срабатывает
-                                    </div>
+                                <div class="grid grid-cols-2 gap-2 text-xs text-slate-700 dark:text-slate-200 mb-2">
+                                    <div>Расход:<br><span class="font-bold text-slate-900 dark:text-white">12 450 ₽</span> <span class="text-red-500 text-[10px]">(+15%)</span></div>
+                                    <div>Клики:<br><span class="font-bold text-slate-900 dark:text-white">415</span> <span class="text-emerald-500 text-[10px]">(+8%)</span></div>
+                                    <div>Конверсии:<br><span class="font-bold text-emerald-500">28</span></div>
+                                    <div>CPA:<br><span class="font-bold text-emerald-500">444 ₽</span> <span class="text-emerald-500 text-[10px]">(-5%)</span></div>
+                                </div>
+                                <div class="text-[10px] bg-slate-50 dark:bg-slate-600/50 p-2 rounded text-slate-600 dark:text-slate-300">
+                                    CPA в норме. «Поиск-Бренд» — самые дешёвые лиды (250₽).
                                 </div>
                                 <div class="text-[10px] text-slate-400 text-right mt-1">10:00</div>
                             </div>
 
-                            <!-- Yellow -->
+                            <!-- Evening -->
                             <div class="bg-white dark:bg-slate-700 p-3 rounded-2xl rounded-tl-none shadow-sm max-w-[90%]">
                                 <div class="flex items-center gap-2 mb-2 text-amber-500 dark:text-amber-400 font-bold text-sm">
                                     <div class="w-2 h-2 rounded-full bg-amber-500"></div> Вечерний статус
                                 </div>
-                                <div class="space-y-1 text-xs sm:text-sm text-slate-700 dark:text-slate-200">
-                                    <p>Визиты: <span class="font-semibold text-amber-500">-6% к среднему за 7 дней</span></p>
-                                    <p>Цели: без изменений</p>
-                                    <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-600 text-xs text-slate-500">
-                                        Что проверить: источники трафика, скорость сайта
+                                <div class="space-y-1 text-xs text-slate-700 dark:text-slate-200">
+                                    <p>Расход: <span class="font-semibold text-amber-500">15 800 ₽ (+22%)</span></p>
+                                    <p>CPA: 620 ₽ (норма)</p>
+                                    <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-600 text-[10px] text-slate-500">
+                                        Что проверить: рост расхода — кампания РСЯ-Ретаргет
                                     </div>
                                 </div>
                                 <div class="text-[10px] text-slate-400 text-right mt-1">19:00</div>
                             </div>
 
-                            <!-- Red Alert -->
+                            <!-- Alert -->
                             <div class="bg-white dark:bg-slate-700 p-3 rounded-2xl rounded-tl-none shadow-sm max-w-[90%] border-l-4 border-rose-500">
                                 <div class="flex items-center gap-2 mb-2 text-rose-600 dark:text-rose-400 font-bold text-sm">
-                                    <span class="animate-pulse">&#128308;</span> Просадка целей
+                                    <span class="animate-pulse">&#128308;</span> Скачок CPA
                                 </div>
-                                <div class="space-y-1 text-xs sm:text-sm text-slate-700 dark:text-slate-200">
-                                    <p>Цели: <span class="font-bold text-rose-600">-35% к среднему за 7 дней</span></p>
-                                    <p>Визиты: без изменений</p>
-                                    <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-600 text-xs text-slate-500">
-                                        Что проверить: форма/кнопка/«спасибо», настройки цели
+                                <div class="space-y-1 text-xs text-slate-700 dark:text-slate-200">
+                                    <p>Кампания: <b>Реклама в РСЯ</b></p>
+                                    <p>CPA: <span class="font-bold text-rose-600">2 500 ₽</span> (средний: 800 ₽)</p>
+                                    <div class="mt-2 pt-2 border-t border-slate-100 dark:border-slate-600 text-[10px] text-slate-500">
+                                        Проверьте площадки и креативы
                                     </div>
                                 </div>
                                 <div class="text-[10px] text-slate-400 text-right mt-1">14:15</div>
@@ -315,17 +312,7 @@
         </div>
     </header>
 
-    <!-- ========== USP BANNER ========== -->
-    <section class="py-6 bg-brand-600 dark:bg-brand-700">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-lg md:text-xl font-bold text-white leading-snug">
-                Telegram-бот, который помогает следить за сайтом 24/7.<br class="hidden sm:inline">
-                <span class="font-normal text-brand-100">Отчёты по данным веб-аналитики приходят сами — вам остаётся принимать решения.</span>
-            </p>
-        </div>
-    </section>
-
-    <!-- ========== 3. SOCIAL PROOF & PROBLEMS ========== -->
+    <!-- ========== 3. PROBLEMS ========== -->
     <section id="problems" class="py-20 bg-white dark:bg-slate-900">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="max-w-3xl mx-auto text-center mb-16">
@@ -333,15 +320,15 @@
                 <ul class="inline-flex flex-col gap-3 text-left text-slate-700 dark:text-slate-300 text-base">
                     <li class="flex items-center gap-3">
                         <svg class="w-5 h-5 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                        Реклама — главный источник заявок
+                        Тратите на Яндекс Директ и хотите контролировать бюджет
                     </li>
                     <li class="flex items-center gap-3">
                         <svg class="w-5 h-5 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                        Нужно понимать: сломалось в трафике или на сайте
+                        Нужно быстро понимать: бюджет сливается или всё ок
                     </li>
                     <li class="flex items-center gap-3">
                         <svg class="w-5 h-5 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                        Надоело заходить в кабинеты и читать таблицы
+                        Надоело заходить в кабинет Яндекс Директа и разбирать таблицы
                     </li>
                 </ul>
             </div>
@@ -351,34 +338,41 @@
                 <ul class="inline-flex flex-col gap-3 text-left text-slate-400 dark:text-slate-500 text-base">
                     <li class="flex items-center gap-3">
                         <svg class="w-5 h-5 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                        Вы сами маркетолог и каждый день в кабинетах
+                        Вы сами ведёте рекламу и каждый день в кабинете Яндекс Директа
                     </li>
                     <li class="flex items-center gap-3">
                         <svg class="w-5 h-5 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                        У вас нет сайта с Яндекс Метрикой
+                        У вас нет активных кампаний в Яндекс Директе
                     </li>
                     <li class="flex items-center gap-3">
                         <svg class="w-5 h-5 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                        Вам не важно, что происходит с трафиком и заявками
+                        Вам не важно, сколько стоит заявка
                     </li>
                 </ul>
             </div>
 
+            <h2 class="text-3xl font-bold text-center text-slate-900 dark:text-white mb-12">Почему деньги «сгорают» тихо?</h2>
             <div class="grid md:grid-cols-3 gap-8">
                 <div class="p-8 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:shadow-lg transition group">
-                    <div class="text-4xl mb-5 group-hover:scale-110 transition">&#128209;</div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Ручные проверки — хаос</h3>
-                    <p class="text-slate-600 dark:text-slate-400">Проверка «когда вспомню». Проблемы находятся слишком поздно — бюджет уже потрачен.</p>
+                    <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center mb-6 text-red-500 group-hover:scale-110 transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Слитый бюджет</h3>
+                    <p class="text-slate-600 dark:text-slate-400">Узнаёте о том, что CPA вырос в 3 раза, только когда маркетолог пришлёт отчёт в конце недели. Деньги уже не вернуть.</p>
                 </div>
                 <div class="p-8 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:shadow-lg transition group">
-                    <div class="text-4xl mb-5 group-hover:scale-110 transition">&#128197;</div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Отчёты «когда успеют»</h3>
-                    <p class="text-slate-600 dark:text-slate-400">Маркетолог присылает отчёт в конце недели или месяца. Деньги на рекламу уже сгорели.</p>
+                    <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center mb-6 text-red-500 group-hover:scale-110 transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Слепота</h3>
+                    <p class="text-slate-600 dark:text-slate-400">Сложно заходить в кабинет Яндекс Директа с телефона. Куча таблиц, фильтров — проще вообще не смотреть.</p>
                 </div>
                 <div class="p-8 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:shadow-lg transition group">
-                    <div class="text-4xl mb-5 group-hover:scale-110 transition">&#128202;</div>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Дашборды — туда не заходят</h3>
-                    <p class="text-slate-600 dark:text-slate-400">Красивые графики бесполезны, если нет времени их открывать и анализировать каждый день.</p>
+                    <div class="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center mb-6 text-red-500 group-hover:scale-110 transition">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path></svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Остановка продаж</h3>
+                    <p class="text-slate-600 dark:text-slate-400">Деньги на балансе кончились, реклама встала, заявки не идут. Вы узнаёте об этом от менеджеров, когда уже поздно.</p>
                 </div>
             </div>
         </div>
@@ -393,90 +387,83 @@
                     <span class="text-sm text-slate-500 dark:text-slate-400">проверка алертов — каждые 15 минут</span>
                 </div>
                 <div>
-                    <span class="block text-3xl font-extrabold text-slate-900 dark:text-white">3–5 мин</span>
-                    <span class="text-sm text-slate-500 dark:text-slate-400">на контроль вместо часа в кабинете</span>
+                    <span class="block text-3xl font-extrabold text-slate-900 dark:text-white">7</span>
+                    <span class="text-sm text-slate-500 dark:text-slate-400">метрик в каждом отчёте</span>
                 </div>
                 <div>
-                    <span class="block text-3xl font-extrabold text-slate-900 dark:text-white">0</span>
-                    <span class="text-sm text-slate-500 dark:text-slate-400">таблиц и дашбордов</span>
+                    <span class="block text-3xl font-extrabold text-slate-900 dark:text-white">3–5 мин</span>
+                    <span class="text-sm text-slate-500 dark:text-slate-400">на контроль вместо часа в кабинете</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ========== 3b. QUOTES / INSIGHT ========== -->
+    <!-- ========== 3b. QUOTES ========== -->
     <section class="py-14 bg-slate-50 dark:bg-[#0B1120]">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 <div class="bg-white dark:bg-slate-800 rounded-xl p-5 border border-slate-100 dark:border-slate-700 shadow-sm">
-                    <p class="text-slate-600 dark:text-slate-300 text-sm italic leading-relaxed">&laquo;Проверять иногда&nbsp;&mdash; не&nbsp;контроль&raquo;</p>
+                    <p class="text-slate-600 dark:text-slate-300 text-sm italic leading-relaxed">&laquo;Деньги утекают незаметно&nbsp;&mdash; а&nbsp;я&nbsp;узнаю последним&raquo;</p>
                 </div>
                 <div class="bg-white dark:bg-slate-800 rounded-xl p-5 border border-slate-100 dark:border-slate-700 shadow-sm">
-                    <p class="text-slate-600 dark:text-slate-300 text-sm italic leading-relaxed">&laquo;Мне нужен сигнал, а&nbsp;не&nbsp;таблица&raquo;</p>
+                    <p class="text-slate-600 dark:text-slate-300 text-sm italic leading-relaxed">&laquo;Мне нужен сигнал, а&nbsp;не&nbsp;таблица в&nbsp;Директе&raquo;</p>
                 </div>
                 <div class="bg-white dark:bg-slate-800 rounded-xl p-5 border border-slate-100 dark:border-slate-700 shadow-sm">
-                    <p class="text-slate-600 dark:text-slate-300 text-sm italic leading-relaxed">&laquo;Я реагировал всегда слишком поздно&raquo;</p>
+                    <p class="text-slate-600 dark:text-slate-300 text-sm italic leading-relaxed">&laquo;Меня могут водить за&nbsp;нос&nbsp;&mdash; мне нечем проверить&raquo;</p>
                 </div>
                 <div class="bg-white dark:bg-slate-800 rounded-xl p-5 border border-slate-100 dark:border-slate-700 shadow-sm">
-                    <p class="text-slate-600 dark:text-slate-300 text-sm italic leading-relaxed">&laquo;Меня бесит неопределённость&raquo;</p>
+                    <p class="text-slate-600 dark:text-slate-300 text-sm italic leading-relaxed">&laquo;Я&nbsp;хочу контролировать, а&nbsp;не&nbsp;погружаться&raquo;</p>
                 </div>
             </div>
-            <p class="text-center mt-6 text-xs text-slate-400 dark:text-slate-500">Ключевой инсайт: контроль&nbsp;&mdash; это не&nbsp;отчёты, а&nbsp;<strong class="text-slate-600 dark:text-slate-300">ранние сигналы и&nbsp;понятные триггеры</strong>.</p>
+            <p class="text-center mt-6 text-xs text-slate-400 dark:text-slate-500">Ключевой инсайт: контроль бюджета&nbsp;&mdash; это не&nbsp;отчёты, а&nbsp;<strong class="text-slate-600 dark:text-slate-300">ранние сигналы и&nbsp;понятные триггеры</strong>.</p>
         </div>
     </section>
 
     <!-- ========== 3c. COMPARISON TABLE ========== -->
     <section id="compare" class="py-16 bg-white dark:bg-slate-900">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-2xl md:text-3xl font-bold text-center text-slate-900 dark:text-white mb-3">Сравнение решений: Сводка vs официальный бот vs альтернативы</h2>
-            <p class="text-center text-slate-500 dark:text-slate-400 mb-10">Ниже — рабочая таблица для выбора. Обновляется по мере развития продукта.</p>
+            <h2 class="text-2xl md:text-3xl font-bold text-center text-slate-900 dark:text-white mb-3">Сводка vs официальный бот vs альтернативы</h2>
+            <p class="text-center text-slate-500 dark:text-slate-400 mb-10">Сравнение по задачам владельца: быстро понять, где утекает бюджет и что проверять первым.</p>
 
             <div class="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-700">
                 <table class="w-full text-sm text-left bg-white dark:bg-slate-900">
                     <thead class="bg-slate-50 dark:bg-slate-800/70">
                         <tr class="border-b border-slate-200 dark:border-slate-700">
                             <th class="py-4 px-4 font-semibold text-slate-500 dark:text-slate-300">Критерий</th>
-                            <th class="py-4 px-4 font-bold text-brand-600 dark:text-brand-400">Сводка.Трафик</th>
-                            <th class="py-4 px-4 font-semibold text-slate-500 dark:text-slate-300">@YaMetricaBot</th>
+                            <th class="py-4 px-4 font-bold text-brand-600 dark:text-brand-400">Сводка.Реклама</th>
+                            <th class="py-4 px-4 font-semibold text-slate-500 dark:text-slate-300">Официальный бот Директа</th>
                             <th class="py-4 px-4 font-semibold text-slate-500 dark:text-slate-300">Самописные отчёты</th>
                             <th class="py-4 px-4 font-semibold text-slate-500 dark:text-slate-300">Albato / ApiMonster</th>
                         </tr>
                     </thead>
                     <tbody class="text-slate-700 dark:text-slate-300">
                         <tr class="border-b border-slate-100 dark:border-slate-800">
-                            <td class="py-3.5 px-4 font-medium">Формат выдачи</td>
-                            <td class="py-3.5 px-4">Сжатый отчёт + интерпретация</td>
-                            <td class="py-3.5 px-4">Базовые сводки</td>
+                            <td class="py-3.5 px-4 font-medium">Ключевые метрики</td>
+                            <td class="py-3.5 px-4">Расход, CTR, CPA, конверсии, остаток бюджета</td>
+                            <td class="py-3.5 px-4">Базовые данные</td>
                             <td class="py-3.5 px-4">Зависит от реализации</td>
-                            <td class="py-3.5 px-4">Автосценарии, без продуктовой логики</td>
+                            <td class="py-3.5 px-4">Через сценарии и трансформации</td>
                         </tr>
                         <tr class="border-b border-slate-100 dark:border-slate-800">
                             <td class="py-3.5 px-4 font-medium">Алерты по отклонениям</td>
-                            <td class="py-3.5 px-4 text-emerald-600 dark:text-emerald-400 font-semibold">Да, пороги настраиваются</td>
-                            <td class="py-3.5 px-4">Частично</td>
-                            <td class="py-3.5 px-4">Только если писать отдельно</td>
-                            <td class="py-3.5 px-4">Через сценарии и вебхуки</td>
+                            <td class="py-3.5 px-4 text-emerald-600 dark:text-emerald-400 font-semibold">Да, настраиваемые пороги</td>
+                            <td class="py-3.5 px-4">Ограниченно</td>
+                            <td class="py-3.5 px-4">Только при отдельной разработке</td>
+                            <td class="py-3.5 px-4">Через сценарии</td>
                         </tr>
                         <tr class="border-b border-slate-100 dark:border-slate-800">
-                            <td class="py-3.5 px-4 font-medium">Скорость внедрения</td>
+                            <td class="py-3.5 px-4 font-medium">Путь до первого отчёта</td>
                             <td class="py-3.5 px-4 text-emerald-600 dark:text-emerald-400 font-semibold">~3–5 минут</td>
                             <td class="py-3.5 px-4">Быстро</td>
                             <td class="py-3.5 px-4">Долго</td>
                             <td class="py-3.5 px-4">Средне</td>
                         </tr>
-                        <tr class="border-b border-slate-100 dark:border-slate-800">
-                            <td class="py-3.5 px-4 font-medium">Подходит владельцу без аналитика</td>
-                            <td class="py-3.5 px-4 text-emerald-600 dark:text-emerald-400 font-semibold">Да</td>
-                            <td class="py-3.5 px-4">Ограниченно</td>
-                            <td class="py-3.5 px-4">Нет</td>
-                            <td class="py-3.5 px-4">Ограниченно</td>
-                        </tr>
                         <tr>
-                            <td class="py-3.5 px-4 font-medium">Юридическая модель бренда</td>
-                            <td class="py-3.5 px-4">Собственный бренд + номинативное упоминание интеграции</td>
-                            <td class="py-3.5 px-4">Официальный продукт</td>
-                            <td class="py-3.5 px-4">На стороне заказчика</td>
-                            <td class="py-3.5 px-4">Платформа интеграций</td>
+                            <td class="py-3.5 px-4 font-medium">Формат для владельца</td>
+                            <td class="py-3.5 px-4">Короткий отчёт + что проверить</td>
+                            <td class="py-3.5 px-4">Стандартная выдача</td>
+                            <td class="py-3.5 px-4">Обычно технично</td>
+                            <td class="py-3.5 px-4">Требует настройки и поддержки</td>
                         </tr>
                     </tbody>
                 </table>
@@ -490,18 +477,18 @@
             <div class="grid lg:grid-cols-3 gap-6">
                 <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
                     <p class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-2">Социальное доказательство</p>
-                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Продукт в закрытой бете</h3>
-                    <p class="text-sm text-slate-600 dark:text-slate-300">Мы не публикуем вымышленные цифры. Метрики и кейсы появляются только после верификации с пользователями.</p>
+                    <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Закрытая бета без маркетинговых «накруток»</h3>
+                    <p class="text-sm text-slate-600 dark:text-slate-300">Показываем только фактически подтверждённые подключения и кейсы. Без вымышленных «1000 клиентов».</p>
                 </div>
                 <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
-                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-1">Подключено счётчиков (верифицировано)</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mb-1">Подключено рекламных аккаунтов</p>
                     <p class="text-4xl font-extrabold text-slate-900 dark:text-white js-beta-users">0</p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Обновляется вручную по фактическим подключениям.</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Цифра обновляется вручную после верификации.</p>
                 </div>
                 <div class="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
                     <p class="text-sm text-slate-500 dark:text-slate-400 mb-1">Опубликовано кейсов</p>
                     <p class="text-4xl font-extrabold text-slate-900 dark:text-white js-beta-cases">0</p>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Цель спринта: 10–20 бета-пользователей и 2–3 подтверждённых кейса.</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">План: 10–20 бета-пользователей и 2–3 кейса с подтверждённым эффектом.</p>
                 </div>
             </div>
         </div>
@@ -511,7 +498,7 @@
     <section id="features" class="py-20 bg-slate-50 dark:bg-[#0B1120]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">Контроль без погружения в таблицы</h2>
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">Мониторинг рекламных кампаний</h2>
                 <p class="text-slate-500 dark:text-slate-400 max-w-xl mx-auto">Всё приходит само. Остаётся только читать и реагировать.</p>
             </div>
 
@@ -521,7 +508,7 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                     </div>
                     <h4 class="font-semibold text-lg text-slate-900 dark:text-white mb-2">Ежедневные отчёты</h4>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm">Визиты, цели, отказы, источники трафика. Приходят утром и вечером — сами.</p>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm">Расход, клики, CTR, CPA, конверсии. Топ кампаний по расходу. Приходят утром и вечером — сами.</p>
                 </div>
 
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition">
@@ -529,7 +516,7 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                     </div>
                     <h4 class="font-semibold text-lg text-slate-900 dark:text-white mb-2">Алерты при отклонениях</h4>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm">Просадка целей, рост отказов, падение трафика — мгновенное уведомление, чтобы не было «тихого слива».</p>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm">Скачок CPA, падение кликов, рост расхода — мгновенное уведомление, чтобы не было «тихого слива».</p>
                 </div>
 
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition">
@@ -537,31 +524,31 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
                     </div>
                     <h4 class="font-semibold text-lg text-slate-900 dark:text-white mb-2">Понятные выводы</h4>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm">«Что случилось + что проверить» — не сухие цифры, а конкретные рекомендации.</p>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm">«CPA вырос, потому что кампания X потратила много без заявок» — не сухие цифры, а конкретные рекомендации.</p>
                 </div>
 
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition">
                     <div class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/50 rounded-lg flex items-center justify-center mb-4 text-indigo-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                     </div>
-                    <h4 class="font-semibold text-lg text-slate-900 dark:text-white mb-2">Гибкая настройка</h4>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm">Выбирайте нужные цели, метрики, расписание и чувствительность алертов.</p>
+                    <h4 class="font-semibold text-lg text-slate-900 dark:text-white mb-2">WebApp-дашборд</h4>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm">Интерактивные графики прямо в Telegram. Вкладки по кампаниям, динамика по дням, детализация расходов.</p>
                 </div>
 
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition">
                     <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center mb-4 text-blue-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
                     </div>
-                    <h4 class="font-semibold text-lg text-slate-900 dark:text-white mb-2">Без напоминаний</h4>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm">Отчёты утром и вечером приходят автоматически. Не нужно «дёргать» бота.</p>
+                    <h4 class="font-semibold text-lg text-slate-900 dark:text-white mb-2">Гибкая настройка</h4>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm">Выбирайте кампании, метрики, расписание и пороги алертов. Настройка по шагам — без боли.</p>
                 </div>
 
                 <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition">
                     <div class="w-10 h-10 bg-green-100 dark:bg-green-900/50 rounded-lg flex items-center justify-center mb-4 text-green-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                     </div>
-                    <h4 class="font-semibold text-lg text-slate-900 dark:text-white mb-2">Поддержка в Telegram</h4>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm">Вопрос прямо в мессенджере — не потеряется в почте.</p>
+                    <h4 class="font-semibold text-lg text-slate-900 dark:text-white mb-2">Безопасный доступ</h4>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm">Только чтение статистики через официальный API Яндекса. Бот не может менять ставки, останавливать кампании или трогать настройки.</p>
                 </div>
             </div>
 
@@ -573,131 +560,130 @@
     <section id="examples" class="py-20 bg-white dark:bg-slate-900">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold text-center text-slate-900 dark:text-white mb-12">Примеры реальных уведомлений, которые вы будете получать</h2>
-            <p class="text-center text-xs text-slate-500 dark:text-slate-400 mb-8">Данные в рабочих отчётах: «Данные предоставлены системой Яндекс.Метрика».</p>
+            <p class="text-center text-xs text-slate-500 dark:text-slate-400 mb-8">Данные в рабочих отчётах: «Данные предоставлены системой Яндекс.Директ».</p>
 
             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Card 1: Утренний отчёт (зелёный) -->
+                <!-- Card 1: Ежедневный отчёт (зелёный) -->
                 <div>
-                    <div class="max-w-[240px] mx-auto rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-lg flex flex-col bg-white dark:bg-slate-800">
+                    <div class="aspect-[9/16] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-lg flex flex-col bg-white dark:bg-slate-800">
                         <div class="bg-slate-50 dark:bg-slate-900 px-3 py-2.5 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2">
-                            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white font-bold text-[9px]">TI</div>
+                            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white font-bold text-[9px]">AR</div>
                             <div>
-                                <div class="font-semibold text-[11px] text-slate-900 dark:text-white">Сводка.Трафик</div>
+                                <div class="font-semibold text-[11px] text-slate-900 dark:text-white">Сводка.Реклама</div>
                                 <div class="text-[9px] text-brand-500">bot</div>
                             </div>
                         </div>
-                        <div class="flex-1 p-2.5 bg-white dark:bg-[#0f172a] flex flex-col justify-end">
+                        <div class="flex-1 p-2.5 bg-[#EFEFEF] dark:bg-[#0f172a] flex flex-col justify-end">
                             <div class="bg-white dark:bg-slate-700 p-2.5 rounded-xl rounded-tl-none shadow-sm">
                                 <div class="flex items-center gap-1.5 mb-1.5 text-emerald-600 dark:text-emerald-400 font-bold text-[11px]">
-                                    <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div> Сайт: всё ок
+                                    <div class="w-1.5 h-1.5 rounded-full bg-emerald-500"></div> Директ: всё ок
                                 </div>
                                 <div class="space-y-0.5 text-[10px] text-slate-700 dark:text-slate-200">
-                                    <p>Визиты: <span class="font-semibold text-emerald-600">1 234 (+12%)</span></p>
-                                    <p>Цели: <span class="font-semibold text-emerald-600">45 (+15%)</span></p>
-                                    <p>Отказы: 32.5% <span class="text-emerald-600">(-5%)</span></p>
-                                    <p class="text-[9px] text-slate-400 mt-1">Источник роста: поиск</p>
+                                    <p>Расход: <span class="font-semibold">12 450 ₽</span></p>
+                                    <p>CPA: <span class="font-semibold text-emerald-600">444 ₽ (-5%)</span></p>
+                                    <p>Конверсии: <span class="font-semibold text-emerald-600">28 (+8%)</span></p>
+                                    <p class="text-[9px] text-slate-400 mt-1">Топ: «Поиск-Бренд» — 250₽/лид</p>
                                     <div class="mt-1.5 pt-1.5 border-t border-slate-100 dark:border-slate-600 text-[9px] text-slate-500">
-                                        Что проверить: цель «Заявка» срабатывает
+                                        CPA в норме, всё работает
                                     </div>
                                 </div>
                                 <div class="text-[9px] text-slate-400 text-right mt-1">10:00</div>
                             </div>
                         </div>
                     </div>
-                    <p class="text-center mt-4 font-medium text-slate-900 dark:text-white">Утренний отчёт</p>
-                    <p class="text-center mt-1 text-sm text-slate-500 dark:text-slate-400">ежедневная сводка</p>
+                    <p class="text-center mt-4 font-medium text-slate-900 dark:text-white">Ежедневный отчёт</p>
+                    <p class="text-center mt-1 text-sm text-slate-500 dark:text-slate-400">утренняя сводка</p>
                 </div>
 
-                <!-- Card 2: Вечерний статус (жёлтый) -->
+                <!-- Card 2: Рост расхода (жёлтый) -->
                 <div>
-                    <div class="max-w-[240px] mx-auto rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-lg flex flex-col bg-white dark:bg-slate-800">
+                    <div class="aspect-[9/16] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-lg flex flex-col bg-white dark:bg-slate-800">
                         <div class="bg-slate-50 dark:bg-slate-900 px-3 py-2.5 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2">
-                            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white font-bold text-[9px]">TI</div>
+                            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white font-bold text-[9px]">AR</div>
                             <div>
-                                <div class="font-semibold text-[11px] text-slate-900 dark:text-white">Сводка.Трафик</div>
+                                <div class="font-semibold text-[11px] text-slate-900 dark:text-white">Сводка.Реклама</div>
                                 <div class="text-[9px] text-brand-500">bot</div>
                             </div>
                         </div>
-                        <div class="flex-1 p-2.5 bg-white dark:bg-[#0f172a] flex flex-col justify-end">
+                        <div class="flex-1 p-2.5 bg-[#EFEFEF] dark:bg-[#0f172a] flex flex-col justify-end">
                             <div class="bg-white dark:bg-slate-700 p-2.5 rounded-xl rounded-tl-none shadow-sm">
                                 <div class="flex items-center gap-1.5 mb-1.5 text-amber-500 dark:text-amber-400 font-bold text-[11px]">
-                                    <div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div> Вечерний статус
+                                    <div class="w-1.5 h-1.5 rounded-full bg-amber-500"></div> Рост расхода
                                 </div>
                                 <div class="space-y-0.5 text-[10px] text-slate-700 dark:text-slate-200">
-                                    <p>Визиты: <span class="font-semibold text-amber-500">891 (-6% за 7д)</span></p>
-                                    <p>Цели: без изменений</p>
-                                    <p>Отказы: 34% <span class="text-amber-500">(+2%)</span></p>
+                                    <p>Расход: <span class="font-semibold text-amber-500">18 200 ₽ (+32%)</span></p>
+                                    <p>CPA: <span class="text-amber-500">680 ₽ (+22%)</span></p>
                                     <div class="mt-1.5 pt-1.5 border-t border-slate-100 dark:border-slate-600 text-[9px] text-slate-500">
-                                        Что проверить: источники трафика, скорость сайта
+                                        Что проверить: кампания РСЯ-Ретаргет
                                     </div>
                                 </div>
                                 <div class="text-[9px] text-slate-400 text-right mt-1">19:00</div>
                             </div>
                         </div>
                     </div>
-                    <p class="text-center mt-4 font-medium text-slate-900 dark:text-white">Вечерний статус</p>
-                    <p class="text-center mt-1 text-sm text-slate-500 dark:text-slate-400">сигнал при снижении</p>
+                    <p class="text-center mt-4 font-medium text-slate-900 dark:text-white">Рост расхода</p>
+                    <p class="text-center mt-1 text-sm text-slate-500 dark:text-slate-400">предупреждение о бюджете</p>
                 </div>
 
-                <!-- Card 3: Алерт — просадка целей (красный) -->
+                <!-- Card 3: Алерт CPA (красный) -->
                 <div>
-                    <div class="max-w-[240px] mx-auto rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-lg flex flex-col bg-white dark:bg-slate-800">
+                    <div class="aspect-[9/16] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-lg flex flex-col bg-white dark:bg-slate-800">
                         <div class="bg-slate-50 dark:bg-slate-900 px-3 py-2.5 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2">
-                            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white font-bold text-[9px]">TI</div>
+                            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white font-bold text-[9px]">AR</div>
                             <div>
-                                <div class="font-semibold text-[11px] text-slate-900 dark:text-white">Сводка.Трафик</div>
+                                <div class="font-semibold text-[11px] text-slate-900 dark:text-white">Сводка.Реклама</div>
                                 <div class="text-[9px] text-brand-500">bot</div>
                             </div>
                         </div>
-                        <div class="flex-1 p-2.5 bg-white dark:bg-[#0f172a] flex flex-col justify-end">
+                        <div class="flex-1 p-2.5 bg-[#EFEFEF] dark:bg-[#0f172a] flex flex-col justify-end">
                             <div class="bg-white dark:bg-slate-700 p-2.5 rounded-xl rounded-tl-none shadow-sm border-l-4 border-rose-500">
                                 <div class="flex items-center gap-1.5 mb-1.5 text-rose-600 dark:text-rose-400 font-bold text-[11px]">
-                                    <span class="animate-pulse text-[10px]">&#128308;</span> Просадка целей
+                                    <span class="animate-pulse text-[10px]">&#128308;</span> Скачок CPA
                                 </div>
                                 <div class="space-y-0.5 text-[10px] text-slate-700 dark:text-slate-200">
-                                    <p>Цели: <span class="font-bold text-rose-600">28 (-35% за 7д)</span></p>
-                                    <p>Визиты: без изменений</p>
+                                    <p>Кампания: <b>РСЯ</b></p>
+                                    <p>CPA: <span class="font-bold text-rose-600">2 500 ₽ (+212%)</span></p>
+                                    <p>Средний: 800 ₽</p>
                                     <div class="mt-1.5 pt-1.5 border-t border-slate-100 dark:border-slate-600 text-[9px] text-slate-500">
-                                        Что проверить: форма, кнопка, «спасибо», настройки цели
+                                        Проверьте площадки и креативы
                                     </div>
                                 </div>
                                 <div class="text-[9px] text-slate-400 text-right mt-1">14:15</div>
                             </div>
                         </div>
                     </div>
-                    <p class="text-center mt-4 font-medium text-slate-900 dark:text-white">Просадка целей</p>
+                    <p class="text-center mt-4 font-medium text-slate-900 dark:text-white">Скачок CPA</p>
                     <p class="text-center mt-1 text-sm text-slate-500 dark:text-slate-400">алерт в реальном времени</p>
                 </div>
 
-                <!-- Card 4: Алерт — рост отказов (оранжевый) -->
+                <!-- Card 4: Падение кликов (оранжевый) -->
                 <div>
-                    <div class="max-w-[240px] mx-auto rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-lg flex flex-col bg-white dark:bg-slate-800">
+                    <div class="aspect-[9/16] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 shadow-lg flex flex-col bg-white dark:bg-slate-800">
                         <div class="bg-slate-50 dark:bg-slate-900 px-3 py-2.5 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2">
-                            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white font-bold text-[9px]">TI</div>
+                            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-white font-bold text-[9px]">AR</div>
                             <div>
-                                <div class="font-semibold text-[11px] text-slate-900 dark:text-white">Сводка.Трафик</div>
+                                <div class="font-semibold text-[11px] text-slate-900 dark:text-white">Сводка.Реклама</div>
                                 <div class="text-[9px] text-brand-500">bot</div>
                             </div>
                         </div>
-                        <div class="flex-1 p-2.5 bg-white dark:bg-[#0f172a] flex flex-col justify-end">
+                        <div class="flex-1 p-2.5 bg-[#EFEFEF] dark:bg-[#0f172a] flex flex-col justify-end">
                             <div class="bg-white dark:bg-slate-700 p-2.5 rounded-xl rounded-tl-none shadow-sm border-l-4 border-orange-400">
                                 <div class="flex items-center gap-1.5 mb-1.5 text-orange-500 dark:text-orange-400 font-bold text-[11px]">
-                                    <span class="text-[10px]">&#128992;</span> Рост отказов
+                                    <span class="text-[10px]">&#128992;</span> Падение кликов
                                 </div>
                                 <div class="space-y-0.5 text-[10px] text-slate-700 dark:text-slate-200">
-                                    <p>Отказы: <span class="font-bold text-orange-500">48.2% (+25%)</span></p>
-                                    <p>Визиты: без изменений</p>
-                                    <p>Глубина: <span class="text-orange-500">1.4 (-18%)</span></p>
+                                    <p>Клики: <span class="font-bold text-orange-500">185 (-35%)</span></p>
+                                    <p>CTR: <span class="text-orange-500">3.2% (-18%)</span></p>
                                     <div class="mt-1.5 pt-1.5 border-t border-slate-100 dark:border-slate-600 text-[9px] text-slate-500">
-                                        Что проверить: скорость сайта, мобильная версия
+                                        Проверьте ставки и статус показов
                                     </div>
                                 </div>
                                 <div class="text-[9px] text-slate-400 text-right mt-1">11:30</div>
                             </div>
                         </div>
                     </div>
-                    <p class="text-center mt-4 font-medium text-slate-900 dark:text-white">Рост отказов</p>
-                    <p class="text-center mt-1 text-sm text-slate-500 dark:text-slate-400">проблема на сайте</p>
+                    <p class="text-center mt-4 font-medium text-slate-900 dark:text-white">Падение кликов</p>
+                    <p class="text-center mt-1 text-sm text-slate-500 dark:text-slate-400">проблема с показами</p>
                 </div>
             </div>
 
@@ -705,32 +691,83 @@
                 <a href="#" class="js-demo-link inline-flex justify-center items-center px-8 py-3 text-base font-semibold rounded-xl text-slate-800 dark:text-slate-100 border border-slate-300 dark:border-slate-600 hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400 transition" target="_blank" rel="noopener noreferrer">
                     Посмотреть эти отчёты в демо-боте
                 </a>
-                <p class="text-sm text-slate-500 dark:text-slate-400">Это пример. Чтобы получать такие отчёты по своему сайту — подключите бота</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Это пример. Чтобы получать такие отчёты по своему аккаунту — подключите бота</p>
                 <a href="#" class="js-cta-link inline-flex justify-center items-center px-8 py-4 text-base font-bold rounded-2xl text-white bg-brand-600 hover:bg-brand-700 shadow-lg shadow-brand-500/30 transition-all hover:-translate-y-0.5 js-cta-text" target="_blank" rel="noopener noreferrer">
-                    Получить первый отчёт
+                    Попробовать бесплатно
                 </a>
             </div>
 
-            <!-- Mini-scenarios: что делать -->
+            <!-- Mini-scenarios -->
             <div class="grid md:grid-cols-3 gap-5 mt-12">
                 <div class="flex items-start gap-3 bg-rose-50 dark:bg-rose-900/20 rounded-xl p-4 border border-rose-100 dark:border-rose-800/40">
                     <span class="text-xl flex-shrink-0 mt-0.5">&#128308;</span>
-                    <p class="text-sm text-slate-700 dark:text-slate-300"><strong>Просели цели</strong> — проверь форму, кнопку, страницу «спасибо» и настройки цели</p>
+                    <p class="text-sm text-slate-700 dark:text-slate-300"><strong>Скачок CPA</strong> — проверьте площадки, креативы и ключевые слова</p>
                 </div>
                 <div class="flex items-start gap-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl p-4 border border-amber-100 dark:border-amber-800/40">
                     <span class="text-xl flex-shrink-0 mt-0.5">&#128992;</span>
-                    <p class="text-sm text-slate-700 dark:text-slate-300"><strong>Просел трафик</strong> — проверь источники и кампании, не сменился ли канал</p>
+                    <p class="text-sm text-slate-700 dark:text-slate-300"><strong>Рост расхода</strong> — проверьте лимиты, ставки и новые кампании</p>
                 </div>
                 <div class="flex items-start gap-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl p-4 border border-amber-100 dark:border-amber-800/40">
                     <span class="text-xl flex-shrink-0 mt-0.5">&#128992;</span>
-                    <p class="text-sm text-slate-700 dark:text-slate-300"><strong>Выросли отказы</strong> — проверь скорость сайта и изменения на лендинге</p>
+                    <p class="text-sm text-slate-700 dark:text-slate-300"><strong>Падение кликов</strong> — проверьте ставки, статус показов, позиции</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== 5a. DASHBOARD ========== -->
+    <section id="dashboard" class="py-24 bg-slate-50 dark:bg-[#0B1120] overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="order-2 lg:order-1">
+                    <div class="relative rounded-3xl shadow-2xl border-4 border-slate-900/5 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden transform rotate-1 hover:rotate-0 transition duration-500">
+                        <div class="aspect-[4/3] bg-slate-100 dark:bg-slate-900 flex items-center justify-center relative group">
+                            <div class="text-center">
+                                <svg class="w-16 h-16 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                                <span class="text-slate-400 text-sm">Интерактивный дашборд</span>
+                            </div>
+                            <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+                                <span class="text-white font-medium border border-white px-4 py-2 rounded-lg">Открывается в 1 клик</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="order-1 lg:order-2">
+                    <div class="inline-flex items-center gap-2 text-brand-600 font-bold mb-4">
+                        <span class="px-2 py-1 bg-brand-100 dark:bg-brand-900/40 rounded-md text-xs">NEW</span>
+                        Telegram WebApp
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-6">
+                        Полноценная аналитика<br>без входа в кабинет
+                    </h2>
+                    <p class="text-lg text-slate-600 dark:text-slate-300 mb-8">
+                        Нажмите кнопку в боте — и откроется интерактивный дашборд. Работает прямо внутри Telegram, ничего устанавливать не нужно.
+                    </p>
+                    <ul class="space-y-4 mb-8">
+                        <li class="flex items-center gap-3 text-slate-700 dark:text-slate-300">
+                            <svg class="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            Вкладки: Поиск, РСЯ, Карты, Все кампании
+                        </li>
+                        <li class="flex items-center gap-3 text-slate-700 dark:text-slate-300">
+                            <svg class="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            Графики динамики по дням и месяцам
+                        </li>
+                        <li class="flex items-center gap-3 text-slate-700 dark:text-slate-300">
+                            <svg class="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            Детализация расходов по группам
+                        </li>
+                        <li class="flex items-center gap-3 text-slate-700 dark:text-slate-300">
+                            <svg class="w-5 h-5 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            Сравнение периодов: день / неделя / месяц
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- ========== 6. HOW IT WORKS ========== -->
-    <section id="how-it-works" class="py-20 bg-slate-50 dark:bg-[#0B1120]">
+    <section id="how-it-works" class="py-20 bg-white dark:bg-slate-900">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-3xl font-bold text-center text-slate-900 dark:text-white mb-12">Путь пользователя: лендинг → Telegram → отчёт (3–5 минут)</h2>
 
@@ -742,8 +779,8 @@
                             <div class="w-8 h-8 bg-white dark:bg-slate-800 border-2 border-brand-500 rounded-full flex items-center justify-center font-bold text-brand-600 z-10">1</div>
                         </div>
                         <div class="pl-20">
-                            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Авторизация (самый важный шаг)</h3>
-                            <p class="text-slate-600 dark:text-slate-400">Нажмите «Получить токен», войдите в Яндекс, скопируйте `access_token` из адресной строки и отправьте в бот. Доступ только на чтение, настройки счётчика не изменяются.</p>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Авторизация (критичный шаг)</h3>
+                            <p class="text-slate-600 dark:text-slate-400">Нажмите «Получить токен», войдите в Яндекс и скопируйте `access_token` из адресной строки. Бот получает доступ только на чтение статистики.</p>
                         </div>
                     </div>
                     <div class="relative flex items-start group">
@@ -751,8 +788,8 @@
                             <div class="w-8 h-8 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 group-hover:border-brand-500 rounded-full flex items-center justify-center font-bold text-slate-500 z-10 transition-colors">2</div>
                         </div>
                         <div class="pl-20">
-                            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Счётчик</h3>
-                            <p class="text-slate-600 dark:text-slate-400">Выбираете нужный счётчик Яндекс Метрики из списка.</p>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Логин рекламного кабинета</h3>
+                            <p class="text-slate-600 dark:text-slate-400">Укажите логин, под которым запущены кампании в Яндекс Директе. Бот подтянет список рекламных кампаний.</p>
                         </div>
                     </div>
                     <div class="relative flex items-start group">
@@ -760,8 +797,8 @@
                             <div class="w-8 h-8 bg-white dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 group-hover:border-brand-500 rounded-full flex items-center justify-center font-bold text-slate-500 z-10 transition-colors">3</div>
                         </div>
                         <div class="pl-20">
-                            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Цели и метрики</h3>
-                            <p class="text-slate-600 dark:text-slate-400">Выбираете цели и метрики для отслеживания.</p>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Кампании и метрики</h3>
+                            <p class="text-slate-600 dark:text-slate-400">Выберите кампании для отслеживания и метрики: расход, клики, CTR, CPA, конверсии.</p>
                         </div>
                     </div>
                     <div class="relative flex items-start group">
@@ -770,7 +807,7 @@
                         </div>
                         <div class="pl-20">
                             <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Расписание</h3>
-                            <p class="text-slate-600 dark:text-slate-400">Настраиваете удобное время для отчётов.</p>
+                            <p class="text-slate-600 dark:text-slate-400">Настройте удобное время для отчётов: утренний, вечерний или оба.</p>
                         </div>
                     </div>
                     <div class="relative flex items-start group">
@@ -779,7 +816,7 @@
                         </div>
                         <div class="pl-20">
                             <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Пороги алертов</h3>
-                            <p class="text-slate-600 dark:text-slate-400">Настраиваете чувствительность — чтобы не спамило, но и не пропустить.</p>
+                            <p class="text-slate-600 dark:text-slate-400">Настройте чувствительность: скачок CPA >50%, падение кликов >30% — чтобы не спамило, но и не пропустить.</p>
                         </div>
                     </div>
                     <div class="relative flex items-start">
@@ -788,27 +825,26 @@
                         </div>
                         <div class="pl-20">
                             <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Готово</h3>
-                            <p class="text-slate-600 dark:text-slate-400">Подтверждаете — и получаете первый отчёт прямо сейчас.</p>
+                            <p class="text-slate-600 dark:text-slate-400">Подтверждаете — и получаете первый отчёт прямо сейчас. Расход, CPA, топ кампаний + вывод.</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="mt-12 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6">
-                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Видео и пошаговая инструкция</h3>
-                <p class="text-sm text-slate-600 dark:text-slate-300 mb-4">Если токен вводите впервые, откройте демо и повторите шаги 1:1. Это снижает шанс ошибки на этапе авторизации.</p>
+            <div class="mt-12 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 p-6">
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-3">Подробный гайд по токену (чтобы пройти с первого раза)</h3>
                 <div class="grid md:grid-cols-3 gap-4 text-sm">
-                    <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4">
-                        <p class="font-semibold text-slate-900 dark:text-white mb-1">Шаг 1</p>
-                        <p class="text-slate-600 dark:text-slate-300">Открыть кнопку «Получить токен» и разрешить доступ приложению.</p>
+                    <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4">
+                        <p class="font-semibold text-slate-900 dark:text-white mb-1">1. Открыть OAuth</p>
+                        <p class="text-slate-600 dark:text-slate-300">Кнопка в боте переведёт на страницу авторизации Яндекса.</p>
                     </div>
-                    <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4">
-                        <p class="font-semibold text-slate-900 dark:text-white mb-1">Шаг 2</p>
-                        <p class="text-slate-600 dark:text-slate-300">Скопировать значение после `access_token=` до символа `&`.</p>
+                    <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4">
+                        <p class="font-semibold text-slate-900 dark:text-white mb-1">2. Скопировать token</p>
+                        <p class="text-slate-600 dark:text-slate-300">Берите только часть после `access_token=` и до `&`.</p>
                     </div>
-                    <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4">
-                        <p class="font-semibold text-slate-900 dark:text-white mb-1">Шаг 3</p>
-                        <p class="text-slate-600 dark:text-slate-300">Вставить токен в бот, выбрать счётчик, метрики и расписание.</p>
+                    <div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4">
+                        <p class="font-semibold text-slate-900 dark:text-white mb-1">3. Отправить в бот</p>
+                        <p class="text-slate-600 dark:text-slate-300">Дальше выбрать кампании, метрики, расписание и алерты.</p>
                     </div>
                 </div>
                 <div class="mt-5 flex flex-wrap gap-3">
@@ -833,11 +869,11 @@
                     <ul class="space-y-5">
                         <li class="flex items-center gap-3">
                             <svg class="w-6 h-6 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                            <span class="text-sm md:text-base">Только чтение данных — бот не меняет настройки счётчика</span>
+                            <span class="text-sm md:text-base">Только чтение статистики — бот не меняет ставки и кампании</span>
                         </li>
                         <li class="flex items-center gap-3">
                             <svg class="w-6 h-6 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                            <span class="text-sm md:text-base">Доступ можно отозвать в любой момент</span>
+                            <span class="text-sm md:text-base">Доступ можно отозвать в Яндексе в любой момент</span>
                         </li>
                         <li class="flex items-center gap-3">
                             <svg class="w-6 h-6 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
@@ -871,10 +907,10 @@
             <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 md:p-8">
                 <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-5">Безопасно и прозрачно</h2>
                 <ul class="space-y-3 text-slate-700 dark:text-slate-300">
-                    <li>✅ Только чтение данных</li>
-                    <li>✅ Не меняем настройки счётчика</li>
-                    <li>✅ Доступ можно отозвать в любой момент</li>
-                    <li>✅ Оплата помесячно, без обязательств</li>
+                    <li>&#10003; Только чтение статистики</li>
+                    <li>&#10003; Не меняем ставки и кампании</li>
+                    <li>&#10003; Доступ можно отозвать в любой момент</li>
+                    <li>&#10003; Оплата помесячно, без обязательств</li>
                 </ul>
             </div>
         </div>
@@ -883,11 +919,10 @@
     <!-- ========== 8. PRICING ========== -->
     <section id="pricing" class="py-20 bg-white dark:bg-slate-900">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-center text-slate-900 dark:text-white mb-4">Тариф «Аналитика сайта»</h2>
-            <p class="text-center text-sm text-amber-600 dark:text-amber-400 font-semibold mb-12">990 ₽/мес — цена запуска (для первых пользователей), далее — стандартный тариф 1 990 ₽</p>
+            <h2 class="text-3xl font-bold text-center text-slate-900 dark:text-white mb-4">Тариф «Контроль рекламы»</h2>
+            <p class="text-center text-sm text-amber-600 dark:text-amber-400 font-semibold mb-12">1 490 ₽/мес — цена запуска (для первых пользователей), далее — стандартный тариф 2 490 ₽</p>
 
             <div class="max-w-md mx-auto bg-white dark:bg-slate-800 rounded-3xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-700 relative">
-                <!-- FOMO badge -->
                 <div class="absolute top-4 right-4 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10 shadow-lg">
                     ЦЕНА ЗАПУСКА
                 </div>
@@ -897,24 +932,28 @@
                 <div class="p-8">
                     <div class="text-center mb-8">
                         <div class="mb-2">
-                            <span class="text-5xl font-extrabold text-slate-900 dark:text-white">990 &#8381;<span class="text-2xl font-semibold text-slate-500">/мес</span></span>
+                            <span class="text-5xl font-extrabold text-slate-900 dark:text-white">1 490 &#8381;<span class="text-2xl font-semibold text-slate-500">/мес</span></span>
                         </div>
-                        <p class="text-sm text-amber-600 dark:text-amber-400 font-medium mb-1">Стартовая цена беты — 990 &#8381;/мес, далее — стандартный тариф 1 990 &#8381;/мес.</p>
+                        <p class="text-sm text-amber-600 dark:text-amber-400 font-medium mb-1">Стартовая цена беты — 1 490 &#8381;/мес, далее — стандартный тариф 2 490 &#8381;/мес.</p>
                         <p class="text-slate-500 dark:text-slate-400">Подписка помесячно. Отмена в любой момент.</p>
                     </div>
 
                     <ul class="space-y-4 mb-8">
                         <li class="flex items-start">
                             <svg class="w-5 h-5 text-brand-600 mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-slate-700 dark:text-slate-300">Ежедневные отчёты по данным Яндекс Метрики</span>
+                            <span class="text-slate-700 dark:text-slate-300">Ежедневные отчёты (расход, CPA, CTR, конверсии)</span>
                         </li>
                         <li class="flex items-start">
                             <svg class="w-5 h-5 text-brand-600 mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-slate-700 dark:text-slate-300">Алерты при отклонениях (цели, отказы, трафик)</span>
+                            <span class="text-slate-700 dark:text-slate-300">Алерты при скачке CPA, сливе бюджета, падении кликов</span>
                         </li>
                         <li class="flex items-start">
                             <svg class="w-5 h-5 text-brand-600 mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span class="text-slate-700 dark:text-slate-300">Утренние и вечерние отправки</span>
+                            <span class="text-slate-700 dark:text-slate-300">Топ кампаний по расходу + AI-выводы</span>
+                        </li>
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-brand-600 mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            <span class="text-slate-700 dark:text-slate-300">WebApp-дашборд с графиками</span>
                         </li>
                         <li class="flex items-start">
                             <svg class="w-5 h-5 text-brand-600 mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
@@ -931,7 +970,7 @@
                     </ul>
 
                     <a href="#" class="js-cta-link block w-full text-center px-6 py-4 rounded-xl text-white bg-brand-600 hover:bg-brand-700 shadow-lg shadow-brand-500/30 transition-all hover:scale-[1.02] font-bold text-lg js-cta-text" target="_blank" rel="noopener noreferrer">
-                        Получить первый отчёт
+                        Попробовать бесплатно
                     </a>
                     <a href="#" class="js-demo-link block w-full text-center mt-3 px-6 py-3 rounded-xl font-semibold text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400 transition js-demo-text" target="_blank" rel="noopener noreferrer">
                         Посмотреть демо
@@ -950,31 +989,31 @@
             <div class="space-y-4" id="faq-container">
                 <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
                     <button class="faq-toggle w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none cursor-pointer" aria-expanded="false">
+                        <span class="font-semibold text-slate-900 dark:text-white pr-4">Может ли бот сломать мою рекламу?</span>
+                        <svg class="w-5 h-5 text-slate-400 transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="faq-content px-6 pb-5 hidden text-slate-600 dark:text-slate-400">
+                        Нет. Мы запрашиваем токен с правами Read-Only (только чтение статистики). У бота технически нет прав менять ставки или останавливать кампании.
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none cursor-pointer" aria-expanded="false">
+                        <span class="font-semibold text-slate-900 dark:text-white pr-4">Какие метрики доступны в отчётах?</span>
+                        <svg class="w-5 h-5 text-slate-400 transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="faq-content px-6 pb-5 hidden text-slate-600 dark:text-slate-400">
+                        Показы, клики, CTR, расход, CPC, конверсии и CPA. Вы сами отмечаете, что включать в ежедневный отчёт и в алерты.
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                    <button class="faq-toggle w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none cursor-pointer" aria-expanded="false">
                         <span class="font-semibold text-slate-900 dark:text-white pr-4">Не будет ли десятков уведомлений?</span>
                         <svg class="w-5 h-5 text-slate-400 transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="faq-content px-6 pb-5 hidden text-slate-600 dark:text-slate-400">
-                        Пороги алертов настраиваются. Уведомления приходят только когда есть реальное отклонение от ваших норм. Никакого спама.
-                    </div>
-                </div>
-
-                <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
-                    <button class="faq-toggle w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none cursor-pointer" aria-expanded="false">
-                        <span class="font-semibold text-slate-900 dark:text-white pr-4">Сложно ли подключить?</span>
-                        <svg class="w-5 h-5 text-slate-400 transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div class="faq-content px-6 pb-5 hidden text-slate-600 dark:text-slate-400">
-                        Получите код доступа в Яндексе за 30 секунд &#8594; вставьте в бота &#8594; выберите счётчик и метрики &#8594; готово. Бот имеет только доступ на чтение.
-                    </div>
-                </div>
-
-                <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
-                    <button class="faq-toggle w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none cursor-pointer" aria-expanded="false">
-                        <span class="font-semibold text-slate-900 dark:text-white pr-4">Какие метрики приходят?</span>
-                        <svg class="w-5 h-5 text-slate-400 transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div class="faq-content px-6 pb-5 hidden text-slate-600 dark:text-slate-400">
-                        Визиты, цели, отказы, источники трафика + подсказка «что проверить». Выбираете нужные при настройке.
+                        Пороги алертов настраиваются. По умолчанию: скачок CPA >50%, падение кликов >30%, рост расхода >50%. Алерты только при реальных отклонениях, никакого спама.
                     </div>
                 </div>
 
@@ -984,7 +1023,7 @@
                         <svg class="w-5 h-5 text-slate-400 transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="faq-content px-6 pb-5 hidden text-slate-600 dark:text-slate-400">
-                        Да. Бот работает только на чтение, доступ можно отозвать в любой момент. Код доступа надёжно зашифрован, все сессии проверяются автоматически, данные хранятся в защищённом облаке.
+                        Да. Бот работает только на чтение, доступ можно отозвать в Яндексе в любой момент. Код доступа надёжно зашифрован, все сессии проверяются автоматически, данные хранятся в защищённом облаке.
                     </div>
                 </div>
 
@@ -1000,11 +1039,11 @@
 
                 <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
                     <button class="faq-toggle w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none cursor-pointer" aria-expanded="false">
-                        <span class="font-semibold text-slate-900 dark:text-white pr-4">Чем отличается от @YaMetricaBot?</span>
+                        <span class="font-semibold text-slate-900 dark:text-white pr-4">Чем отличается от официального бота Директа?</span>
                         <svg class="w-5 h-5 text-slate-400 transform transition-transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="faq-content px-6 pb-5 hidden text-slate-600 dark:text-slate-400">
-                        Сводка фокусируется на сценарии владельца: короткий отчёт, алерты с порогами и интерпретация «что проверить дальше». Официальный бот закрывает базовые задачи, но не заменяет прикладной слой контроля под бизнес-решения.
+                        Сводка ориентирована на операционный контроль владельца: настраиваемые алерты, фокус на CPA/расходе и прикладные подсказки, что проверять первым. Официальный бот закрывает базовый доступ к данным.
                     </div>
                 </div>
             </div>
@@ -1016,16 +1055,16 @@
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-4xl font-extrabold text-slate-900 dark:text-white mb-6">Спокойствие вместо неопределённости</h2>
             <p class="text-xl text-slate-600 dark:text-slate-300 mb-4 max-w-2xl mx-auto">
-                Ранние сигналы и понятные триггеры. Проверки и таблицы больше не нужны.
+                Контроль рекламного бюджета в Telegram. Ранние сигналы и понятные триггеры — по данным из Яндекс Директа.
             </p>
             <div class="mb-10">
-                <span class="text-2xl font-extrabold text-slate-900 dark:text-white">990 &#8381;/мес</span>
-                <span class="text-sm text-slate-500 ml-1">(бета для первых 100) &#183; отмена в любой момент</span>
+                <span class="text-2xl font-extrabold text-slate-900 dark:text-white">1 490 &#8381;/мес</span>
+                <span class="text-sm text-slate-500 ml-1">(бета для первых 50) &#183; отмена в любой момент</span>
             </div>
 
             <div class="flex flex-col items-center">
                 <a href="#" class="js-cta-link inline-flex justify-center items-center px-10 py-5 text-lg font-bold rounded-2xl text-white bg-brand-600 hover:bg-brand-700 shadow-xl shadow-brand-500/30 transition-all hover:scale-105 js-cta-text" target="_blank" rel="noopener noreferrer">
-                    Получить первый отчёт
+                    Попробовать бесплатно
                 </a>
                 <p class="mt-4 text-sm text-slate-500">3–5 минут · без таблиц · отмена в любой момент</p>
                 <a href="#" class="js-demo-link mt-4 inline-flex justify-center items-center px-8 py-3 text-base font-semibold rounded-xl text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-600 hover:border-brand-500 hover:text-brand-600 dark:hover:text-brand-400 transition js-demo-text">Посмотреть демо</a>
@@ -1037,10 +1076,10 @@
     <footer class="bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="text-slate-500 text-sm">
-                &copy; <span id="footer-year"></span> <span class="js-app-name">Сводка.Трафик</span>.
+                &copy; <span id="footer-year"></span> <span class="js-app-name">Сводка.Реклама</span>.
             </div>
             <div class="flex flex-wrap justify-center gap-6 text-sm">
-                <a href="/svodka/ads/" class="text-slate-500 hover:text-brand-600 dark:hover:text-brand-400 transition font-medium">Сводка.Реклама</a>
+                <a href="/svodka/traffic/" class="text-slate-500 hover:text-brand-600 dark:hover:text-brand-400 transition font-medium">Сводка.Трафик</a>
                 <a href="/svodka/" class="text-slate-500 hover:text-brand-600 dark:hover:text-brand-400 transition font-medium">Все продукты</a>
                 <a href="/legal/privacy/" class="text-slate-500 hover:text-slate-900 dark:hover:text-white transition">Политика конфиденциальности</a>
                 <a href="/legal/offer/" class="text-slate-500 hover:text-slate-900 dark:hover:text-white transition">Оферта</a>
@@ -1048,7 +1087,7 @@
             </div>
             <p class="text-xs text-slate-400 dark:text-slate-600 mt-6 max-w-3xl mx-auto text-center">
                 Сводка не является продуктом компании Яндекс и не аффилирован с ООО «Яндекс».
-                «Яндекс», «Яндекс.Метрика» — зарегистрированные товарные знаки ООО «Яндекс».
+                «Яндекс», «Яндекс.Директ» — зарегистрированные товарные знаки ООО «Яндекс».
                 Сервис работает с данными аккаунта пользователя по его поручению через официальный API (OAuth, доступ только на чтение).
                 Мы не храним и не передаём данные третьим лицам.
             </p>
@@ -1122,4 +1161,3 @@
     </script>
 </body>
 </html>
-
