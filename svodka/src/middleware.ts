@@ -1,24 +1,26 @@
-import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export default auth((req) => {
-  const { pathname } = req.nextUrl;
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
 
-  // Protected routes
-  const protectedPaths = ["/overview", "/site", "/ads", "/settings", "/onboarding"];
+  // Check for session token (NextAuth sets this cookie)
+  const hasSession = request.cookies.has("authjs.session-token") ||
+    request.cookies.has("__Secure-authjs.session-token");
+
+  const protectedPaths = ["/overview", "/site", "/ads", "/settings", "/onboarding", "/events"];
   const isProtected = protectedPaths.some((p) => pathname.startsWith(p));
 
-  if (isProtected && !req.auth) {
-    return NextResponse.redirect(new URL("/login", req.url));
+  if (isProtected && !hasSession) {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // Redirect authenticated users from login to overview
-  if (pathname === "/login" && req.auth) {
-    return NextResponse.redirect(new URL("/overview", req.url));
+  if (pathname === "/login" && hasSession) {
+    return NextResponse.redirect(new URL("/overview", request.url));
   }
 
   return NextResponse.next();
-});
+}
 
 export const config = {
   matcher: [
@@ -27,6 +29,7 @@ export const config = {
     "/ads/:path*",
     "/settings/:path*",
     "/onboarding/:path*",
+    "/events/:path*",
     "/login",
   ],
 };
