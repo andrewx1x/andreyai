@@ -119,7 +119,7 @@ export default function DemoAdsPage() {
           sparklineData={clicksSparkline}
         />
         <KpiCard
-          label="CPA"
+          label="Стоимость заявки"
           value="508"
           suffix=" ₽"
           change={24.1}
@@ -208,7 +208,7 @@ export default function DemoAdsPage() {
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-[16px]">Тренд CPA</CardTitle>
+              <CardTitle className="text-[16px]">Тренд стоимости заявки</CardTitle>
               <Badge variant="outline" className="bg-rose-50 text-[11px] text-rose-700 border-rose-200">
                 Рост
               </Badge>
@@ -250,7 +250,7 @@ export default function DemoAdsPage() {
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-[16px]">Тренд CTR</CardTitle>
+              <CardTitle className="text-[16px]">Тренд кликабельности</CardTitle>
               <Badge variant="outline" className="bg-amber-50 text-[11px] text-amber-700 border-amber-200">
                 Снижение
               </Badge>
@@ -319,7 +319,7 @@ export default function DemoAdsPage() {
                     Конв.
                   </th>
                   <th className="px-5 py-3 text-right text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    CPA
+                    Ст. заявки
                   </th>
                   <th className="px-5 py-3 text-center text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">
                     Тренд

@@ -29,12 +29,12 @@ const signals: Signal[] = [
   {
     type: "growth",
     metric: "cpa",
-    metricLabel: "CPA",
+    metricLabel: "Стоимость заявки",
     currentValue: 508,
     previousValue: 409,
     changePercent: 24.1,
     severity: "critical",
-    message: "CPA вырос на 24% — стоимость привлечения клиента растёт",
+    message: "Стоимость заявки выросла на 24% — привлечение клиента дорожает",
     cause: "Падение конверсий при стабильном расходе на рекламу",
     channel: "ads",
     impact: 90,
@@ -126,9 +126,9 @@ const problems: Problem[] = [
     id: "prob-1",
     priority: "critical",
     channel: "cross",
-    title: "CPA растёт из-за падения конверсий на сайте",
+    title: "Стоимость заявки растёт из-за падения конверсий на сайте",
     description:
-      "CPA вырос на 24% за последние 3 дня. При этом CTR рекламы стабилен — проблема не в объявлениях, а в посадочной странице.",
+      "Стоимость заявки выросла на 24% за последние 3 дня. При этом кликабельность рекламы стабильна — проблема не в объявлениях, а в посадочной странице.",
     cause: "Конверсии на сайте снизились на 12%, отказы выросли на 5%",
     relatedSignals: [signals[0], signals[1]],
   },
@@ -176,9 +176,9 @@ const actions: Action[] = [
   {
     id: "act-3",
     urgency: "medium",
-    title: "Настроить алерт на CPA",
+    title: "Настроить алерт на стоимость заявки",
     description:
-      "Установите порог CPA 600₽ — получите уведомление до того, как ситуация станет критической",
+      "Установите порог 600₽ за заявку — получите уведомление до того, как ситуация станет критической",
     problemId: "prob-1",
     screen: "settings",
   },
@@ -198,7 +198,7 @@ const insight: InsightData = {
 // ── Mock Events ──
 
 const recentEvents = [
-  { id: 1, severity: "critical" as const, message: "CPA превысил 500₽ — порог алерта", source: "Директ", date: "18 мар" },
+  { id: 1, severity: "critical" as const, message: "Стоимость заявки превысила 500₽ — порог алерта", source: "Директ", date: "18 мар" },
   { id: 2, severity: "critical" as const, message: "Отказы с мобильных выросли до 48%", source: "Метрика", date: "18 мар" },
   { id: 3, severity: "warning" as const, message: "Конверсии снизились на 12.4%", source: "Метрика", date: "17 мар" },
   { id: 4, severity: "warning" as const, message: "CTR кампании \u00ABБренд-запросы\u00BB ниже 10%", source: "Директ", date: "17 мар" },
@@ -291,7 +291,7 @@ export default function DemoOverviewPage() {
           sparklineData={spendSparkline}
         />
         <KpiCard
-          label="CPA"
+          label="Стоимость заявки"
           value="508"
           suffix=" ₽"
           change={24.1}
