@@ -12,27 +12,31 @@ interface ProblemCardProps {
 const priorityConfig = {
   critical: {
     icon: AlertCircle,
-    badge: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
-    border: "border-l-red-500",
+    badge: "bg-rose-50 text-rose-700 border-rose-200",
+    border: "border-l-rose-500",
     label: "Критично",
+    dot: "bg-rose-500",
   },
   high: {
     icon: AlertTriangle,
-    badge: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
+    badge: "bg-amber-50 text-amber-700 border-amber-200",
     border: "border-l-amber-500",
     label: "Важно",
+    dot: "bg-amber-500",
   },
   medium: {
     icon: AlertTriangle,
-    badge: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
+    badge: "bg-blue-50 text-blue-700 border-blue-200",
     border: "border-l-blue-500",
     label: "Внимание",
+    dot: "bg-blue-500",
   },
   low: {
     icon: AlertTriangle,
-    badge: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400",
+    badge: "bg-gray-50 text-gray-600 border-gray-200",
     border: "border-l-gray-400",
     label: "Инфо",
+    dot: "bg-gray-400",
   },
 };
 
@@ -44,28 +48,34 @@ const channelLabels = {
 
 export function ProblemCard({ problem, index }: ProblemCardProps) {
   const config = priorityConfig[problem.priority];
-  const Icon = config.icon;
 
   return (
-    <Card className={cn("border-l-4", config.border)}>
-      <CardContent className="p-4">
-        <div className="flex items-start gap-3">
-          <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-bold">
+    <Card className={cn("border-l-4 transition-shadow hover:shadow-md", config.border)}>
+      <CardContent className="px-5 py-4">
+        <div className="flex items-start gap-4">
+          <div
+            className={cn(
+              "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[13px] font-bold text-white",
+              config.dot
+            )}
+          >
             {index + 1}
           </div>
-          <div className="flex-1 min-w-0 space-y-1.5">
-            <div className="flex items-center gap-2">
-              <h3 className="font-medium leading-tight">{problem.title}</h3>
-              <Badge variant="outline" className={cn("shrink-0 text-xs", config.badge)}>
+          <div className="min-w-0 flex-1 space-y-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="text-[15px] font-semibold leading-snug">{problem.title}</h3>
+              <Badge variant="outline" className={cn("text-[11px]", config.badge)}>
                 {config.label}
               </Badge>
-              <Badge variant="outline" className="shrink-0 text-xs">
+              <Badge variant="outline" className="text-[11px]">
                 {channelLabels[problem.channel]}
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground">{problem.description}</p>
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <ChevronRight className="h-3 w-3" />
+            <p className="text-[14px] leading-relaxed text-muted-foreground">
+              {problem.description}
+            </p>
+            <div className="flex items-center gap-1.5 text-[13px] text-muted-foreground">
+              <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/50" />
               <span className="font-medium">Причина:</span> {problem.cause}
             </div>
           </div>

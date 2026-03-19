@@ -1,5 +1,20 @@
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { KpiCard } from "@/components/dashboard/kpi-card";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  Cell,
+} from "recharts";
 
 // ── Mock data ──
 
@@ -13,15 +28,13 @@ const trafficByDay = [
   { day: "Вс", visits: 1320, label: "18 мар" },
 ];
 
-const maxVisits = Math.max(...trafficByDay.map((d) => d.visits));
-
 const trafficSources = [
-  { name: "Поиск (органика)", visits: 5420, percent: 42.2, color: "bg-blue-500" },
-  { name: "Реклама (Директ)", visits: 3850, percent: 30.0, color: "bg-amber-500" },
-  { name: "Прямые заходы", visits: 1920, percent: 14.9, color: "bg-green-500" },
-  { name: "Соцсети", visits: 980, percent: 7.6, color: "bg-purple-500" },
-  { name: "Рассылки", visits: 450, percent: 3.5, color: "bg-pink-500" },
-  { name: "Другие", visits: 227, percent: 1.8, color: "bg-gray-400" },
+  { name: "Поиск (органика)", visits: 5420, percent: 42.2, color: "#6366f1" },
+  { name: "Реклама (Директ)", visits: 3850, percent: 30.0, color: "#f59e0b" },
+  { name: "Прямые заходы", visits: 1920, percent: 14.9, color: "#10b981" },
+  { name: "Соцсети", visits: 980, percent: 7.6, color: "#8b5cf6" },
+  { name: "Рассылки", visits: 450, percent: 3.5, color: "#ec4899" },
+  { name: "Другие", visits: 227, percent: 1.8, color: "#94a3b8" },
 ];
 
 const topPages = [
@@ -44,67 +57,106 @@ const bounceByDay = [
   { day: "Вс", rate: 34.2 },
 ];
 
-const maxBounce = 50;
+const visitsSparkline = [1640, 1890, 2010, 1750, 1920, 1580, 1320];
+const visitorsSparkline = [1180, 1360, 1450, 1260, 1380, 1140, 950];
+const depthSparkline = [2.3, 2.4, 2.5, 2.4, 2.4, 2.3, 2.4];
+const timeSparkline = [2.4, 2.3, 2.1, 2.0, 1.9, 1.8, 1.8];
+
+function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number }>; label?: string }) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="rounded-lg border bg-white px-3 py-2 text-[13px] shadow-lg">
+      <p className="font-medium">{label}</p>
+      <p className="tabular-nums text-muted-foreground">{payload[0].value.toLocaleString("ru-RU")}</p>
+    </div>
+  );
+}
+
+function BounceTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number }>; label?: string }) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="rounded-lg border bg-white px-3 py-2 text-[13px] shadow-lg">
+      <p className="font-medium">{label}</p>
+      <p className="tabular-nums text-muted-foreground">{payload[0].value}%</p>
+    </div>
+  );
+}
 
 export default function DemoSitePage() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Сайт</h1>
-        <p className="text-sm text-muted-foreground">Данные Яндекс Метрики</p>
+        <h1 className="text-[26px] font-bold tracking-tight">Сайт</h1>
+        <Badge variant="outline" className="text-[13px] font-medium">
+          Яндекс Метрика
+        </Badge>
       </div>
 
       {/* ── KPI row ── */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-sm text-muted-foreground">Визиты за неделю</div>
-            <div className="mt-1 text-2xl font-bold">12 847</div>
-            <div className="mt-0.5 text-xs text-green-600">+3.2% к прошлой</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-sm text-muted-foreground">Посетители</div>
-            <div className="mt-1 text-2xl font-bold">9 214</div>
-            <div className="mt-0.5 text-xs text-green-600">+1.8% к прошлой</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-sm text-muted-foreground">Глубина просмотра</div>
-            <div className="mt-1 text-2xl font-bold">2.4 стр.</div>
-            <div className="mt-0.5 text-xs text-muted-foreground">без изменений</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-sm text-muted-foreground">Ср. время на сайте</div>
-            <div className="mt-1 text-2xl font-bold">1м 48с</div>
-            <div className="mt-0.5 text-xs text-red-600">-25% к прошлой</div>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-2 gap-5 lg:grid-cols-4">
+        <KpiCard
+          label="Визиты за неделю"
+          value="12 847"
+          change={3.2}
+          sparklineData={visitsSparkline}
+        />
+        <KpiCard
+          label="Посетители"
+          value="9 214"
+          change={1.8}
+          sparklineData={visitorsSparkline}
+        />
+        <KpiCard
+          label="Глубина просмотра"
+          value="2.4"
+          suffix=" стр."
+          change={0}
+          sparklineData={depthSparkline}
+          sparklineColor="#6366f1"
+        />
+        <KpiCard
+          label="Ср. время на сайте"
+          value="1м 48с"
+          change={-25.0}
+          invertColors
+          sparklineData={timeSparkline}
+        />
       </div>
 
       {/* ── Traffic chart ── */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Визиты за неделю</CardTitle>
+          <CardTitle className="text-[16px]">Визиты за неделю</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex items-end gap-2" style={{ height: 180 }}>
-            {trafficByDay.map((d) => (
-              <div key={d.day} className="flex flex-1 flex-col items-center gap-1">
-                <span className="text-xs font-medium text-muted-foreground">
-                  {d.visits.toLocaleString("ru-RU")}
-                </span>
-                <div
-                  className="w-full rounded-t bg-primary/80"
-                  style={{ height: `${(d.visits / maxVisits) * 140}px` }}
+          <div style={{ height: 260 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={trafficByDay} barCategoryGap="20%">
+                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                <XAxis
+                  dataKey="day"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 13, fill: "#94a3b8" }}
                 />
-                <span className="text-xs text-muted-foreground">{d.day}</span>
-              </div>
-            ))}
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12, fill: "#94a3b8" }}
+                  tickFormatter={(v: number) => (v / 1000).toFixed(1) + "к"}
+                />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: "#f8fafc" }} />
+                <Bar dataKey="visits" radius={[6, 6, 0, 0]}>
+                  {trafficByDay.map((_, index) => (
+                    <Cell
+                      key={index}
+                      fill={index === trafficByDay.length - 1 ? "#818cf8" : "#6366f1"}
+                      fillOpacity={index === trafficByDay.length - 1 ? 0.6 : 0.85}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </CardContent>
       </Card>
@@ -113,21 +165,28 @@ export default function DemoSitePage() {
         {/* ── Traffic sources ── */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Источники трафика</CardTitle>
+            <CardTitle className="text-[16px]">Источники трафика</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-4">
             {trafficSources.map((src) => (
-              <div key={src.name} className="space-y-1">
-                <div className="flex items-center justify-between text-sm">
-                  <span>{src.name}</span>
-                  <span className="font-medium">
-                    {src.visits.toLocaleString("ru-RU")} ({src.percent}%)
+              <div key={src.name} className="space-y-1.5">
+                <div className="flex items-center justify-between text-[14px]">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="inline-block h-2.5 w-2.5 rounded-full"
+                      style={{ backgroundColor: src.color }}
+                    />
+                    <span>{src.name}</span>
+                  </div>
+                  <span className="tabular-nums font-semibold">
+                    {src.visits.toLocaleString("ru-RU")}
+                    <span className="ml-1 font-normal text-muted-foreground">({src.percent}%)</span>
                   </span>
                 </div>
                 <div className="h-2 rounded-full bg-muted">
                   <div
-                    className={`h-2 rounded-full ${src.color}`}
-                    style={{ width: `${src.percent}%` }}
+                    className="h-2 rounded-full transition-all"
+                    style={{ width: `${src.percent}%`, backgroundColor: src.color }}
                   />
                 </div>
               </div>
@@ -139,29 +198,53 @@ export default function DemoSitePage() {
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base">Отказы за неделю</CardTitle>
-              <Badge variant="outline" className="bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">
+              <CardTitle className="text-[16px]">Отказы за неделю</CardTitle>
+              <Badge variant="outline" className="bg-rose-50 text-[11px] text-rose-700 border-rose-200">
                 Тренд: рост
               </Badge>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="flex items-end gap-2" style={{ height: 180 }}>
-              {bounceByDay.map((d) => (
-                <div key={d.day} className="flex flex-1 flex-col items-center gap-1">
-                  <span className="text-xs font-medium text-muted-foreground">
-                    {d.rate}%
-                  </span>
-                  <div
-                    className="w-full rounded-t bg-red-400/70"
-                    style={{ height: `${(d.rate / maxBounce) * 140}px` }}
+            <div style={{ height: 220 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={bounceByDay}>
+                  <defs>
+                    <linearGradient id="bounceGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#f43f5e" stopOpacity={0.15} />
+                      <stop offset="100%" stopColor="#f43f5e" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                  <XAxis
+                    dataKey="day"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 13, fill: "#94a3b8" }}
                   />
-                  <span className="text-xs text-muted-foreground">{d.day}</span>
-                </div>
-              ))}
+                  <YAxis
+                    domain={[25, 45]}
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12, fill: "#94a3b8" }}
+                    tickFormatter={(v: number) => v + "%"}
+                  />
+                  <Tooltip content={<BounceTooltip />} />
+                  <Area
+                    type="monotone"
+                    dataKey="rate"
+                    stroke="#f43f5e"
+                    strokeWidth={2}
+                    fill="url(#bounceGrad)"
+                    dot={{ r: 3, fill: "#f43f5e", strokeWidth: 0 }}
+                    activeDot={{ r: 5, fill: "#f43f5e", strokeWidth: 2, stroke: "#fff" }}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
-            <p className="mt-3 text-xs text-muted-foreground">
-              Отказы на мобильных устройствах: <span className="font-medium text-red-600">48%</span> (десктоп: 22%)
+            <p className="mt-3 text-[13px] text-muted-foreground">
+              Отказы на мобильных устройствах:{" "}
+              <span className="font-semibold text-rose-600">48%</span>{" "}
+              (десктоп: 22%)
             </p>
           </CardContent>
         </Card>
@@ -170,37 +253,43 @@ export default function DemoSitePage() {
       {/* ── Top pages ── */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Популярные страницы</CardTitle>
+          <CardTitle className="text-[16px]">Популярные страницы</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full">
               <thead>
-                <tr className="border-b text-left text-xs text-muted-foreground">
-                  <th className="px-4 py-2.5 font-medium">Страница</th>
-                  <th className="px-4 py-2.5 font-medium text-right">Визиты</th>
-                  <th className="px-4 py-2.5 font-medium text-right">Отказы</th>
+                <tr className="border-b text-left">
+                  <th className="px-5 py-3 text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    Страница
+                  </th>
+                  <th className="px-5 py-3 text-right text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    Визиты
+                  </th>
+                  <th className="px-5 py-3 text-right text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    Отказы
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y">
                 {topPages.map((page) => (
-                  <tr key={page.url} className="hover:bg-muted/50">
-                    <td className="px-4 py-2.5">
-                      <div className="font-medium">{page.title}</div>
-                      <div className="text-xs text-muted-foreground">{page.url}</div>
+                  <tr key={page.url} className="transition-colors hover:bg-muted/30">
+                    <td className="px-5 py-3.5">
+                      <div className="text-[14px] font-medium">{page.title}</div>
+                      <div className="text-[12px] text-muted-foreground">{page.url}</div>
                     </td>
-                    <td className="px-4 py-2.5 text-right font-medium">
+                    <td className="px-5 py-3.5 text-right tabular-nums text-[14px] font-semibold">
                       {page.visits.toLocaleString("ru-RU")}
                     </td>
-                    <td className="px-4 py-2.5 text-right">
+                    <td className="px-5 py-3.5 text-right">
                       <span
-                        className={
+                        className={`inline-flex items-center rounded-md px-2 py-0.5 text-[13px] font-semibold tabular-nums ${
                           page.bounce > 40
-                            ? "text-red-600"
+                            ? "bg-rose-50 text-rose-700"
                             : page.bounce > 30
-                            ? "text-amber-600"
-                            : "text-green-600"
-                        }
+                            ? "bg-amber-50 text-amber-700"
+                            : "bg-emerald-50 text-emerald-700"
+                        }`}
                       >
                         {page.bounce}%
                       </span>

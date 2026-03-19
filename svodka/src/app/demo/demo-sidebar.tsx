@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Globe, Megaphone, ScrollText } from "lucide-react";
+import { LayoutDashboard, Globe, Megaphone, ScrollText, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -16,17 +16,23 @@ export function DemoSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-screen w-60 flex-col border-r bg-card">
-      <div className="flex h-14 items-center border-b px-4">
-        <Link href="/demo" className="text-xl font-bold">
-          Сводка
-        </Link>
-        <span className="ml-2 rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:bg-amber-900/40 dark:text-amber-400">
+    <aside className="flex h-screen w-[260px] shrink-0 flex-col border-r border-border/60 bg-white">
+      {/* Logo */}
+      <div className="flex h-16 items-center gap-2.5 border-b border-border/60 px-5">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white">
+          <Zap className="h-4 w-4" />
+        </div>
+        <span className="text-lg font-bold tracking-tight">Сводка</span>
+        <span className="ml-auto rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-amber-700">
           демо
         </span>
       </div>
 
-      <nav className="flex-1 space-y-1 p-3">
+      {/* Navigation */}
+      <nav className="flex-1 space-y-1 px-3 py-4">
+        <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/70">
+          Разделы
+        </p>
         {navItems.map((item) => {
           const isActive = item.exact
             ? pathname === item.href
@@ -37,22 +43,29 @@ export function DemoSidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                "flex items-center gap-3 rounded-xl px-3 py-2.5 text-[14px] font-medium transition-all",
                 isActive
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  ? "bg-indigo-50 text-indigo-700 shadow-sm shadow-indigo-100"
+                  : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
               )}
             >
-              <item.icon className="h-4 w-4" />
+              <item.icon className={cn("h-[18px] w-[18px]", isActive && "text-indigo-600")} />
               {item.label}
             </Link>
           );
         })}
       </nav>
 
-      <div className="border-t p-3">
-        <div className="truncate px-3 py-2 text-sm text-muted-foreground">
-          Демо-пользователь
+      {/* Footer */}
+      <div className="border-t border-border/60 px-4 py-4">
+        <div className="flex items-center gap-3 rounded-xl bg-muted/40 px-3 py-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-[13px] font-bold text-indigo-600">
+            Д
+          </div>
+          <div className="min-w-0">
+            <p className="truncate text-[13px] font-medium">Демо-пользователь</p>
+            <p className="truncate text-[11px] text-muted-foreground">demo@svodka.ru</p>
+          </div>
         </div>
       </div>
     </aside>
