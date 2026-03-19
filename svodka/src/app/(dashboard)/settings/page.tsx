@@ -51,6 +51,23 @@ export default async function SettingsPage() {
         </CardContent>
       </Card>
 
+      {/* Metrics */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Показатели</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">
+              Выберите какие метрики показывать на дашборде
+            </p>
+            <Link href="/settings/metrics" className={buttonVariants({ variant: "outline", size: "sm" })}>
+              Настроить
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Subscription */}
       <Card>
         <CardHeader>
