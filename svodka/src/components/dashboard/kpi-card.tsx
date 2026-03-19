@@ -41,13 +41,10 @@ export function KpiCard({
 
         <div className="mt-2 flex items-end justify-between">
           <div className="min-w-0">
-            <div className="flex items-baseline gap-1.5">
+            <div className="flex items-baseline gap-1.5 whitespace-nowrap">
               <span className="tabular-nums text-[28px] font-bold leading-none tracking-tight">
-                {value}
+                {value}{suffix && <span className="text-[15px] font-normal text-muted-foreground">{suffix}</span>}
               </span>
-              {suffix && (
-                <span className="text-[15px] font-normal text-muted-foreground">{suffix}</span>
-              )}
             </div>
 
             {change !== undefined && change !== 0 && (

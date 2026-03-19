@@ -19,7 +19,7 @@ const eventsByDate: { date: string; dateLabel: string; events: DemoEvent[] }[] =
     date: "2026-03-18",
     dateLabel: "18 марта, среда \u2014 сегодня",
     events: [
-      { id: 1, severity: "critical", message: "CPA превысил порог 500\u20BD", cause: "Конверсии на сайте снизились, расход стабилен", change: "+24.1%", time: "09:15", channel: "ads" },
+      { id: 1, severity: "critical", message: "CPA превысил порог 500₽", cause: "Конверсии на сайте снизились, расход стабилен", change: "+24.1%", time: "09:15", channel: "ads" },
       { id: 2, severity: "critical", message: "Отказы с мобильных выросли до 48%", cause: "Возможная проблема с загрузкой или формой на мобильных", change: "+37.1%", time: "09:15", channel: "site" },
       { id: 3, severity: "warning", message: "Среднее время на сайте снизилось до 1м 48с", cause: "Пользователи уходят быстрее, особенно с мобильных", change: "-25.0%", time: "09:15", channel: "site" },
     ],
@@ -38,7 +38,7 @@ const eventsByDate: { date: string; dateLabel: string; events: DemoEvent[] }[] =
     dateLabel: "16 марта, понедельник",
     events: [
       { id: 7, severity: "info", message: "Трафик на сайт вырос на 3.2%", cause: "Рост органического трафика из поиска", change: "+3.2%", time: "22:00", channel: "site" },
-      { id: 8, severity: "info", message: "Кампания \u00ABРетаргетинг\u00BB показывает лучший CPA", cause: "CPA 387\u20BD \u2014 лучший результат среди активных кампаний", change: "-8.3%", time: "18:00", channel: "ads" },
+      { id: 8, severity: "info", message: "Кампания \u00ABРетаргетинг\u00BB показывает лучший CPA", cause: "CPA 387₽ \u2014 лучший результат среди активных кампаний", change: "-8.3%", time: "18:00", channel: "ads" },
       { id: 9, severity: "warning", message: "Bounce rate на странице /pricing вырос до 31.5%", cause: "Возможно, цены не соответствуют ожиданиям из рекламы", change: "+12.0%", time: "12:30", channel: "site" },
     ],
   },
@@ -46,7 +46,7 @@ const eventsByDate: { date: string; dateLabel: string; events: DemoEvent[] }[] =
     date: "2026-03-15",
     dateLabel: "15 марта, воскресенье",
     events: [
-      { id: 10, severity: "info", message: "Запущена новая кампания \u00ABВесна-2026\u00BB", cause: "Кампания на поиске и в РСЯ, бюджет 15 000\u20BD/нед", change: "новая", time: "10:00", channel: "ads" },
+      { id: 10, severity: "info", message: "Запущена новая кампания \u00ABВесна-2026\u00BB", cause: "Кампания на поиске и в РСЯ, бюджет 15 000₽/нед", change: "новая", time: "10:00", channel: "ads" },
       { id: 11, severity: "info", message: "Органический трафик стабилен \u2014 1 840 визитов", cause: "Позиции в поиске без значимых изменений", change: "+0.5%", time: "22:00", channel: "site" },
     ],
   },
@@ -71,7 +71,7 @@ const eventsByDate: { date: string; dateLabel: string; events: DemoEvent[] }[] =
     date: "2026-03-12",
     dateLabel: "12 марта, четверг",
     events: [
-      { id: 17, severity: "info", message: "Расход на рекламу в пределах нормы \u2014 6 120\u20BD", cause: "Дневной бюджет распределён равномерно", change: "-2.1%", time: "22:00", channel: "ads" },
+      { id: 17, severity: "info", message: "Расход на рекламу в пределах нормы \u2014 6 120₽", cause: "Дневной бюджет распределён равномерно", change: "-2.1%", time: "22:00", channel: "ads" },
       { id: 18, severity: "info", message: "Новых посетителей 68% от общего трафика", cause: "Рекламные кампании привлекают новую аудиторию", change: "+3.0%", time: "22:00", channel: "site" },
     ],
   },

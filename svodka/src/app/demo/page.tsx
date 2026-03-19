@@ -73,7 +73,7 @@ const signals: Signal[] = [
     previousValue: 41600,
     changePercent: 8.7,
     severity: "warning",
-    message: "Расход на рекламу вырос на 8.7% (45 230 \u20BD)",
+    message: "Расход на рекламу вырос на 8.7% (45 230 ₽)",
     cause: "Увеличение ставок по высокочастотным запросам",
     channel: "ads",
     impact: 55,
@@ -178,7 +178,7 @@ const actions: Action[] = [
     urgency: "medium",
     title: "Настроить алерт на CPA",
     description:
-      "Установите порог CPA 600\u20BD — получите уведомление до того, как ситуация станет критической",
+      "Установите порог CPA 600₽ — получите уведомление до того, как ситуация станет критической",
     problemId: "prob-1",
     screen: "settings",
   },
@@ -198,7 +198,7 @@ const insight: InsightData = {
 // ── Mock Events ──
 
 const recentEvents = [
-  { id: 1, severity: "critical" as const, message: "CPA превысил 500\u20BD — порог алерта", source: "Директ", date: "18 мар" },
+  { id: 1, severity: "critical" as const, message: "CPA превысил 500₽ — порог алерта", source: "Директ", date: "18 мар" },
   { id: 2, severity: "critical" as const, message: "Отказы с мобильных выросли до 48%", source: "Метрика", date: "18 мар" },
   { id: 3, severity: "warning" as const, message: "Конверсии снизились на 12.4%", source: "Метрика", date: "17 мар" },
   { id: 4, severity: "warning" as const, message: "CTR кампании \u00ABБренд-запросы\u00BB ниже 10%", source: "Директ", date: "17 мар" },
@@ -285,7 +285,7 @@ export default function DemoOverviewPage() {
         <KpiCard
           label="Расход"
           value="45 230"
-          suffix=" \u20BD"
+          suffix=" ₽"
           change={8.7}
           invertColors
           sparklineData={spendSparkline}
@@ -293,7 +293,7 @@ export default function DemoOverviewPage() {
         <KpiCard
           label="CPA"
           value="508"
-          suffix=" \u20BD"
+          suffix=" ₽"
           change={24.1}
           invertColors
           sparklineData={cpaSparkline}

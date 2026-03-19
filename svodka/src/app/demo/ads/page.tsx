@@ -67,7 +67,7 @@ function SpendTooltip({ active, payload, label }: { active?: boolean; payload?: 
   return (
     <div className="rounded-lg border bg-white px-3 py-2 text-[13px] shadow-lg">
       <p className="font-medium">{label}</p>
-      <p className="tabular-nums text-muted-foreground">{payload[0].value.toLocaleString("ru-RU")} &#8381;</p>
+      <p className="tabular-nums text-muted-foreground">{payload[0].value.toLocaleString("ru-RU")} ₽</p>
     </div>
   );
 }
@@ -77,7 +77,7 @@ function CpaTooltip({ active, payload, label }: { active?: boolean; payload?: Ar
   return (
     <div className="rounded-lg border bg-white px-3 py-2 text-[13px] shadow-lg">
       <p className="font-medium">{label}</p>
-      <p className="tabular-nums text-muted-foreground">{payload[0].value} &#8381;</p>
+      <p className="tabular-nums text-muted-foreground">{payload[0].value} ₽</p>
     </div>
   );
 }
@@ -107,7 +107,7 @@ export default function DemoAdsPage() {
         <KpiCard
           label="Расход за неделю"
           value="45 230"
-          suffix=" &#8381;"
+          suffix=" ₽"
           change={8.7}
           invertColors
           sparklineData={spendSparkline}
@@ -121,7 +121,7 @@ export default function DemoAdsPage() {
         <KpiCard
           label="CPA"
           value="508"
-          suffix=" &#8381;"
+          suffix=" ₽"
           change={24.1}
           invertColors
           sparklineData={cpaSparkline}
@@ -140,7 +140,7 @@ export default function DemoAdsPage() {
           <div className="flex items-center justify-between">
             <CardTitle className="text-[16px]">Расход по дням</CardTitle>
             <span className="tabular-nums text-[14px] font-semibold text-muted-foreground">
-              Итого: {budgetUsed.toLocaleString("ru-RU")} &#8381;
+              Итого: {budgetUsed.toLocaleString("ru-RU")} ₽
             </span>
           </div>
         </CardHeader>
@@ -189,7 +189,7 @@ export default function DemoAdsPage() {
                 {budgetPercent}%
               </div>
               <p className="mt-2 tabular-nums text-[14px] text-muted-foreground">
-                {budgetUsed.toLocaleString("ru-RU")} &#8381; из {budgetTotal.toLocaleString("ru-RU")} &#8381;
+                {budgetUsed.toLocaleString("ru-RU")} ₽ из {budgetTotal.toLocaleString("ru-RU")} ₽
               </p>
             </div>
             <div className="h-3 rounded-full bg-muted">
@@ -345,7 +345,7 @@ export default function DemoAdsPage() {
                       </div>
                     </td>
                     <td className="px-5 py-3.5 text-right tabular-nums text-[14px] font-medium">
-                      {c.spend.toLocaleString("ru-RU")} &#8381;
+                      {c.spend.toLocaleString("ru-RU")} ₽
                     </td>
                     <td className="px-5 py-3.5 text-right tabular-nums text-[14px]">
                       {c.clicks.toLocaleString("ru-RU")}
@@ -364,7 +364,7 @@ export default function DemoAdsPage() {
                             : "bg-emerald-50 text-emerald-700"
                         }`}
                       >
-                        {c.cpa} &#8381;
+                        {c.cpa} ₽
                       </span>
                     </td>
                     <td className="px-5 py-3.5 text-center">
