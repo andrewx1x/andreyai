@@ -257,6 +257,75 @@ export function getDateRange(period: "day" | "week" | "month", offset = 0): { fr
   return { from, to };
 }
 
+/** Daily data point for charts */
+export interface DailyDirectPoint {
+  date: string; // YYYY-MM-DD
+  cost: number;
+  clicks: number;
+  impressions: number;
+  ctr: number;
+  conversions: number;
+  costPerConversion: number;
+}
+
+/**
+ * Fetch daily breakdown of ad stats for a date range (for Recharts).
+ */
+export async function getDailyStats(
+  token: string,
+  login: string,
+  params: ReportParams
+): Promise<ApiResponse<DailyDirectPoint[]>> {
+  const fieldNames = ["Date", "Impressions", "Clicks", "Ctr", "Cost"];
+  if (params.includeConversions) fieldNames.push("Conversions", "CostPerConversion");
+
+  const selectionCriteria: Record<string, unknown> = {
+    DateFrom: params.dateFrom,
+    DateTo: params.dateTo,
+  };
+
+  if (params.campaignIds && params.campaignIds.length > 0) {
+    selectionCriteria["Filter"] = [{
+      Field: "CampaignId", Operator: "IN", Values: params.campaignIds.map(String),
+    }];
+  }
+
+  const result = await directRequest<string>("reports", token, login, {
+    params: {
+      SelectionCriteria: selectionCriteria,
+      FieldNames: fieldNames,
+      ReportName: `DailyReport_${Date.now()}`,
+      ReportType: "ACCOUNT_PERFORMANCE_REPORT",
+      DateRangeType: "CUSTOM_DATE",
+      Format: "TSV",
+      IncludeVAT: "YES",
+    },
+  }, true);
+
+  if (!result.ok || !result.data) {
+    return { ok: false, error: result.error, errorCode: result.errorCode };
+  }
+
+  const lines = (result.data as string).trim().split("\n");
+  if (lines.length < 2) return { ok: true, data: [] };
+
+  const points: DailyDirectPoint[] = lines.slice(1).map((line) => {
+    const v = line.split("\t");
+    const hasConv = params.includeConversions;
+    return {
+      date: v[0],
+      impressions: parseInt(v[1], 10) || 0,
+      clicks: parseInt(v[2], 10) || 0,
+      ctr: parseFloat(v[3]) || 0,
+      cost: parseFloat(v[4]) || 0,
+      conversions: hasConv ? parseInt(v[5], 10) || 0 : 0,
+      costPerConversion: hasConv ? parseFloat(v[6]) || 0 : 0,
+    };
+  }).sort((a, b) => a.date.localeCompare(b.date));
+
+  return { ok: true, data: points };
+}
+
 export function getErrorMessage(errorCode?: number): string {
   switch (errorCode) {
     case 52: return "Токен недействителен. Получите новый токен.";

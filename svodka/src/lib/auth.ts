@@ -1,9 +1,11 @@
 import NextAuth from "next-auth";
 import type { NextAuthConfig } from "next-auth";
 import { db } from "@/lib/db";
-import { users, tokens } from "@/lib/db/schema";
+import { users, tokens, subscriptions } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { encryptToken } from "@/lib/engine/crypto";
+import { sendWelcomeEmail } from "@/lib/email";
+import { activateTrial } from "@/lib/trial";
 
 const yandexProvider = {
   id: "yandex",
@@ -75,6 +77,13 @@ export const authConfig: NextAuthConfig = {
           avatarUrl: user.image,
         }).returning({ id: users.id });
         userId = result[0].id;
+
+        // New user — create trial subscription + send welcome email
+        await activateTrial(userId);
+
+        if (user.email) {
+          await sendWelcomeEmail(user.email, user.name || "");
+        }
       }
 
       // Encrypt and save OAuth token

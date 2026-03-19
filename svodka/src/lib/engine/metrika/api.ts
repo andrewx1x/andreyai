@@ -212,6 +212,63 @@ export function getWeekAgo(date: Date): Date {
   return result;
 }
 
+/** Daily data point for charts */
+export interface DailyMetrikaPoint {
+  date: string; // YYYY-MM-DD
+  visits: number;
+  users: number;
+  bounceRate: number;
+  pageDepth: number;
+  avgVisitDuration: number;
+  pageviews: number;
+}
+
+/**
+ * Fetch daily breakdown of stats for a date range (for Recharts).
+ */
+export async function getDailyStats(
+  token: string,
+  counterId: number,
+  date1: string,
+  date2: string,
+  metrics: string[] = ["ym:s:visits", "ym:s:users", "ym:s:bounceRate", "ym:s:pageDepth", "ym:s:avgVisitDurationSeconds", "ym:s:pageviews"]
+): Promise<ApiResponse<DailyMetrikaPoint[]>> {
+  const result = await metrikaRequest<{
+    data?: Array<{
+      dimensions?: Array<{ name?: string }>;
+      metrics?: number[];
+    }>;
+  }>("/stat/v1/data", token, {
+    ids: counterId.toString(),
+    dimensions: "ym:s:date",
+    metrics: metrics.join(","),
+    sort: "ym:s:date",
+    date1,
+    date2,
+    limit: "45",
+  });
+
+  if (!result.ok || !result.data) {
+    return { ok: false, error: result.error, errorCode: result.errorCode };
+  }
+
+  const rows = result.data.data || [];
+  const points: DailyMetrikaPoint[] = rows.map((row) => {
+    const m = row.metrics || [];
+    return {
+      date: row.dimensions?.[0]?.name || "",
+      visits: Math.round(m[0] || 0),
+      users: Math.round(m[1] || 0),
+      bounceRate: m[2] || 0,
+      pageDepth: m[3] || 0,
+      avgVisitDuration: m[4] || 0,
+      pageviews: Math.round(m[5] || 0),
+    };
+  });
+
+  return { ok: true, data: points };
+}
+
 export function getErrorMessage(errorCode?: number): string {
   switch (errorCode) {
     case 401: return "Токен недействителен. Получите новый токен.";

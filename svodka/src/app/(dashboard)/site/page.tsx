@@ -4,7 +4,7 @@ import { getProjectsByType } from "@/lib/db/queries/projects";
 import { getDecryptedToken } from "@/lib/db/queries/tokens";
 import { getSubscription } from "@/lib/db/queries/subscriptions";
 import { getScreenAccess } from "@/lib/subscription";
-import { getStats, getTopTrafficSources, formatDateForApi, getYesterday, getWeekAgo } from "@/lib/engine/metrika/api";
+import { getStats, getTopTrafficSources, getDailyStats, formatDateForApi, getYesterday, getWeekAgo } from "@/lib/engine/metrika/api";
 import { extractSignals, generateInsight } from "@/lib/engine/metrika/signals";
 import { formatNumber, formatPercent, formatDuration, calcChange } from "@/lib/engine/format";
 import type { MetrikaSettings } from "@/lib/engine/types";
@@ -16,6 +16,7 @@ import { PaywallOverlay } from "@/components/shared/paywall-overlay";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Settings2 } from "lucide-react";
+import { SiteCharts } from "@/components/dashboard/site-charts";
 
 export default async function SitePage() {
   const session = await auth();
@@ -66,7 +67,11 @@ export default async function SitePage() {
   const visibleKpis = settings.visible_kpis || DEFAULT_METRIKA_KPIS;
 
   // Fetch current and previous data
-  const [currentResult, previousResult, sourcesResult] = await Promise.all([
+  // Date range for daily chart: last 14 days
+  const twoWeeksAgo = new Date(yesterday);
+  twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 13);
+
+  const [currentResult, previousResult, sourcesResult, dailyResult] = await Promise.all([
     getStats(token, {
       counterId: settings.counter_id,
       date1: formatDateForApi(yesterday),
@@ -82,6 +87,7 @@ export default async function SitePage() {
       goalIds: settings.goals.map((g) => g.id),
     }),
     getTopTrafficSources(token, settings.counter_id, formatDateForApi(yesterday), formatDateForApi(yesterday)),
+    getDailyStats(token, settings.counter_id, formatDateForApi(twoWeeksAgo), formatDateForApi(yesterday)),
   ]);
 
   if (!currentResult.ok || !currentResult.data) {
@@ -105,6 +111,7 @@ export default async function SitePage() {
     : current;
 
   const sources = sourcesResult.data || [];
+  const dailyData = dailyResult.data || [];
   const signals = extractSignals(current, prev, settings.alerts?.thresholds, sources);
   const insight = generateInsight(current, prev, signals);
 
@@ -154,6 +161,9 @@ export default async function SitePage() {
             />
           ))}
         </div>
+
+        {/* Daily Charts */}
+        <SiteCharts dailyData={dailyData} />
 
         {/* Signals */}
         {signals.length > 0 && (

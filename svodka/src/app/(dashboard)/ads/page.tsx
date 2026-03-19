@@ -4,7 +4,7 @@ import { getProjectsByType } from "@/lib/db/queries/projects";
 import { getDecryptedToken } from "@/lib/db/queries/tokens";
 import { getSubscription } from "@/lib/db/queries/subscriptions";
 import { getScreenAccess } from "@/lib/subscription";
-import { getStats, getCampaignStats, formatDateForApi, getDateRange } from "@/lib/engine/direct/api";
+import { getStats, getCampaignStats, getDailyStats, formatDateForApi, getDateRange } from "@/lib/engine/direct/api";
 import { extractSignals, generateInsight } from "@/lib/engine/direct/signals";
 import { formatNumber, formatMoney, formatPercent, calcChange } from "@/lib/engine/format";
 import type { DirectSettings } from "@/lib/engine/types";
@@ -16,6 +16,7 @@ import { PaywallOverlay } from "@/components/shared/paywall-overlay";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Settings2 } from "lucide-react";
+import { AdsCharts } from "@/components/dashboard/ads-charts";
 
 export default async function AdsPage() {
   const session = await auth();
@@ -67,7 +68,13 @@ export default async function AdsPage() {
 
   const campaignIds = settings.campaigns === "all" ? undefined : settings.campaigns;
 
-  const [currentResult, previousResult, campaignResult] = await Promise.all([
+  // Date range for daily chart: last 14 days
+  const dailyTo = new Date();
+  dailyTo.setDate(dailyTo.getDate() - 1);
+  const dailyFrom = new Date(dailyTo);
+  dailyFrom.setDate(dailyFrom.getDate() - 13);
+
+  const [currentResult, previousResult, campaignResult, dailyResult] = await Promise.all([
     getStats(token, settings.login, {
       dateFrom: formatDateForApi(currentRange.from),
       dateTo: formatDateForApi(currentRange.to),
@@ -86,6 +93,12 @@ export default async function AdsPage() {
       campaignIds,
       includeConversions: true,
     }),
+    getDailyStats(token, settings.login, {
+      dateFrom: formatDateForApi(dailyFrom),
+      dateTo: formatDateForApi(dailyTo),
+      campaignIds,
+      includeConversions: true,
+    }),
   ]);
 
   if (!currentResult.ok || !currentResult.data) {
@@ -100,6 +113,7 @@ export default async function AdsPage() {
   const current = currentResult.data;
   const prev = previousResult.data || current;
   const campaigns = campaignResult.data || [];
+  const dailyData = dailyResult.data || [];
 
   const signals = extractSignals(current, prev, settings.alerts?.thresholds, campaigns);
   const insight = generateInsight(current, prev, signals, campaigns);
@@ -154,6 +168,9 @@ export default async function AdsPage() {
             />
           ))}
         </div>
+
+        {/* Daily Charts */}
+        <AdsCharts dailyData={dailyData} />
 
         {/* Signals */}
         {signals.length > 0 && (

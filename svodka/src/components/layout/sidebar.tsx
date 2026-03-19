@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Globe, Megaphone, ScrollText, Settings, Lock, Zap } from "lucide-react";
+import { LayoutDashboard, Globe, Megaphone, ScrollText, Settings, Lock, Zap, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SidebarProps {
@@ -69,6 +69,19 @@ export function Sidebar({ access, userName }: SidebarProps) {
           );
         })}
       </nav>
+
+      {/* Support */}
+      <div className="px-3">
+        <a
+          href="https://t.me/svodka_support"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[13px] text-muted-foreground hover:bg-muted/60 hover:text-foreground transition-colors"
+        >
+          <MessageCircle className="h-4 w-4" />
+          Поддержка
+        </a>
+      </div>
 
       {/* Footer */}
       {userName && (
