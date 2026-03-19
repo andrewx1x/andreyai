@@ -52,7 +52,11 @@ export const authConfig: NextAuthConfig = {
       if (!account || account.provider !== "yandex") return false;
 
       const yandexId = user.id!;
-      const encryptionKey = process.env.ENCRYPTION_KEY!;
+      const encryptionKey = process.env.ENCRYPTION_KEY;
+      if (!encryptionKey) {
+        console.error("[Auth] ENCRYPTION_KEY not configured");
+        return false;
+      }
 
       // Upsert user
       const existing = await db.query.users.findFirst({
@@ -79,10 +83,18 @@ export const authConfig: NextAuthConfig = {
         userId = result[0].id;
 
         // New user — create trial subscription + send welcome email
-        await activateTrial(userId);
+        try {
+          await activateTrial(userId);
+        } catch (trialError) {
+          console.error("[Auth] Failed to activate trial for userId:", userId, trialError);
+        }
 
-        if (user.email) {
-          await sendWelcomeEmail(user.email, user.name || "");
+        try {
+          if (user.email) {
+            await sendWelcomeEmail(user.email, user.name || "");
+          }
+        } catch (emailError) {
+          console.error("[Auth] Failed to send welcome email:", emailError);
         }
       }
 

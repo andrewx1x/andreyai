@@ -16,12 +16,19 @@ export async function getSnapshotByDate(projectId: number, date: string) {
 }
 
 export async function saveSnapshot(projectId: number, date: string, dataJson: string) {
+  // Validate JSON before saving
+  try {
+    JSON.parse(dataJson);
+  } catch {
+    throw new Error(`Invalid JSON for snapshot: projectId=${projectId}, date=${date}`);
+  }
+
   await db.insert(snapshots).values({
     projectId,
     date,
     dataJson,
   }).onConflictDoUpdate({
     target: [snapshots.projectId, snapshots.date],
-    set: { dataJson, createdAt: new Date().toISOString() },
+    set: { dataJson }, // Don't overwrite createdAt on upsert
   });
 }

@@ -11,41 +11,96 @@ import { canSendAlert, markAlertSent } from "@/lib/db/queries/alerts";
 import { saveSignalsAsEvents } from "@/lib/db/queries/events";
 import { sendAlertEmail } from "@/lib/email";
 import { buildAlertEmailHtml } from "@/lib/email/templates/alert";
-import { calcChange } from "@/lib/engine/format";
+import { log } from "@/lib/logger";
 import type { MetrikaSettings, DirectSettings, Signal } from "@/lib/engine/types";
 
 const CRON_SECRET = process.env.CRON_SECRET;
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://svodka.app";
 
 export async function GET(request: Request) {
+  // --- Auth ---
   if (CRON_SECRET) {
     const authHeader = request.headers.get("authorization");
     if (authHeader !== `Bearer ${CRON_SECRET}`) {
+      log.warn("cron.alerts", "Unauthorized attempt");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+  }
+
+  const encryptionKey = process.env.ENCRYPTION_KEY;
+  if (!encryptionKey) {
+    log.error("cron.alerts", "ENCRYPTION_KEY not configured");
+    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
   }
 
   const allProjects = await db.query.projects.findMany({
     where: eq(projects.isActive, true),
   });
 
+  log.info("cron.alerts", "Starting alert check", { totalProjects: allProjects.length });
+
   let alertsSent = 0;
+  let signalsFound = 0;
+  let skipped = 0;
   let errors = 0;
 
   for (const project of allProjects) {
+    // --- Per-project isolation ---
     try {
-      const settings = JSON.parse(project.settingsJson);
-      if (!settings.alerts?.enabled) continue;
+      // 1. Parse settings safely
+      let settings: MetrikaSettings | DirectSettings;
+      try {
+        settings = JSON.parse(project.settingsJson);
+      } catch {
+        log.error("cron.alerts", "Invalid settingsJson", { projectId: project.id });
+        errors++;
+        continue;
+      }
 
+      // 2. Check if alerts enabled for this project
+      if (!(settings as any).alerts?.enabled) {
+        skipped++;
+        continue;
+      }
+
+      // 3. Check cooldown BEFORE API calls to save resources
+      const canSend = await canSendAlert(project.userId, project.id, "daily_alert");
+      if (!canSend) {
+        log.info("cron.alerts", "Cooldown active, skipping API calls", { projectId: project.id });
+        skipped++;
+        continue;
+      }
+
+      // 4. Get and validate token
       const tokenRecord = await db.query.tokens.findFirst({
         where: eq(tokens.userId, project.userId),
       });
-      if (!tokenRecord) continue;
 
-      const encryptionKey = process.env.ENCRYPTION_KEY;
-      if (!encryptionKey) continue;
+      if (!tokenRecord) {
+        log.warn("cron.alerts", "No token found", { projectId: project.id, userId: project.userId });
+        skipped++;
+        continue;
+      }
 
-      const token = await decryptToken(tokenRecord.encryptedToken, encryptionKey);
+      if (tokenRecord.expiresAt && Date.now() > new Date(tokenRecord.expiresAt).getTime()) {
+        log.warn("cron.alerts", "Token expired", { projectId: project.id, expiresAt: tokenRecord.expiresAt });
+        skipped++;
+        continue;
+      }
+
+      let token: string;
+      try {
+        token = await decryptToken(tokenRecord.encryptedToken, encryptionKey);
+      } catch (decryptError) {
+        log.error("cron.alerts", "Token decryption failed", {
+          projectId: project.id,
+          error: decryptError instanceof Error ? decryptError.message : "Unknown",
+        });
+        errors++;
+        continue;
+      }
+
+      // 5. Extract signals based on project type
       let signals: Signal[] = [];
 
       if (project.type === "metrika") {
@@ -59,25 +114,43 @@ export async function GET(request: Request) {
             date1: formatDateForApi(yesterday),
             date2: formatDateForApi(yesterday),
             metrics: ms.metrics,
-            goalIds: ms.goals.map((g) => g.id),
+            goalIds: ms.goals?.map((g) => g.id) || [],
           }),
           getMetrikaStats(token, {
             counterId: ms.counter_id,
             date1: formatDateForApi(weekAgo),
             date2: formatDateForApi(yesterday),
             metrics: ms.metrics,
-            goalIds: ms.goals.map((g) => g.id),
+            goalIds: ms.goals?.map((g) => g.id) || [],
           }),
         ]);
 
-        if (currentResult.ok && currentResult.data && prevResult.data) {
-          const prev = {
-            ...prevResult.data,
-            visits: Math.round(prevResult.data.visits / 7),
-            users: Math.round(prevResult.data.users / 7),
-          };
-          signals = extractMetrikaSignals(currentResult.data, prev, ms.alerts?.thresholds);
+        if (!currentResult.ok || !currentResult.data) {
+          log.error("cron.alerts", "Metrika current data fetch failed", {
+            projectId: project.id,
+            error: currentResult.error,
+            errorCode: currentResult.errorCode,
+          });
+          errors++;
+          continue;
         }
+
+        if (!prevResult.ok || !prevResult.data) {
+          log.warn("cron.alerts", "Metrika previous data fetch failed, using current as baseline", {
+            projectId: project.id,
+          });
+        }
+
+        const prev = prevResult.data
+          ? {
+              ...prevResult.data,
+              visits: Math.round(prevResult.data.visits / 7),
+              users: Math.round(prevResult.data.users / 7),
+              pageviews: Math.round(prevResult.data.pageviews / 7),
+            }
+          : currentResult.data;
+
+        signals = extractMetrikaSignals(currentResult.data, prev, ms.alerts?.thresholds);
       } else if (project.type === "direct") {
         const ds = settings as DirectSettings;
         const currentRange = getDateRange(ds.compare_period || "day", 0);
@@ -99,43 +172,81 @@ export async function GET(request: Request) {
           }),
         ]);
 
-        if (currentResult.ok && currentResult.data && previousResult.data) {
-          signals = extractDirectSignals(currentResult.data, previousResult.data, ds.alerts?.thresholds);
+        if (!currentResult.ok || !currentResult.data) {
+          log.error("cron.alerts", "Direct current data fetch failed", {
+            projectId: project.id,
+            error: currentResult.error,
+            errorCode: currentResult.errorCode,
+          });
+          errors++;
+          continue;
         }
+
+        if (!previousResult.ok || !previousResult.data) {
+          log.warn("cron.alerts", "Direct previous data fetch failed, using current as baseline", {
+            projectId: project.id,
+          });
+        }
+
+        signals = extractDirectSignals(
+          currentResult.data,
+          previousResult.data || currentResult.data,
+          ds.alerts?.thresholds
+        );
       }
 
-      // Save all signals as events (journal)
-      await saveSignalsAsEvents(project.id, signals);
+      // 6. Save all signals as events (audit trail)
+      if (signals.length > 0) {
+        await saveSignalsAsEvents(project.id, signals);
+        signalsFound += signals.length;
+      }
 
-      // Only send email for warning/critical signals
+      // 7. Only email for warning/critical
       const criticalSignals = signals.filter((s) => s.severity === "warning" || s.severity === "critical");
       if (criticalSignals.length === 0) continue;
 
-      // Check cooldown
-      const canSend = await canSendAlert(project.userId, project.id, "daily_alert");
-      if (!canSend) continue;
-
-      // Get user email
+      // 8. Get user email
       const user = await db.query.users.findFirst({
         where: eq(users.id, project.userId),
       });
-      if (!user?.email) continue;
 
+      if (!user?.email) {
+        log.warn("cron.alerts", "User has no email, cannot send alert", {
+          projectId: project.id,
+          userId: project.userId,
+        });
+        continue;
+      }
+
+      // 9. Send email
       const screenPath = project.type === "metrika" ? "/site" : "/ads";
       const html = buildAlertEmailHtml(project.name, criticalSignals, `${APP_URL}${screenPath}`);
-      await sendAlertEmail(user.email, `Сводка: алерт по ${project.name}`, html);
-      await markAlertSent(project.userId, project.id, "daily_alert");
-      alertsSent++;
+
+      try {
+        await sendAlertEmail(user.email, `Сводка: алерт по ${project.name}`, html);
+        await markAlertSent(project.userId, project.id, "daily_alert");
+        alertsSent++;
+        log.info("cron.alerts", "Alert email sent", {
+          projectId: project.id,
+          userId: project.userId,
+          signals: criticalSignals.length,
+        });
+      } catch (emailError) {
+        log.error("cron.alerts", "Failed to send alert email", {
+          projectId: project.id,
+          error: emailError instanceof Error ? emailError.message : "Unknown",
+        });
+        errors++;
+      }
     } catch (error) {
-      console.error(`[Cron/Alerts] Error for project ${project.id}:`, error);
+      const msg = error instanceof Error ? error.message : "Unknown error";
+      log.error("cron.alerts", "Unexpected error for project", { projectId: project.id, error: msg });
       errors++;
     }
   }
 
-  return NextResponse.json({
-    ok: true,
-    alertsSent,
-    errors,
-    total: allProjects.length,
-  });
+  const summary = { alertsSent, signalsFound, skipped, errors, total: allProjects.length };
+  log.info("cron.alerts", "Alert check complete", summary);
+
+  return NextResponse.json({ ok: true, ...summary });
 }
