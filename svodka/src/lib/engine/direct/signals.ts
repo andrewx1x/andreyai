@@ -45,12 +45,12 @@ export function extractSignals(
         signals.push({
           type: "growth",
           metric: "cpa",
-          metricLabel: "CPA",
+          metricLabel: "Стоимость заявки",
           currentValue: current.costPerConversion,
           previousValue: previous.costPerConversion,
           changePercent: cpaChange,
           severity: isCritical ? "critical" : isWarning ? "warning" : "info",
-          message: `CPA вырос на ${Math.round(cpaChange)}% (${Math.round(current.costPerConversion)} ₽)`,
+          message: `Стоимость заявки выросла на ${Math.round(cpaChange)}% (${Math.round(current.costPerConversion)} ₽)`,
           cause,
           channel: "ads",
           impact: computeImpact(cpaChange, isCritical ? "critical" : isWarning ? "warning" : "info"),
@@ -207,9 +207,9 @@ function diagnoseCpaByCampaigns(
 
   if (degraded.length === 0) return undefined;
   if (degraded.length === 1) {
-    return `Рост CPA из-за кампании «${degraded[0].name}» (+${Math.round(degraded[0].cpaDelta)} ₽).`;
+    return `Рост стоимости заявки из-за кампании «${degraded[0].name}» (+${Math.round(degraded[0].cpaDelta)} ₽).`;
   }
-  return `Рост CPA в кампаниях: ${degraded.slice(0, 3).map((d) => `«${d.name}»`).join(", ")}.`;
+  return `Рост стоимости заявки в кампаниях: ${degraded.slice(0, 3).map((d) => `«${d.name}»`).join(", ")}.`;
 }
 
 function computeImpact(changePercent: number, severity: "info" | "warning" | "critical"): number {

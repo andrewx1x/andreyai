@@ -98,7 +98,7 @@ function detectProblems(
       problems.push({
         id: `problem_${id++}`,
         priority: "high",
-        title: "CPA вырос из-за проблем на сайте",
+        title: "Стоимость заявки выросла из-за проблем на сайте",
         description: "Стоимость привлечения растёт, потому что сайт хуже конвертирует трафик.",
         cause: bounceGrowth
           ? "Отказы выросли — посетители уходят, не оставляя заявок."
@@ -110,7 +110,7 @@ function detectProblems(
       problems.push({
         id: `problem_${id++}`,
         priority: "high",
-        title: "CPA вырос из-за проблем в рекламе",
+        title: "Стоимость заявки выросла из-за проблем в рекламе",
         description: "Стоимость привлечения растёт из-за снижения эффективности рекламных кампаний.",
         cause: ctrDrop
           ? "CTR упал — объявления привлекают меньше кликов."
@@ -122,7 +122,7 @@ function detectProblems(
       problems.push({
         id: `problem_${id++}`,
         priority: "critical",
-        title: "CPA вырос — проблемы и в рекламе, и на сайте",
+        title: "Стоимость заявки выросла — проблемы и в рекламе, и на сайте",
         description: "Стоимость привлечения растёт одновременно из-за ухудшения рекламы и конверсии сайта.",
         cause: "Двойной удар: реклама менее эффективна + сайт хуже конвертирует.",
         relatedSignals: [cpaGrowth, ctrDrop, clicksDrop, bounceGrowth, ...goalDrops].filter(Boolean) as Signal[],
@@ -239,8 +239,8 @@ function generateActions(problems: Problem[], allSignals: Signal[]): Action[] {
         break;
       }
 
-      // CPA from site
-      case problem.title.includes("CPA") && problem.title.includes("сайте"): {
+      // Стоимость заявки from site
+      case problem.title.includes("Стоимость заявки") && problem.title.includes("сайте"): {
         actions.push({
           id: `action_${id++}`,
           urgency,
@@ -252,8 +252,8 @@ function generateActions(problems: Problem[], allSignals: Signal[]): Action[] {
         break;
       }
 
-      // CPA from ads
-      case problem.title.includes("CPA") && problem.title.includes("рекламе"): {
+      // Стоимость заявки from ads
+      case problem.title.includes("Стоимость заявки") && problem.title.includes("рекламе"): {
         actions.push({
           id: `action_${id++}`,
           urgency,

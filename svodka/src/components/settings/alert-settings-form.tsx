@@ -20,8 +20,8 @@ const metrikaThresholds = [
 ];
 
 const directThresholds = [
-  { key: "cpa_increase", label: "Рост CPA", suffix: "%" },
-  { key: "ctr_drop", label: "Падение CTR", suffix: "%" },
+  { key: "cpa_increase", label: "Рост стоимости заявки", suffix: "%" },
+  { key: "ctr_drop", label: "Падение кликабельности", suffix: "%" },
   { key: "spend_limit", label: "Лимит расхода", suffix: "₽" },
 ];
 

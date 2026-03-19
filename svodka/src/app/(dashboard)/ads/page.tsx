@@ -128,7 +128,7 @@ export default async function AdsPage() {
             change={calcChange(current.ctr, prev.ctr)}
           />
           <KpiCard
-            label="CPA"
+            label="Стоимость заявки"
             value={current.costPerConversion > 0 ? formatMoney(current.costPerConversion) : "—"}
             change={current.costPerConversion > 0 && prev.costPerConversion > 0
               ? calcChange(current.costPerConversion, prev.costPerConversion)
@@ -164,7 +164,7 @@ export default async function AdsPage() {
                     <th className="px-4 py-2.5 text-right font-medium">Расход</th>
                     <th className="px-4 py-2.5 text-right font-medium">Клики</th>
                     <th className="px-4 py-2.5 text-right font-medium">CTR</th>
-                    <th className="px-4 py-2.5 text-right font-medium">CPA</th>
+                    <th className="px-4 py-2.5 text-right font-medium">Ст. заявки</th>
                   </tr>
                 </thead>
                 <tbody>

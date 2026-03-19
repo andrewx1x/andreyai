@@ -194,7 +194,7 @@ export default async function OverviewPage() {
             invertColors
           />
           <KpiCard
-            label="CPA"
+            label="Стоимость заявки"
             value={directKpis.cpa > 0 ? formatMoney(directKpis.cpa) : "—"}
             invertColors
           />
