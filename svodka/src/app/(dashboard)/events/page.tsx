@@ -22,15 +22,9 @@ export default async function EventsPage() {
   }
 
   const severityIcon = {
-    critical: <AlertCircle className="h-4 w-4 text-red-500" />,
-    warning: <AlertTriangle className="h-4 w-4 text-amber-500" />,
-    info: <Info className="h-4 w-4 text-blue-500" />,
-  };
-
-  const severityBg = {
-    critical: "bg-red-50 border-red-200 dark:bg-red-950/20 dark:border-red-900",
-    warning: "bg-amber-50 border-amber-200 dark:bg-amber-950/20 dark:border-amber-900",
-    info: "bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-900",
+    critical: <AlertCircle className="h-4 w-4 shrink-0 text-rose-500" />,
+    warning: <AlertTriangle className="h-4 w-4 shrink-0 text-amber-500" />,
+    info: <Info className="h-4 w-4 shrink-0 text-blue-500" />,
   };
 
   function formatDate(dateStr: string): string {
@@ -44,67 +38,81 @@ export default async function EventsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">Журнал событий</h1>
-        <p className="text-sm text-muted-foreground">
-          История сигналов и алертов по всем проектам
-        </p>
+    <div className="space-y-10">
+      <div className="flex items-center justify-between">
+        <h1 className="text-[26px] font-bold tracking-tight">Журнал событий</h1>
+        <span className="text-[14px] text-muted-foreground">
+          {events.length} событий
+        </span>
       </div>
 
       {events.length === 0 ? (
         <Card>
-          <CardContent className="py-8 text-center">
-            <p className="text-muted-foreground">
-              Событий пока нет. Они появятся после первого сбора данных.
+          <CardContent className="py-16 text-center">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted text-3xl">
+              📭
+            </div>
+            <h3 className="mt-5 text-[18px] font-semibold">Событий пока нет</h3>
+            <p className="mt-1.5 text-[14px] text-muted-foreground">
+              Они появятся после первого сбора данных.
             </p>
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-10">
           {Array.from(grouped).map(([date, dayEvents]) => (
-            <div key={date}>
-              <h2 className="mb-3 text-sm font-medium text-muted-foreground">
+            <section key={date}>
+              <h2 className="mb-4 flex items-center gap-2 text-[13px] font-bold uppercase tracking-widest text-muted-foreground">
+                <span className="inline-block h-1 w-4 rounded-full bg-gray-300" />
                 {formatDate(date)}
               </h2>
-              <div className="space-y-2">
-                {dayEvents.map((event) => {
-                  const data = event.dataJson ? JSON.parse(event.dataJson) : {};
-                  return (
-                    <div
-                      key={event.id}
-                      className={cn(
-                        "flex items-start gap-3 rounded-lg border p-3",
-                        severityBg[event.severity]
-                      )}
-                    >
-                      <div className="mt-0.5">
-                        {severityIcon[event.severity]}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium">{event.message}</span>
-                          <Badge variant="outline" className="shrink-0 text-xs">
-                            {event.project?.name || `Проект #${event.projectId}`}
-                          </Badge>
+              <Card>
+                <CardContent className="divide-y p-0">
+                  {dayEvents.map((event) => {
+                    const data = event.dataJson ? JSON.parse(event.dataJson) : {};
+                    return (
+                      <div
+                        key={event.id}
+                        className="px-5 py-4 transition-colors hover:bg-muted/20"
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="mt-0.5">
+                            {severityIcon[event.severity]}
+                          </div>
+                          <div className="min-w-0 flex-1 space-y-1">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="text-[14px] font-semibold">{event.message}</span>
+                              {data.changePercent !== undefined && (
+                                <Badge
+                                  variant="outline"
+                                  className={cn(
+                                    "shrink-0 tabular-nums text-[11px]",
+                                    data.changePercent > 0 ? "bg-rose-50 text-rose-700 border-rose-200" : "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                  )}
+                                >
+                                  {data.changePercent > 0 ? "+" : ""}{Math.round(data.changePercent)}%
+                                </Badge>
+                              )}
+                            </div>
+                            {data.cause && (
+                              <p className="text-[13px] text-muted-foreground">{data.cause}</p>
+                            )}
+                          </div>
+                          <div className="flex shrink-0 items-center gap-2.5">
+                            <Badge variant="outline" className="text-[11px]">
+                              {event.project?.name || `Проект #${event.projectId}`}
+                            </Badge>
+                            <span className="tabular-nums text-[13px] text-muted-foreground">
+                              {formatTime(event.createdAt)}
+                            </span>
+                          </div>
                         </div>
-                        {data.cause && (
-                          <p className="mt-1 text-xs text-muted-foreground">{data.cause}</p>
-                        )}
-                        {data.changePercent !== undefined && (
-                          <p className="mt-0.5 text-xs text-muted-foreground">
-                            Изменение: {data.changePercent > 0 ? "+" : ""}{Math.round(data.changePercent)}%
-                          </p>
-                        )}
                       </div>
-                      <span className="shrink-0 text-xs text-muted-foreground">
-                        {formatTime(event.createdAt)}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+                    );
+                  })}
+                </CardContent>
+              </Card>
+            </section>
           ))}
         </div>
       )}

@@ -144,34 +144,48 @@ export default async function OverviewPage() {
   const recentEvents = await getEventsByUser(userId, 5);
 
   const statusConfig = {
-    healthy: { label: "Всё в порядке", color: "bg-green-500", textColor: "text-green-700 dark:text-green-400" },
-    attention: { label: "Требует внимания", color: "bg-amber-500", textColor: "text-amber-700 dark:text-amber-400" },
-    critical: { label: "Есть проблемы", color: "bg-red-500", textColor: "text-red-700 dark:text-red-400" },
+    healthy: { label: "Всё в порядке", color: "bg-emerald-500" },
+    attention: { label: "Требует внимания", color: "bg-amber-500" },
+    critical: { label: "Есть проблемы", color: "bg-rose-500" },
   };
+
+  const criticalCount = cockpit.signals.filter((s) => s.severity === "critical").length;
+  const warningCount = cockpit.signals.filter((s) => s.severity === "warning").length;
 
   return (
     <div className="relative">
       {!access.overview && <PaywallOverlay planName="Сводка.Всё" price="1 490" />}
 
-      <div className="space-y-8">
+      <div className="space-y-10">
         {/* ── Status header ── */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold">Обзор</h1>
-            <span className={cn(
-              "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium text-white",
+          <div className="flex items-center gap-4">
+            <h1 className="text-[26px] font-bold tracking-tight">Обзор</h1>
+            <div className={cn(
+              "inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[13px] font-semibold text-white",
               statusConfig[cockpit.status].color
             )}>
               {statusConfig[cockpit.status].label}
-            </span>
+            </div>
           </div>
-          <p className="text-sm text-muted-foreground">
-            Состояние бизнеса за 30 секунд
-          </p>
+          <div className="flex items-center gap-3 text-[13px]">
+            {criticalCount > 0 && (
+              <span className="flex items-center gap-1.5 text-rose-600">
+                <span className="inline-block h-2 w-2 rounded-full bg-rose-500" />
+                {criticalCount} критич.
+              </span>
+            )}
+            {warningCount > 0 && (
+              <span className="flex items-center gap-1.5 text-amber-600">
+                <span className="inline-block h-2 w-2 rounded-full bg-amber-500" />
+                {warningCount} внимание
+              </span>
+            )}
+          </div>
         </div>
 
         {/* ── KPI Cards ── */}
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-5 lg:grid-cols-5">
           <KpiCard
             label="Визиты"
             value={formatNumber(metrikaKpis.visits)}
@@ -203,7 +217,8 @@ export default async function OverviewPage() {
         {/* ── Problems: Что не так ── */}
         {cockpit.problems.length > 0 && (
           <section>
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            <h2 className="mb-4 flex items-center gap-2 text-[13px] font-bold uppercase tracking-widest text-muted-foreground">
+              <span className="inline-block h-1 w-4 rounded-full bg-rose-400" />
               Что не так
             </h2>
             <div className="space-y-3">
@@ -217,10 +232,11 @@ export default async function OverviewPage() {
         {/* ── Actions: Что делать ── */}
         {cockpit.actions.length > 0 && (
           <section>
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            <h2 className="mb-4 flex items-center gap-2 text-[13px] font-bold uppercase tracking-widest text-muted-foreground">
+              <span className="inline-block h-1 w-4 rounded-full bg-indigo-400" />
               Что делать сегодня
             </h2>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {cockpit.actions.map((action, i) => (
                 <ActionCard key={action.id} action={action} index={i} />
               ))}
@@ -229,12 +245,19 @@ export default async function OverviewPage() {
         )}
 
         {/* ── Insight ── */}
-        <InsightCard insight={cockpit.insight} />
+        <section>
+          <h2 className="mb-4 flex items-center gap-2 text-[13px] font-bold uppercase tracking-widest text-muted-foreground">
+            <span className="inline-block h-1 w-4 rounded-full bg-amber-400" />
+            Инсайт
+          </h2>
+          <InsightCard insight={cockpit.insight} />
+        </section>
 
-        {/* ── Signals (collapsed) ── */}
+        {/* ── Signals ── */}
         {cockpit.signals.length > 0 && (
           <section>
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            <h2 className="mb-4 flex items-center gap-2 text-[13px] font-bold uppercase tracking-widest text-muted-foreground">
+              <span className="inline-block h-1 w-4 rounded-full bg-blue-400" />
               Все сигналы ({cockpit.signals.length})
             </h2>
             <div className="space-y-2">
@@ -248,30 +271,31 @@ export default async function OverviewPage() {
         {/* ── Recent events ── */}
         {recentEvents.length > 0 && (
           <section>
-            <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="flex items-center gap-2 text-[13px] font-bold uppercase tracking-widest text-muted-foreground">
+                <span className="inline-block h-1 w-4 rounded-full bg-gray-400" />
                 Последние события
               </h2>
-              <Link href="/events" className="text-xs text-primary hover:underline">
-                Все события
+              <Link href="/events" className="text-[13px] font-medium text-primary hover:underline">
+                Все события &rarr;
               </Link>
             </div>
             <Card>
               <CardContent className="divide-y p-0">
                 {recentEvents.map((event) => {
                   const severityIcon = {
-                    critical: <AlertCircle className="h-3.5 w-3.5 text-red-500" />,
-                    warning: <AlertTriangle className="h-3.5 w-3.5 text-amber-500" />,
-                    info: <Info className="h-3.5 w-3.5 text-blue-500" />,
+                    critical: <AlertCircle className="h-4 w-4 text-rose-500" />,
+                    warning: <AlertTriangle className="h-4 w-4 text-amber-500" />,
+                    info: <Info className="h-4 w-4 text-blue-500" />,
                   };
                   return (
-                    <div key={event.id} className="flex items-center gap-3 px-4 py-3">
+                    <div key={event.id} className="flex items-center gap-3 px-5 py-3.5 transition-colors hover:bg-muted/30">
                       {severityIcon[event.severity]}
-                      <span className="flex-1 truncate text-sm">{event.message}</span>
-                      <Badge variant="outline" className="shrink-0 text-xs">
+                      <span className="flex-1 truncate text-[14px]">{event.message}</span>
+                      <Badge variant="outline" className="shrink-0 text-[11px]">
                         {event.project?.name || ""}
                       </Badge>
-                      <span className="shrink-0 text-xs text-muted-foreground">
+                      <span className="shrink-0 tabular-nums text-[13px] text-muted-foreground">
                         {new Date(event.createdAt).toLocaleDateString("ru-RU", { day: "numeric", month: "short" })}
                       </span>
                     </div>
@@ -285,10 +309,12 @@ export default async function OverviewPage() {
         {/* ── No data state ── */}
         {cockpit.problems.length === 0 && cockpit.signals.length === 0 && (
           <Card>
-            <CardContent className="py-12 text-center">
-              <div className="text-4xl">✓</div>
-              <h3 className="mt-4 text-lg font-semibold">Всё хорошо</h3>
-              <p className="mt-1 text-sm text-muted-foreground">
+            <CardContent className="py-16 text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-3xl">
+                ✓
+              </div>
+              <h3 className="mt-5 text-[18px] font-semibold">Всё хорошо</h3>
+              <p className="mt-1.5 text-[14px] text-muted-foreground">
                 Значительных отклонений не обнаружено. Реклама и сайт работают стабильно.
               </p>
             </CardContent>

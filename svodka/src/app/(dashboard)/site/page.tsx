@@ -105,16 +105,16 @@ export default async function SitePage() {
     <div className="relative">
       {!access.site && <PaywallOverlay planName="Сводка.Сайт" price="990" />}
 
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold">Сайт</h1>
-          <p className="text-sm text-muted-foreground">
+      <div className="space-y-10">
+        <div className="flex items-center justify-between">
+          <h1 className="text-[26px] font-bold tracking-tight">Сайт</h1>
+          <span className="text-[13px] text-muted-foreground">
             {project.name} — вчера vs среднее за 7 дней
-          </p>
+          </span>
         </div>
 
         {/* KPI Cards */}
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-5 lg:grid-cols-4">
           <KpiCard
             label="Визиты"
             value={formatNumber(current.visits)}
@@ -132,40 +132,68 @@ export default async function SitePage() {
             invertColors
           />
           <KpiCard
-            label="Глубина"
+            label="Глубина просмотра"
             value={current.pageDepth.toFixed(1)}
+            suffix=" стр."
             change={calcChange(current.pageDepth, prev.pageDepth)}
           />
         </div>
 
         {/* Signals */}
         {signals.length > 0 && (
-          <div className="space-y-2">
-            <h2 className="text-sm font-medium text-muted-foreground">Сигналы</h2>
-            {signals.map((signal, i) => (
-              <SignalBadge key={i} signal={signal} />
-            ))}
-          </div>
+          <section>
+            <h2 className="mb-4 flex items-center gap-2 text-[13px] font-bold uppercase tracking-widest text-muted-foreground">
+              <span className="inline-block h-1 w-4 rounded-full bg-amber-400" />
+              Сигналы
+            </h2>
+            <div className="space-y-2">
+              {signals.map((signal, i) => (
+                <SignalBadge key={i} signal={signal} />
+              ))}
+            </div>
+          </section>
         )}
 
         {/* Insight */}
-        <InsightCard insight={insight} />
+        <section>
+          <h2 className="mb-4 flex items-center gap-2 text-[13px] font-bold uppercase tracking-widest text-muted-foreground">
+            <span className="inline-block h-1 w-4 rounded-full bg-indigo-400" />
+            Инсайт
+          </h2>
+          <InsightCard insight={insight} />
+        </section>
 
         {/* Traffic Sources */}
         {sources.length > 0 && (
-          <div>
-            <h2 className="mb-3 text-sm font-medium text-muted-foreground">
+          <section>
+            <h2 className="mb-4 flex items-center gap-2 text-[13px] font-bold uppercase tracking-widest text-muted-foreground">
+              <span className="inline-block h-1 w-4 rounded-full bg-blue-400" />
               Источники трафика
             </h2>
-            <div className="space-y-2">
-              {sources.map((source, i) => (
-                <div key={i} className="flex items-center justify-between rounded-lg border p-3">
-                  <span className="text-sm">{source.source}</span>
-                  <span className="font-medium">{formatNumber(source.visits)}</span>
-                </div>
-              ))}
+            <div className="space-y-3">
+              {sources.map((source, i) => {
+                const total = sources.reduce((sum, s) => sum + s.visits, 0);
+                const pct = total > 0 ? Math.round((source.visits / total) * 100) : 0;
+                return (
+                  <div key={i} className="space-y-1.5">
+                    <div className="flex items-center justify-between text-[14px]">
+                      <span>{source.source}</span>
+                      <span className="tabular-nums font-semibold">
+                        {formatNumber(source.visits)}
+                        <span className="ml-1 font-normal text-muted-foreground">({pct}%)</span>
+                      </span>
+                    </div>
+                    <div className="h-2 rounded-full bg-muted">
+                      <div
+                        className="h-2 rounded-full bg-indigo-500 transition-all"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          </div>
+          </section>
         )}
       </div>
     </div>

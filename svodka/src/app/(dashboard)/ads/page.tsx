@@ -101,16 +101,16 @@ export default async function AdsPage() {
     <div className="relative">
       {!access.ads && <PaywallOverlay planName="Сводка.Реклама" price="990" />}
 
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold">Реклама</h1>
-          <p className="text-sm text-muted-foreground">
+      <div className="space-y-10">
+        <div className="flex items-center justify-between">
+          <h1 className="text-[26px] font-bold tracking-tight">Реклама</h1>
+          <span className="text-[13px] text-muted-foreground">
             {settings.login} — текущий vs предыдущий период
-          </p>
+          </span>
         </div>
 
         {/* KPI Cards */}
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-5 lg:grid-cols-4">
           <KpiCard
             label="Расход"
             value={formatMoney(current.cost)}
@@ -123,7 +123,7 @@ export default async function AdsPage() {
             change={calcChange(current.clicks, prev.clicks)}
           />
           <KpiCard
-            label="CTR"
+            label="Кликабельность"
             value={formatPercent(current.ctr)}
             change={calcChange(current.ctr, prev.ctr)}
           />
@@ -139,47 +139,59 @@ export default async function AdsPage() {
 
         {/* Signals */}
         {signals.length > 0 && (
-          <div className="space-y-2">
-            <h2 className="text-sm font-medium text-muted-foreground">Сигналы</h2>
-            {signals.map((signal, i) => (
-              <SignalBadge key={i} signal={signal} />
-            ))}
-          </div>
+          <section>
+            <h2 className="mb-4 flex items-center gap-2 text-[13px] font-bold uppercase tracking-widest text-muted-foreground">
+              <span className="inline-block h-1 w-4 rounded-full bg-amber-400" />
+              Сигналы
+            </h2>
+            <div className="space-y-2">
+              {signals.map((signal, i) => (
+                <SignalBadge key={i} signal={signal} />
+              ))}
+            </div>
+          </section>
         )}
 
         {/* Insight */}
-        <InsightCard insight={insight} />
+        <section>
+          <h2 className="mb-4 flex items-center gap-2 text-[13px] font-bold uppercase tracking-widest text-muted-foreground">
+            <span className="inline-block h-1 w-4 rounded-full bg-indigo-400" />
+            Инсайт
+          </h2>
+          <InsightCard insight={insight} />
+        </section>
 
         {/* Campaigns Table */}
         {campaigns.length > 0 && (
-          <div>
-            <h2 className="mb-3 text-sm font-medium text-muted-foreground">
-              Кампании (топ по расходу)
+          <section>
+            <h2 className="mb-4 flex items-center gap-2 text-[13px] font-bold uppercase tracking-widest text-muted-foreground">
+              <span className="inline-block h-1 w-4 rounded-full bg-blue-400" />
+              Кампании ({campaigns.length})
             </h2>
-            <div className="overflow-hidden rounded-lg border">
-              <table className="w-full text-sm">
-                <thead className="bg-muted/50">
-                  <tr>
-                    <th className="px-4 py-2.5 text-left font-medium">Кампания</th>
-                    <th className="px-4 py-2.5 text-right font-medium">Расход</th>
-                    <th className="px-4 py-2.5 text-right font-medium">Клики</th>
-                    <th className="px-4 py-2.5 text-right font-medium">CTR</th>
-                    <th className="px-4 py-2.5 text-right font-medium">Ст. заявки</th>
+            <div className="overflow-hidden rounded-xl border">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b text-left">
+                    <th className="px-5 py-3 text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">Кампания</th>
+                    <th className="px-5 py-3 text-right text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">Расход</th>
+                    <th className="px-5 py-3 text-right text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">Клики</th>
+                    <th className="px-5 py-3 text-right text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">CTR</th>
+                    <th className="px-5 py-3 text-right text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">Ст. заявки</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y">
                   {campaigns
                     .sort((a, b) => b.cost - a.cost)
                     .slice(0, 10)
                     .map((c) => (
-                      <tr key={c.campaignId} className="border-t">
-                        <td className="max-w-[200px] truncate px-4 py-2.5">
+                      <tr key={c.campaignId} className="transition-colors hover:bg-muted/30">
+                        <td className="max-w-[240px] truncate px-5 py-3.5 text-[14px] font-medium">
                           {c.campaignName}
                         </td>
-                        <td className="px-4 py-2.5 text-right">{formatMoney(c.cost)}</td>
-                        <td className="px-4 py-2.5 text-right">{formatNumber(c.clicks)}</td>
-                        <td className="px-4 py-2.5 text-right">{formatPercent(c.ctr)}</td>
-                        <td className="px-4 py-2.5 text-right">
+                        <td className="px-5 py-3.5 text-right tabular-nums text-[14px] font-medium">{formatMoney(c.cost)}</td>
+                        <td className="px-5 py-3.5 text-right tabular-nums text-[14px]">{formatNumber(c.clicks)}</td>
+                        <td className="px-5 py-3.5 text-right tabular-nums text-[14px]">{formatPercent(c.ctr)}</td>
+                        <td className="px-5 py-3.5 text-right tabular-nums text-[14px]">
                           {c.costPerConversion > 0 ? formatMoney(c.costPerConversion) : "—"}
                         </td>
                       </tr>
@@ -187,7 +199,7 @@ export default async function AdsPage() {
                 </tbody>
               </table>
             </div>
-          </div>
+          </section>
         )}
       </div>
     </div>

@@ -34,8 +34,8 @@ export default async function DashboardLayout({
         access={access}
         userName={session.user?.name}
       />
-      <main className="flex-1 overflow-auto">
-        <div className="mx-auto max-w-6xl p-6">
+      <main className="flex-1 overflow-auto pb-12">
+        <div className="mx-auto max-w-[1200px] px-8 py-8">
           {children}
         </div>
       </main>

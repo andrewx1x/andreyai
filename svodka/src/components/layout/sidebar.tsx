@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Globe, Megaphone, ScrollText, Settings, Lock } from "lucide-react";
+import { LayoutDashboard, Globe, Megaphone, ScrollText, Settings, Lock, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SidebarProps {
@@ -25,15 +25,27 @@ const navItems = [
 export function Sidebar({ access, userName }: SidebarProps) {
   const pathname = usePathname();
 
+  const initials = userName
+    ? userName.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()
+    : "?";
+
   return (
-    <aside className="flex h-screen w-60 flex-col border-r bg-card">
-      <div className="flex h-14 items-center border-b px-4">
-        <Link href="/overview" className="text-xl font-bold">
+    <aside className="flex h-screen w-[260px] shrink-0 flex-col border-r border-border/60 bg-white">
+      {/* Logo */}
+      <div className="flex h-16 items-center gap-2.5 border-b border-border/60 px-5">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white">
+          <Zap className="h-4 w-4" />
+        </div>
+        <Link href="/overview" className="text-lg font-bold tracking-tight">
           Сводка
         </Link>
       </div>
 
-      <nav className="flex-1 space-y-1 p-3">
+      {/* Navigation */}
+      <nav className="flex-1 space-y-1 px-3 py-4">
+        <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/70">
+          Разделы
+        </p>
         {navItems.map((item) => {
           const isActive = pathname.startsWith(item.href);
           const isLocked = item.screen && !access[item.screen];
@@ -43,25 +55,29 @@ export function Sidebar({ access, userName }: SidebarProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                "flex items-center gap-3 rounded-xl px-3 py-2.5 text-[14px] font-medium transition-all",
                 isActive
-                  ? "bg-primary/10 text-primary"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                isLocked && "opacity-60"
+                  ? "bg-indigo-50 text-indigo-700 shadow-sm shadow-indigo-100"
+                  : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+                isLocked && "opacity-50"
               )}
             >
-              <item.icon className="h-4 w-4" />
+              <item.icon className={cn("h-[18px] w-[18px]", isActive && "text-indigo-600")} />
               {item.label}
-              {isLocked && <Lock className="ml-auto h-3 w-3" />}
+              {isLocked && <Lock className="ml-auto h-3.5 w-3.5 text-muted-foreground/50" />}
             </Link>
           );
         })}
       </nav>
 
+      {/* Footer */}
       {userName && (
-        <div className="border-t p-3">
-          <div className="truncate px-3 py-2 text-sm text-muted-foreground">
-            {userName}
+        <div className="border-t border-border/60 px-4 py-4">
+          <div className="flex items-center gap-3 rounded-xl bg-muted/40 px-3 py-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-[13px] font-bold text-indigo-600">
+              {initials}
+            </div>
+            <p className="truncate text-[13px] font-medium">{userName}</p>
           </div>
         </div>
       )}
