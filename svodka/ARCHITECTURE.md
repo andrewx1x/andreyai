@@ -1,39 +1,49 @@
-# Архитектура: Сводка (web) и Боты (Telegram)
+# Архитектура: Сводка
 
-## Решение: независимые продукты с общим ядром
+## Единый продукт
 
-**Сводка** (web-панель) и **Боты** (Telegram-боты) — это **два независимых продукта**, каждый со своей БД и деплоем.
+**Сводка** — веб-панель аналитики для контроля сайта и рекламы. Один продукт, один деплой.
 
-| | Сводка (web) | Боты (Telegram) |
+Telegram-боты были предыдущей версией продукта. Из них взят engine (API-клиенты, сигналы, шифрование). Боты больше не развиваются и не деплоятся.
+
+## Стек
+
+| Слой | Технология |
+|---|---|
+| Frontend | Next.js App Router + Tailwind + shadcn/ui + Recharts |
+| Backend | Next.js Server Components + Server Actions |
+| Auth | NextAuth + Yandex OAuth |
+| БД | Turso (LibSQL) + Drizzle ORM |
+| Email | Resend + HTML шаблоны |
+| Cron | Vercel Cron (→ Timeweb cron) |
+| Hosting | Vercel (тест) → Timeweb (прод) |
+| Платежи | Робокасса (заложена, не активирована) |
+
+## Структура кода
+
+```
+src/
+├── app/           # Next.js pages + API routes
+├── components/    # UI компоненты
+├── lib/
+│   ├── engine/    # Бизнес-логика (из ботов): API-клиенты, сигналы, crypto, format
+│   ├── db/        # Drizzle schema + queries
+│   ├── email/     # Resend + шаблоны
+│   ├── auth.ts    # NextAuth + Yandex OAuth
+│   ├── subscription.ts  # Проверка доступа по подписке
+│   ├── trial.ts   # Триал-логика (не активирована)
+│   ├── rate-limit.ts    # Rate limiting
+│   └── logger.ts  # Structured logging
+```
+
+## Принцип engine
+
+`lib/engine/` — чистые функции без side-effects. Принимают token, возвращают типизированные данные. Не знают про БД, auth, UI.
+
+## Что заложено, но не активировано
+
+| Функциональность | Где | Когда активировать |
 |---|---|---|
-| Runtime | Next.js на Vercel → Timeweb | Cloudflare Workers |
-| БД | Turso (LibSQL) | Cloudflare D1 |
-| Auth | Yandex OAuth → NextAuth | Yandex OAuth → Telegram |
-| Подписка | subscriptions таблица в Turso | Будет отдельно |
-| Алерты | Email (Resend) | Telegram messages |
-| Cron | Vercel Cron → Timeweb cron | CF Cron Triggers |
-
-## Общий код (engine)
-
-Бизнес-логика (API-клиенты, сигналы, формат) идентична:
-- `engine/metrika/api.ts` — клиент Метрики
-- `engine/direct/api.ts` — клиент Директа
-- `engine/crypto.ts` — шифрование токенов
-- `engine/format.ts` — форматирование чисел
-
-**Принцип:** engine — чистые функции без side-effects. Принимают token, возвращают данные.
-
-## Связь между продуктами
-
-- **User ID:** Yandex ID — единый идентификатор пользователя в обеих системах
-- **Данные:** каждый продукт хранит свои snapshots независимо
-- **Подписки:** пока независимы. На этапе Robokassa — единая подписка через Yandex ID
-
-## Будущее (после Robokassa)
-
-Когда оба продукта станут платными, единый биллинг:
-1. Сводка — источник истины по подписке
-2. Боты проверяют подписку через API-endpoint Сводки
-3. Endpoint: `GET /api/subscription/check?yandexId=XXX` → `{ plan, active }`
-
-Этот контракт будет реализован на Timeweb.
+| 7-дневный триал | `lib/trial.ts` → `TRIAL_ENABLED` | На Timeweb |
+| Welcome email | `lib/email/index.ts` → `sendWelcomeEmail` | На Timeweb |
+| Робокасса | `api/webhooks/payment` → `ROBOKASSA_ENABLED` | После ПНД + юрдоки |
