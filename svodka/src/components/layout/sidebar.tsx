@@ -42,7 +42,7 @@ export function Sidebar({ access, userName }: SidebarProps) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 space-y-1 px-3 py-4">
+      <nav className="flex-1 overflow-y-auto space-y-1 px-3 py-4">
         <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/70">
           Разделы
         </p>
@@ -85,9 +85,9 @@ export function Sidebar({ access, userName }: SidebarProps) {
 
       {/* Footer */}
       {userName && (
-        <div className="border-t border-border/60 px-4 py-4">
+        <div className="shrink-0 border-t border-border/60 px-4 py-3">
           <div className="flex items-center gap-3 rounded-xl bg-muted/40 px-3 py-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-[13px] font-bold text-indigo-600">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-100 text-[13px] font-bold text-indigo-600">
               {initials}
             </div>
             <p className="truncate text-[13px] font-medium">{userName}</p>
