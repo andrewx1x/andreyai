@@ -8,6 +8,7 @@ import {
   AreaChart,
   ResponsiveContainer,
 } from "recharts";
+import type { Verdict } from "@/lib/engine/verdict";
 
 interface KpiCardProps {
   label: string;
@@ -17,7 +18,14 @@ interface KpiCardProps {
   invertColors?: boolean;
   sparklineData?: number[];
   sparklineColor?: string;
+  verdict?: Verdict;
 }
+
+const verdictDot: Record<Verdict, string | null> = {
+  ok: null,
+  warning: "bg-amber-500",
+  danger: "bg-rose-500",
+};
 
 export function KpiCard({
   label,
@@ -27,6 +35,7 @@ export function KpiCard({
   invertColors,
   sparklineData,
   sparklineColor,
+  verdict,
 }: KpiCardProps) {
   const isPositive = invertColors ? (change ?? 0) < 0 : (change ?? 0) > 0;
   const isNegative = invertColors ? (change ?? 0) > 0 : (change ?? 0) < 0;
@@ -66,6 +75,10 @@ export function KpiCard({
                 {change > 0 ? "+" : ""}
                 {change.toFixed(1)}%
               </div>
+            )}
+
+            {verdict && verdictDot[verdict] && (
+              <span className={cn("mt-1.5 inline-block h-2 w-2 rounded-full", verdictDot[verdict])} />
             )}
           </div>
 

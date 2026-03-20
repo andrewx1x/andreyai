@@ -7,10 +7,11 @@ import { getStats as getMetrikaStats, formatDateForApi, getYesterday, getBaselin
 import { getStats as getDirectStats, formatDateForApi as formatDirectDate, getDateRange } from "@/lib/engine/direct/api";
 import { extractSignals as extractMetrikaSignals } from "@/lib/engine/metrika/signals";
 import { extractSignals as extractDirectSignals } from "@/lib/engine/direct/signals";
+import { buildCockpit } from "@/lib/engine/insights";
 import { canSendAlert, markAlertSent } from "@/lib/db/queries/alerts";
 import { saveSignalsAsEvents } from "@/lib/db/queries/events";
 import { sendAlertEmail } from "@/lib/email";
-import { buildAlertEmailHtml } from "@/lib/email/templates/alert";
+import { buildAlertEmailHtml, buildAlertSubject } from "@/lib/email/templates/alert";
 import { log } from "@/lib/logger";
 import type { MetrikaSettings, DirectSettings, Signal } from "@/lib/engine/types";
 
@@ -37,74 +38,83 @@ export async function GET(request: Request) {
     where: eq(projects.isActive, true),
   });
 
-  log.info("cron.alerts", "Starting alert check", { totalProjects: allProjects.length });
+  // Group projects by userId
+  const projectsByUser = new Map<number, typeof allProjects>();
+  for (const project of allProjects) {
+    const list = projectsByUser.get(project.userId) || [];
+    list.push(project);
+    projectsByUser.set(project.userId, list);
+  }
+
+  log.info("cron.alerts", "Starting alert check", {
+    totalProjects: allProjects.length,
+    totalUsers: projectsByUser.size,
+  });
 
   let alertsSent = 0;
   let signalsFound = 0;
   let skipped = 0;
   let errors = 0;
 
-  for (const project of allProjects) {
-    // --- Per-project isolation ---
+  for (const [userId, userProjects] of projectsByUser) {
     try {
-      // 1. Parse settings safely
-      let settings: MetrikaSettings | DirectSettings;
-      try {
-        settings = JSON.parse(project.settingsJson);
-      } catch {
-        log.error("cron.alerts", "Invalid settingsJson", { projectId: project.id });
-        errors++;
+      // Check if ANY project has alerts enabled
+      const hasAlertsEnabled = userProjects.some((p) => {
+        try {
+          const s = JSON.parse(p.settingsJson);
+          return s.alerts?.enabled;
+        } catch {
+          return false;
+        }
+      });
+
+      if (!hasAlertsEnabled) {
+        skipped += userProjects.length;
         continue;
       }
 
-      // 2. Check if alerts enabled for this project
-      if (!("alerts" in settings) || !(settings as MetrikaSettings | DirectSettings).alerts?.enabled) {
-        skipped++;
-        continue;
-      }
-
-      // 3. Check cooldown BEFORE API calls to save resources
-      const canSend = await canSendAlert(project.userId, project.id, "daily_alert");
+      // Check user-level cooldown BEFORE API calls
+      const canSend = await canSendAlert(userId, 0, "user_alert");
       if (!canSend) {
-        log.info("cron.alerts", "Cooldown active, skipping API calls", { projectId: project.id });
-        skipped++;
+        log.info("cron.alerts", "User cooldown active", { userId });
+        skipped += userProjects.length;
         continue;
       }
 
-      // 4. Get and validate token
+      // Get and validate token
       const tokenRecord = await db.query.tokens.findFirst({
-        where: eq(tokens.userId, project.userId),
+        where: eq(tokens.userId, userId),
       });
 
       if (!tokenRecord) {
-        log.warn("cron.alerts", "No token found", { projectId: project.id, userId: project.userId });
-        skipped++;
+        log.warn("cron.alerts", "No token found", { userId });
+        skipped += userProjects.length;
         continue;
       }
 
       if (tokenRecord.expiresAt) {
         const tokenExpiresAt = new Date(tokenRecord.expiresAt).getTime();
         if (Date.now() > tokenExpiresAt) {
-          log.warn("cron.alerts", "Token expired", { projectId: project.id, expiresAt: tokenRecord.expiresAt });
-          // Save as event so user sees it in journal
-          await saveSignalsAsEvents(project.id, [{
-            type: "anomaly",
-            metric: "token",
-            metricLabel: "OAuth-токен",
-            currentValue: 0,
-            previousValue: 1,
-            changePercent: -100,
-            severity: "critical",
-            message: "Доступ к Яндексу истёк. Данные не обновляются. Переподключитесь в настройках.",
-            channel: project.type === "metrika" ? "site" : "ads",
-            impact: 999,
-          }]);
-          skipped++;
+          log.warn("cron.alerts", "Token expired", { userId, expiresAt: tokenRecord.expiresAt });
+          for (const project of userProjects) {
+            await saveSignalsAsEvents(project.id, [{
+              type: "anomaly",
+              metric: "token",
+              metricLabel: "OAuth-токен",
+              currentValue: 0,
+              previousValue: 1,
+              changePercent: -100,
+              severity: "critical",
+              message: "Доступ к Яндексу истёк. Данные не обновляются. Переподключитесь в настройках.",
+              channel: project.type === "metrika" ? "site" : "ads",
+              impact: 999,
+            }]);
+          }
+          skipped += userProjects.length;
           continue;
         }
-        // Warn if expiring within 24h
         if (tokenExpiresAt - Date.now() < 24 * 60 * 60 * 1000) {
-          log.warn("cron.alerts", "Token expiring soon", { projectId: project.id, expiresAt: tokenRecord.expiresAt });
+          log.warn("cron.alerts", "Token expiring soon", { userId, expiresAt: tokenRecord.expiresAt });
         }
       }
 
@@ -113,159 +123,175 @@ export async function GET(request: Request) {
         token = await decryptToken(tokenRecord.encryptedToken, encryptionKey);
       } catch (decryptError) {
         log.error("cron.alerts", "Token decryption failed", {
-          projectId: project.id,
+          userId,
           error: decryptError instanceof Error ? decryptError.message : "Unknown",
         });
-        errors++;
+        errors += userProjects.length;
         continue;
       }
 
-      // 5. Extract signals based on project type
-      let signals: Signal[] = [];
+      // Collect signals from ALL user projects
+      const metrikaSignals: Signal[] = [];
+      const directSignals: Signal[] = [];
 
-      if (project.type === "metrika") {
-        const ms = settings as MetrikaSettings;
-        const yesterday = getYesterday();
-        const baseline = getBaselineRange(yesterday);
+      for (const project of userProjects) {
+        try {
+          let settings: MetrikaSettings | DirectSettings;
+          try {
+            settings = JSON.parse(project.settingsJson);
+          } catch {
+            log.error("cron.alerts", "Invalid settingsJson", { projectId: project.id });
+            errors++;
+            continue;
+          }
 
-        const [currentResult, prevResult] = await Promise.all([
-          getMetrikaStats(token, {
-            counterId: ms.counter_id,
-            date1: formatDateForApi(yesterday),
-            date2: formatDateForApi(yesterday),
-            metrics: ms.metrics,
-            goalIds: ms.goals?.map((g) => g.id) || [],
-          }),
-          getMetrikaStats(token, {
-            counterId: ms.counter_id,
-            date1: formatDateForApi(baseline.from),
-            date2: formatDateForApi(baseline.to),
-            metrics: ms.metrics,
-            goalIds: ms.goals?.map((g) => g.id) || [],
-          }),
-        ]);
+          if (!settings.alerts?.enabled) {
+            skipped++;
+            continue;
+          }
 
-        if (!currentResult.ok || !currentResult.data) {
-          log.error("cron.alerts", "Metrika current data fetch failed", {
-            projectId: project.id,
-            error: currentResult.error,
-            errorCode: currentResult.errorCode,
-          });
-          errors++;
-          continue;
-        }
+          let projectSignals: Signal[] = [];
 
-        if (!prevResult.ok || !prevResult.data) {
-          log.warn("cron.alerts", "Metrika previous data fetch failed, using current as baseline", {
-            projectId: project.id,
-          });
-        }
+          if (project.type === "metrika") {
+            const ms = settings as MetrikaSettings;
+            const yesterday = getYesterday();
+            const baseline = getBaselineRange(yesterday);
 
-        const prev = prevResult.data
-          ? {
-              ...prevResult.data,
-              visits: Math.round(prevResult.data.visits / 7),
-              users: Math.round(prevResult.data.users / 7),
-              pageviews: Math.round(prevResult.data.pageviews / 7),
+            const [currentResult, prevResult] = await Promise.all([
+              getMetrikaStats(token, {
+                counterId: ms.counter_id,
+                date1: formatDateForApi(yesterday),
+                date2: formatDateForApi(yesterday),
+                metrics: ms.metrics,
+                goalIds: ms.goals?.map((g) => g.id) || [],
+              }),
+              getMetrikaStats(token, {
+                counterId: ms.counter_id,
+                date1: formatDateForApi(baseline.from),
+                date2: formatDateForApi(baseline.to),
+                metrics: ms.metrics,
+                goalIds: ms.goals?.map((g) => g.id) || [],
+              }),
+            ]);
+
+            if (!currentResult.ok || !currentResult.data) {
+              log.error("cron.alerts", "Metrika fetch failed", { projectId: project.id, error: currentResult.error });
+              errors++;
+              continue;
             }
-          : currentResult.data;
 
-        signals = extractMetrikaSignals(currentResult.data, prev, ms.alerts?.thresholds);
-      } else if (project.type === "direct") {
-        const ds = settings as DirectSettings;
-        const currentRange = getDateRange(ds.compare_period || "day", 0);
-        const previousRange = getDateRange(ds.compare_period || "day", 1);
-        const campaignIds = ds.campaigns === "all" ? undefined : ds.campaigns;
+            const prev = prevResult.data
+              ? {
+                  ...prevResult.data,
+                  visits: Math.round(prevResult.data.visits / 7),
+                  users: Math.round(prevResult.data.users / 7),
+                  pageviews: Math.round(prevResult.data.pageviews / 7),
+                }
+              : currentResult.data;
 
-        const [currentResult, previousResult] = await Promise.all([
-          getDirectStats(token, ds.login, {
-            dateFrom: formatDirectDate(currentRange.from),
-            dateTo: formatDirectDate(currentRange.to),
-            campaignIds,
-            includeConversions: true,
-          }),
-          getDirectStats(token, ds.login, {
-            dateFrom: formatDirectDate(previousRange.from),
-            dateTo: formatDirectDate(previousRange.to),
-            campaignIds,
-            includeConversions: true,
-          }),
-        ]);
+            projectSignals = extractMetrikaSignals(currentResult.data, prev, ms.alerts?.thresholds);
+            metrikaSignals.push(...projectSignals);
+          } else if (project.type === "direct") {
+            const ds = settings as DirectSettings;
+            const currentRange = getDateRange(ds.compare_period || "day", 0);
+            const previousRange = getDateRange(ds.compare_period || "day", 1);
+            const campaignIds = ds.campaigns === "all" ? undefined : ds.campaigns;
 
-        if (!currentResult.ok || !currentResult.data) {
-          log.error("cron.alerts", "Direct current data fetch failed", {
-            projectId: project.id,
-            error: currentResult.error,
-            errorCode: currentResult.errorCode,
-          });
+            const [currentResult, previousResult] = await Promise.all([
+              getDirectStats(token, ds.login, {
+                dateFrom: formatDirectDate(currentRange.from),
+                dateTo: formatDirectDate(currentRange.to),
+                campaignIds,
+                includeConversions: true,
+              }),
+              getDirectStats(token, ds.login, {
+                dateFrom: formatDirectDate(previousRange.from),
+                dateTo: formatDirectDate(previousRange.to),
+                campaignIds,
+                includeConversions: true,
+              }),
+            ]);
+
+            if (!currentResult.ok || !currentResult.data) {
+              log.error("cron.alerts", "Direct fetch failed", { projectId: project.id, error: currentResult.error });
+              errors++;
+              continue;
+            }
+
+            projectSignals = extractDirectSignals(
+              currentResult.data,
+              previousResult.data || currentResult.data,
+              ds.alerts?.thresholds
+            );
+            directSignals.push(...projectSignals);
+          }
+
+          // Save per-project signals as events (audit trail)
+          if (projectSignals.length > 0) {
+            await saveSignalsAsEvents(project.id, projectSignals);
+            signalsFound += projectSignals.length;
+          }
+        } catch (error) {
+          const msg = error instanceof Error ? error.message : "Unknown error";
+          log.error("cron.alerts", "Error processing project", { projectId: project.id, error: msg });
           errors++;
-          continue;
         }
-
-        if (!previousResult.ok || !previousResult.data) {
-          log.warn("cron.alerts", "Direct previous data fetch failed, using current as baseline", {
-            projectId: project.id,
-          });
-        }
-
-        signals = extractDirectSignals(
-          currentResult.data,
-          previousResult.data || currentResult.data,
-          ds.alerts?.thresholds
-        );
       }
 
-      // 6. Save all signals as events (audit trail)
-      if (signals.length > 0) {
-        await saveSignalsAsEvents(project.id, signals);
-        signalsFound += signals.length;
-      }
+      // Build cross-channel cockpit for this user
+      const cockpit = buildCockpit(metrikaSignals, directSignals);
 
-      // 7. Only email for warning/critical
-      const criticalSignals = signals.filter((s) => s.severity === "warning" || s.severity === "critical");
-      if (criticalSignals.length === 0) continue;
+      // Only send email if there are problems (variant B: only on problems)
+      const actionableProblems = cockpit.problems.filter(
+        (p) => p.priority === "critical" || p.priority === "high"
+      );
 
-      // 8. Get user email
+      if (actionableProblems.length === 0) continue;
+
+      // Get user email
       const user = await db.query.users.findFirst({
-        where: eq(users.id, project.userId),
+        where: eq(users.id, userId),
       });
 
       if (!user?.email) {
-        log.warn("cron.alerts", "User has no email, cannot send alert", {
-          projectId: project.id,
-          userId: project.userId,
-        });
+        log.warn("cron.alerts", "User has no email", { userId });
         continue;
       }
 
-      // 9. Send email
-      const screenPath = project.type === "metrika" ? "/site" : "/ads";
-      const html = buildAlertEmailHtml(project.name, criticalSignals, `${APP_URL}${screenPath}`);
+      // Send problem-based email
+      const subject = buildAlertSubject(actionableProblems);
+      const html = buildAlertEmailHtml(
+        user.name || "",
+        cockpit.status,
+        actionableProblems,
+        cockpit.actions,
+        APP_URL
+      );
 
       try {
-        await sendAlertEmail(user.email, `Сводка: алерт по ${project.name}`, html);
-        await markAlertSent(project.userId, project.id, "daily_alert");
+        await sendAlertEmail(user.email, subject, html);
+        await markAlertSent(userId, 0, "user_alert");
         alertsSent++;
         log.info("cron.alerts", "Alert email sent", {
-          projectId: project.id,
-          userId: project.userId,
-          signals: criticalSignals.length,
+          userId,
+          problems: actionableProblems.length,
+          status: cockpit.status,
         });
       } catch (emailError) {
         log.error("cron.alerts", "Failed to send alert email", {
-          projectId: project.id,
+          userId,
           error: emailError instanceof Error ? emailError.message : "Unknown",
         });
         errors++;
       }
     } catch (error) {
       const msg = error instanceof Error ? error.message : "Unknown error";
-      log.error("cron.alerts", "Unexpected error for project", { projectId: project.id, error: msg });
+      log.error("cron.alerts", "Unexpected error for user", { userId, error: msg });
       errors++;
     }
   }
 
-  const summary = { alertsSent, signalsFound, skipped, errors, total: allProjects.length };
+  const summary = { alertsSent, signalsFound, skipped, errors, totalUsers: projectsByUser.size };
   log.info("cron.alerts", "Alert check complete", summary);
 
   return NextResponse.json({ ok: true, ...summary });

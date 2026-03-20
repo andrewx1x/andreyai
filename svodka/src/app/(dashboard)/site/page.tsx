@@ -9,6 +9,7 @@ import { extractSignals, generateInsight } from "@/lib/engine/metrika/signals";
 import { formatNumber, formatPercent, formatDuration, calcChange } from "@/lib/engine/format";
 import type { MetrikaSettings } from "@/lib/engine/types";
 import { DEFAULT_METRIKA_KPIS } from "@/lib/engine/types";
+import { getVerdict } from "@/lib/engine/verdict";
 import { KpiCard } from "@/components/dashboard/kpi-card";
 import { SignalBadge } from "@/components/dashboard/signal-badge";
 import { InsightCard } from "@/components/dashboard/insight-card";
@@ -140,7 +141,10 @@ export default async function SitePage() {
     pageviews: { label: "Просмотры", value: formatNumber(current.pageviews), change: calcChange(current.pageviews, prev.pageviews) },
   };
 
-  const kpiCards = visibleKpis.filter((k) => kpiMap[k]).map((k) => ({ key: k, ...kpiMap[k] }));
+  const kpiCards = visibleKpis.filter((k) => kpiMap[k]).map((k) => {
+    const kpi = kpiMap[k];
+    return { key: k, ...kpi, verdict: kpi.change !== undefined ? getVerdict(kpi.change, !!kpi.invertColors) : undefined };
+  });
 
   return (
     <div className="relative">
@@ -171,6 +175,7 @@ export default async function SitePage() {
               change={kpi.change}
               suffix={kpi.suffix}
               invertColors={kpi.invertColors}
+              verdict={kpi.verdict}
             />
           ))}
         </div>

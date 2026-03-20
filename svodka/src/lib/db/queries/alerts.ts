@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { alertCooldowns } from "@/lib/db/schema";
 import { eq, and } from "drizzle-orm";
 
-const COOLDOWN_HOURS = 24;
+const COOLDOWN_HOURS = 4;
 
 export async function canSendAlert(
   userId: number,
