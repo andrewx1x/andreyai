@@ -29,9 +29,9 @@ export interface DirectSettings {
   alerts: {
     enabled: boolean;
     thresholds: {
-      cpa_increase: number;
+      cost_spike: number;
       ctr_drop: number;
-      spend_limit: number;
+      cpa_spike: number;
     };
   };
 }

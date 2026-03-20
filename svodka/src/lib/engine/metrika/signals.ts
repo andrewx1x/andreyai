@@ -5,13 +5,6 @@ import type { MetrikaStats, TrafficSource } from "./api";
 import type { Signal, InsightData, MetrikaSettings } from "../types";
 import { calcChange } from "../format";
 
-interface ExtractSignalsOptions {
-  current: MetrikaStats;
-  previous: MetrikaStats;
-  thresholds?: MetrikaSettings["alerts"]["thresholds"];
-  sources?: TrafficSource[];
-  previousSources?: TrafficSource[];
-}
 
 export function extractSignals(
   current: MetrikaStats,

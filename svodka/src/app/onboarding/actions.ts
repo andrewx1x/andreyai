@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/lib/auth";
+import { auth, getSessionUserId } from "@/lib/auth";
 import { getDecryptedToken } from "@/lib/db/queries/tokens";
 import { createProject } from "@/lib/db/queries/projects";
 import { getSubscription } from "@/lib/db/queries/subscriptions";
@@ -22,7 +22,7 @@ export async function fetchUserCounters(): Promise<{
     const session = await auth();
     if (!session) return { counters: [], error: "Не авторизован" };
 
-    const userId = (session as any).userId as number;
+    const userId = getSessionUserId(session)!;
     const token = await getDecryptedToken(userId);
     if (!token) return { counters: [], error: "Токен не найден. Попробуйте выйти и войти заново." };
 
@@ -48,7 +48,7 @@ export async function fetchCounterGoals(counterId: number): Promise<{
     const session = await auth();
     if (!session) return { goals: [], error: "Не авторизован" };
 
-    const userId = (session as any).userId as number;
+    const userId = getSessionUserId(session)!;
     const token = await getDecryptedToken(userId);
     if (!token) return { goals: [], error: "Токен не найден" };
 
@@ -76,7 +76,7 @@ export async function fetchUserCampaigns(login: string): Promise<{
     const session = await auth();
     if (!session) return { campaigns: [], error: "Не авторизован" };
 
-    const userId = (session as any).userId as number;
+    const userId = getSessionUserId(session)!;
     const token = await getDecryptedToken(userId);
     if (!token) return { campaigns: [], error: "Токен не найден" };
 
@@ -103,7 +103,7 @@ export async function setupProjects(
     const session = await auth();
     if (!session) return { success: false, error: "Не авторизован" };
 
-    const userId = (session as any).userId as number;
+    const userId = getSessionUserId(session)!;
 
     if (!selectedCounters || selectedCounters.length === 0) {
       return { success: false, error: "Выберите хотя бы один счётчик" };
@@ -184,7 +184,7 @@ export async function setupDirectProject(
     const session = await auth();
     if (!session) return { success: false, error: "Не авторизован" };
 
-    const userId = (session as any).userId as number;
+    const userId = getSessionUserId(session)!;
 
     if (!login) return { success: false, error: "Укажите логин Директа" };
 

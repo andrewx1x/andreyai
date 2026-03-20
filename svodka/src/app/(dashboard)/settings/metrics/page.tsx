@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { auth, getSessionUserId } from "@/lib/auth";
 import { getProjectsByUser } from "@/lib/db/queries/projects";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -10,13 +10,12 @@ import {
   DEFAULT_METRIKA_KPIS,
   DEFAULT_DIRECT_KPIS,
 } from "@/lib/engine/types";
-import type { MetrikaSettings, DirectSettings } from "@/lib/engine/types";
 
 export default async function MetricsSettingsPage() {
   const session = await auth();
   if (!session) redirect("/login");
 
-  const userId = (session as any).userId as number;
+  const userId = getSessionUserId(session)!;
   const projects = await getProjectsByUser(userId);
 
   return (
@@ -63,7 +62,7 @@ export default async function MetricsSettingsPage() {
                   projectId={project.id}
                   projectName={project.name}
                   projectType={project.type as "metrika" | "direct"}
-                  catalog={catalog as any}
+                  catalog={catalog as Array<{ key: string; label: string; description: string; invertColors?: boolean }>}
                   currentSelection={currentSelection}
                 />
               </CardContent>

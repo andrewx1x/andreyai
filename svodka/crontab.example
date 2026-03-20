@@ -1,0 +1,12 @@
+# Шаблон crontab для Timeweb VPS
+# Установить: crontab -e, вставить содержимое
+#
+# Замените:
+#   YOUR_DOMAIN — домен приложения (например, app.svodka.ru)
+#   YOUR_CRON_SECRET — значение CRON_SECRET из .env
+
+# Сбор снапшотов — раз в сутки в 05:00 MSK
+0 5 * * * curl -s -H "Authorization: Bearer YOUR_CRON_SECRET" https://YOUR_DOMAIN/api/cron/collect > /dev/null 2>&1
+
+# Проверка алертов — каждые 15 минут с 7:00 до 22:00 MSK
+*/15 7-22 * * * curl -s -H "Authorization: Bearer YOUR_CRON_SECRET" https://YOUR_DOMAIN/api/cron/alerts > /dev/null 2>&1

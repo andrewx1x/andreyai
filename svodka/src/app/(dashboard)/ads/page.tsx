@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { auth, getSessionUserId } from "@/lib/auth";
 import { getProjectsByType } from "@/lib/db/queries/projects";
 import { getDecryptedToken } from "@/lib/db/queries/tokens";
 import { getSubscription } from "@/lib/db/queries/subscriptions";
@@ -22,7 +22,7 @@ export default async function AdsPage() {
   const session = await auth();
   if (!session) redirect("/login");
 
-  const userId = (session as any).userId as number;
+  const userId = getSessionUserId(session)!;
 
   const subscription = await getSubscription(userId);
   const access = getScreenAccess(
@@ -31,19 +31,34 @@ export default async function AdsPage() {
     subscription?.trialEndsAt || null
   );
 
+  // ── Access guard: don't load paid data without access ──
+  if (!access.ads) {
+    return (
+      <div className="relative">
+        <PaywallOverlay planName="Сводка.Реклама" price="990" />
+        <div className="space-y-10">
+          <h1 className="text-[26px] font-bold tracking-tight">Реклама</h1>
+          <div className="grid grid-cols-2 gap-5 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-24 rounded-xl bg-muted/40 animate-pulse" />
+            ))}
+          </div>
+          <div className="h-64 rounded-xl bg-muted/40 animate-pulse" />
+        </div>
+      </div>
+    );
+  }
+
   const projects = await getProjectsByType(userId, "direct");
   const project = projects[0];
 
   if (!project) {
     return (
-      <div className="relative">
-        {!access.ads && <PaywallOverlay planName="Сводка.Реклама" price="990" />}
-        <div className="space-y-6">
-          <h1 className="text-[26px] font-bold tracking-tight">Реклама</h1>
-          <p className="text-muted-foreground">
-            Нет подключённых аккаунтов Директа. Добавьте в настройках.
-          </p>
-        </div>
+      <div className="space-y-6">
+        <h1 className="text-[26px] font-bold tracking-tight">Реклама</h1>
+        <p className="text-muted-foreground">
+          Нет подключённых аккаунтов Директа. Добавьте в настройках.
+        </p>
       </div>
     );
   }
@@ -137,8 +152,6 @@ export default async function AdsPage() {
 
   return (
     <div className="relative">
-      {!access.ads && <PaywallOverlay planName="Сводка.Реклама" price="990" />}
-
       <div className="space-y-10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">

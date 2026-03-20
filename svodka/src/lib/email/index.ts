@@ -9,7 +9,7 @@ function getResend(): Resend | null {
   return _resend;
 }
 
-const FROM_EMAIL = "Сводка <alerts@svodka.app>";
+const FROM_EMAIL = process.env.EMAIL_FROM || "Сводка <alerts@svodka.app>";
 
 export async function sendEmail(to: string, subject: string, html: string) {
   const resend = getResend();

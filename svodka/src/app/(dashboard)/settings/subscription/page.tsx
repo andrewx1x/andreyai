@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { auth, getSessionUserId } from "@/lib/auth";
 import { getSubscription } from "@/lib/db/queries/subscriptions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -50,7 +50,7 @@ export default async function SubscriptionPage() {
   const session = await auth();
   if (!session) redirect("/login");
 
-  const userId = (session as any).userId as number;
+  const userId = getSessionUserId(session)!;
   const subscription = await getSubscription(userId);
 
   return (

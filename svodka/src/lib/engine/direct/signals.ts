@@ -13,14 +13,14 @@ export function extractSignals(
   previousCampaigns?: CampaignStats[]
 ): Signal[] {
   const signals: Signal[] = [];
-  const t = thresholds || { cpa_increase: 50, ctr_drop: 20, spend_limit: 50 };
+  const t = thresholds || { cost_spike: 30, ctr_drop: 20, cpa_spike: 30 };
 
   // ── CPA ──
   if (current.costPerConversion > 0 && previous.costPerConversion > 0) {
     const cpaChange = calcChange(current.costPerConversion, previous.costPerConversion);
     if (Math.abs(cpaChange) > 15) {
-      const isCritical = cpaChange > t.cpa_increase * 1.5;
-      const isWarning = cpaChange > t.cpa_increase;
+      const isCritical = cpaChange > t.cpa_spike * 1.5;
+      const isWarning = cpaChange > t.cpa_spike;
 
       let cause: string | undefined;
       if (cpaChange > 30) {
@@ -96,8 +96,8 @@ export function extractSignals(
   // ── Cost ──
   const costChange = calcChange(current.cost, previous.cost);
   if (costChange > 20) {
-    const isCritical = costChange > t.spend_limit * 1.5;
-    const isWarning = costChange > t.spend_limit;
+    const isCritical = costChange > t.cost_spike * 1.5;
+    const isWarning = costChange > t.cost_spike;
 
     let cause: string | undefined;
     const clicksChange = calcChange(current.clicks, previous.clicks);

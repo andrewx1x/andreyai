@@ -1,7 +1,7 @@
 "use client";
 
 import { DailyChart } from "./daily-chart";
-import { formatNumber, formatPercent, formatDuration } from "@/lib/engine/format";
+import { formatNumber, formatPercent } from "@/lib/engine/format";
 
 interface DailyPoint {
   date: string;

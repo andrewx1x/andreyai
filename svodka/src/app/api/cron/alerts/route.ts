@@ -3,7 +3,7 @@ import { db } from "@/lib/db";
 import { projects, tokens, users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { decryptToken } from "@/lib/engine/crypto";
-import { getStats as getMetrikaStats, formatDateForApi, getYesterday, getWeekAgo } from "@/lib/engine/metrika/api";
+import { getStats as getMetrikaStats, formatDateForApi, getYesterday, getBaselineRange } from "@/lib/engine/metrika/api";
 import { getStats as getDirectStats, formatDateForApi as formatDirectDate, getDateRange } from "@/lib/engine/direct/api";
 import { extractSignals as extractMetrikaSignals } from "@/lib/engine/metrika/signals";
 import { extractSignals as extractDirectSignals } from "@/lib/engine/direct/signals";
@@ -58,7 +58,7 @@ export async function GET(request: Request) {
       }
 
       // 2. Check if alerts enabled for this project
-      if (!(settings as any).alerts?.enabled) {
+      if (!("alerts" in settings) || !(settings as MetrikaSettings | DirectSettings).alerts?.enabled) {
         skipped++;
         continue;
       }
@@ -82,10 +82,30 @@ export async function GET(request: Request) {
         continue;
       }
 
-      if (tokenRecord.expiresAt && Date.now() > new Date(tokenRecord.expiresAt).getTime()) {
-        log.warn("cron.alerts", "Token expired", { projectId: project.id, expiresAt: tokenRecord.expiresAt });
-        skipped++;
-        continue;
+      if (tokenRecord.expiresAt) {
+        const tokenExpiresAt = new Date(tokenRecord.expiresAt).getTime();
+        if (Date.now() > tokenExpiresAt) {
+          log.warn("cron.alerts", "Token expired", { projectId: project.id, expiresAt: tokenRecord.expiresAt });
+          // Save as event so user sees it in journal
+          await saveSignalsAsEvents(project.id, [{
+            type: "anomaly",
+            metric: "token",
+            metricLabel: "OAuth-токен",
+            currentValue: 0,
+            previousValue: 1,
+            changePercent: -100,
+            severity: "critical",
+            message: "Доступ к Яндексу истёк. Данные не обновляются. Переподключитесь в настройках.",
+            channel: project.type === "metrika" ? "site" : "ads",
+            impact: 999,
+          }]);
+          skipped++;
+          continue;
+        }
+        // Warn if expiring within 24h
+        if (tokenExpiresAt - Date.now() < 24 * 60 * 60 * 1000) {
+          log.warn("cron.alerts", "Token expiring soon", { projectId: project.id, expiresAt: tokenRecord.expiresAt });
+        }
       }
 
       let token: string;
@@ -106,7 +126,7 @@ export async function GET(request: Request) {
       if (project.type === "metrika") {
         const ms = settings as MetrikaSettings;
         const yesterday = getYesterday();
-        const weekAgo = getWeekAgo(yesterday);
+        const baseline = getBaselineRange(yesterday);
 
         const [currentResult, prevResult] = await Promise.all([
           getMetrikaStats(token, {
@@ -118,8 +138,8 @@ export async function GET(request: Request) {
           }),
           getMetrikaStats(token, {
             counterId: ms.counter_id,
-            date1: formatDateForApi(weekAgo),
-            date2: formatDateForApi(yesterday),
+            date1: formatDateForApi(baseline.from),
+            date2: formatDateForApi(baseline.to),
             metrics: ms.metrics,
             goalIds: ms.goals?.map((g) => g.id) || [],
           }),

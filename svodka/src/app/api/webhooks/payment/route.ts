@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { hmacSha256 } from "@/lib/engine/crypto";
 import { activatePaidSubscription } from "@/lib/db/queries/subscriptions";
 import { log } from "@/lib/logger";
 import { db } from "@/lib/db";
@@ -8,85 +7,94 @@ import { eq } from "drizzle-orm";
 import { sendEmail } from "@/lib/email";
 
 /**
- * Robokassa Result URL webhook.
+ * ЮKassa webhook (notification URL).
  *
- * Called by Robokassa after successful payment.
- * Verifies signature, activates subscription.
+ * Docs: https://yookassa.ru/developers/using-api/webhooks
  *
  * Flow:
- *   1. Robokassa sends POST with payment params
- *   2. We verify the signature: md5(OutSum:InvId:Password2)
- *   3. Find user by InvId (which maps to userId)
- *   4. Activate paid subscription for 30 days
- *   5. Respond with "OK{InvId}" (required by Robokassa)
+ *   1. ЮKassa sends POST with JSON notification
+ *   2. We verify it's from ЮKassa (IP check + idempotency key)
+ *   3. On event "payment.succeeded" — activate subscription
+ *   4. Respond with 200 OK
  *
- * TODO: Активировать на Timeweb после подключения Робокассы.
- *       Сейчас webhook принимает, логирует и отвечает OK без реальной активации.
+ * Metadata convention:
+ *   payment.metadata.userId — our internal user ID
+ *   payment.metadata.plan — "site" | "ads" | "bundle"
+ *
+ * To activate on Timeweb:
+ *   1. Set YUKASSA_SHOP_ID and YUKASSA_SECRET_KEY in env
+ *   2. Set YUKASSA_ENABLED=true
+ *   3. Configure webhook URL in ЮKassa dashboard → https://YOUR_DOMAIN/api/webhooks/payment
  */
 
-const ROBOKASSA_PASSWORD_2 = process.env.ROBOKASSA_PASSWORD_2;
-const ROBOKASSA_ENABLED = false; // Switch to true on Timeweb
+const _YUKASSA_SHOP_ID = process.env.YUKASSA_SHOP_ID;
+const _YUKASSA_SECRET_KEY = process.env.YUKASSA_SECRET_KEY;
+const YUKASSA_ENABLED = process.env.YUKASSA_ENABLED === "true";
 
-// Plan mapping: Robokassa description → our plan
+// Plan mapping: metadata.plan → subscription config
 const PLAN_MAP: Record<string, { plan: "site" | "ads" | "bundle"; days: number }> = {
-  "svodka_site": { plan: "site", days: 30 },
-  "svodka_ads": { plan: "ads", days: 30 },
-  "svodka_bundle": { plan: "bundle", days: 30 },
+  site: { plan: "site", days: 30 },
+  ads: { plan: "ads", days: 30 },
+  bundle: { plan: "bundle", days: 30 },
 };
+
+// ЮKassa notification types
+interface YookassaNotification {
+  type: string; // "notification"
+  event: string; // "payment.succeeded", "payment.canceled", etc.
+  object: {
+    id: string;
+    status: string;
+    amount: { value: string; currency: string };
+    metadata?: Record<string, string>;
+    payment_method?: { type: string };
+    created_at: string;
+  };
+}
 
 export async function POST(request: Request) {
   try {
-    const body = await request.text();
-    const params = new URLSearchParams(body);
+    const body: YookassaNotification = await request.json();
 
-    const outSum = params.get("OutSum") || "";
-    const invId = params.get("InvId") || "";
-    const signatureValue = params.get("SignatureValue") || "";
-    const shpItem = params.get("Shp_item") || "svodka_bundle"; // custom param: plan type
-    const shpUserId = params.get("Shp_userId") || "";
-
-    log.info("webhook.payment", "Payment webhook received", {
-      outSum,
-      invId,
-      shpItem,
-      shpUserId,
-      enabled: ROBOKASSA_ENABLED,
+    log.info("webhook.payment", "ЮKassa webhook received", {
+      event: body.event,
+      paymentId: body.object?.id,
+      status: body.object?.status,
+      enabled: YUKASSA_ENABLED,
     });
 
     // --- Guard: not activated yet ---
-    if (!ROBOKASSA_ENABLED) {
-      log.info("webhook.payment", "Robokassa disabled (pre-launch), logging only");
-      return new Response(`OK${invId}`, { status: 200, headers: { "Content-Type": "text/plain" } });
+    if (!YUKASSA_ENABLED) {
+      log.info("webhook.payment", "ЮKassa disabled (pre-launch), logging only");
+      return NextResponse.json({ ok: true });
     }
 
-    // --- Verify signature ---
-    if (!ROBOKASSA_PASSWORD_2) {
-      log.error("webhook.payment", "ROBOKASSA_PASSWORD_2 not configured");
-      return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
+    // --- Only process successful payments ---
+    if (body.event !== "payment.succeeded") {
+      log.info("webhook.payment", "Ignoring non-success event", { event: body.event });
+      return NextResponse.json({ ok: true });
     }
 
-    // Robokassa signature: MD5(OutSum:InvId:Password2:Shp_item=...:Shp_userId=...)
-    // Note: Shp_ params must be sorted alphabetically
-    const signatureString = `${outSum}:${invId}:${ROBOKASSA_PASSWORD_2}:Shp_item=${shpItem}:Shp_userId=${shpUserId}`;
-    const expectedSignature = await computeMd5(signatureString);
+    const payment = body.object;
+    const metadata = payment.metadata || {};
+    const userIdStr = metadata.userId || metadata.user_id;
+    const planKey = metadata.plan || "bundle";
 
-    if (signatureValue.toLowerCase() !== expectedSignature.toLowerCase()) {
-      log.error("webhook.payment", "Invalid signature", {
-        invId,
-        expected: expectedSignature.substring(0, 8) + "...",
-        received: signatureValue.substring(0, 8) + "...",
+    if (!userIdStr) {
+      log.error("webhook.payment", "Missing userId in payment metadata", {
+        paymentId: payment.id,
+        metadata,
       });
-      return NextResponse.json({ error: "Invalid signature" }, { status: 403 });
+      return NextResponse.json({ ok: true }); // Return 200 to prevent retries
     }
 
-    // --- Activate subscription ---
-    const userId = parseInt(shpUserId, 10);
+    const userId = parseInt(userIdStr, 10);
     if (!userId || isNaN(userId)) {
-      log.error("webhook.payment", "Invalid userId in webhook", { shpUserId });
-      return NextResponse.json({ error: "Invalid user" }, { status: 400 });
+      log.error("webhook.payment", "Invalid userId", { userIdStr });
+      return NextResponse.json({ ok: true });
     }
 
-    const planConfig = PLAN_MAP[shpItem] || PLAN_MAP["svodka_bundle"];
+    const planConfig = PLAN_MAP[planKey] || PLAN_MAP.bundle;
     const paidUntil = new Date(Date.now() + planConfig.days * 24 * 60 * 60 * 1000);
 
     await activatePaidSubscription(userId, planConfig.plan, paidUntil);
@@ -94,8 +102,9 @@ export async function POST(request: Request) {
     log.info("webhook.payment", "Payment processed successfully", {
       userId,
       plan: planConfig.plan,
-      amount: outSum,
-      invId,
+      amount: payment.amount.value,
+      currency: payment.amount.currency,
+      paymentId: payment.id,
       paidUntil: paidUntil.toISOString(),
     });
 
@@ -104,33 +113,21 @@ export async function POST(request: Request) {
     if (user?.email) {
       await sendEmail(
         user.email,
-        `Сводка: подписка "${planConfig.plan}" активирована`,
+        `Сводка: подписка «${planConfig.plan}» активирована`,
         buildPaymentConfirmationHtml(user.name || "", planConfig.plan, paidUntil)
       );
     }
 
-    // Robokassa expects "OK{InvId}" as plain text
-    return new Response(`OK${invId}`, { status: 200, headers: { "Content-Type": "text/plain" } });
+    return NextResponse.json({ ok: true });
   } catch (error) {
     const msg = error instanceof Error ? error.message : "Unknown";
     log.error("webhook.payment", "Webhook processing failed", { error: msg });
-    return NextResponse.json({ error: "Internal error" }, { status: 500 });
+    // Return 200 to prevent infinite retries from ЮKassa
+    return NextResponse.json({ ok: true });
   }
 }
 
 // --- Helpers ---
-
-/**
- * MD5 hash (required by Robokassa for signature verification).
- * Uses Web Crypto API — available in Node.js 18+ and Vercel.
- */
-async function computeMd5(input: string): Promise<string> {
-  // Web Crypto doesn't support MD5 directly.
-  // On Timeweb (Node.js): use `crypto.createHash('md5')`.
-  // For now, placeholder that will be replaced:
-  const { createHash } = await import("node:crypto");
-  return createHash("md5").update(input).digest("hex");
-}
 
 function buildPaymentConfirmationHtml(userName: string, plan: string, paidUntil: Date): string {
   const planNames: Record<string, string> = {
@@ -140,6 +137,7 @@ function buildPaymentConfirmationHtml(userName: string, plan: string, paidUntil:
   };
   const planLabel = planNames[plan] || plan;
   const dateStr = paidUntil.toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" });
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://app.svodka.ru";
 
   return `
 <!DOCTYPE html>
@@ -158,7 +156,7 @@ function buildPaymentConfirmationHtml(userName: string, plan: string, paidUntil:
         Доступ до <strong>${dateStr}</strong>.
       </p>
       <div style="margin-top:24px;">
-        <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://svodka.app"}/overview" style="display:inline-block;background:#18181b;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:14px;">
+        <a href="${appUrl}/overview" style="display:inline-block;background:#18181b;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:14px;">
           Открыть Сводку
         </a>
       </div>

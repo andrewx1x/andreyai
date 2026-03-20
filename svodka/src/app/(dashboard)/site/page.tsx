@@ -1,14 +1,14 @@
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { auth, getSessionUserId } from "@/lib/auth";
 import { getProjectsByType } from "@/lib/db/queries/projects";
 import { getDecryptedToken } from "@/lib/db/queries/tokens";
 import { getSubscription } from "@/lib/db/queries/subscriptions";
 import { getScreenAccess } from "@/lib/subscription";
-import { getStats, getTopTrafficSources, getDailyStats, formatDateForApi, getYesterday, getWeekAgo } from "@/lib/engine/metrika/api";
+import { getStats, getTopTrafficSources, getDailyStats, formatDateForApi, getYesterday, getBaselineRange } from "@/lib/engine/metrika/api";
 import { extractSignals, generateInsight } from "@/lib/engine/metrika/signals";
 import { formatNumber, formatPercent, formatDuration, calcChange } from "@/lib/engine/format";
 import type { MetrikaSettings } from "@/lib/engine/types";
-import { DEFAULT_METRIKA_KPIS, METRIKA_KPI_CATALOG } from "@/lib/engine/types";
+import { DEFAULT_METRIKA_KPIS } from "@/lib/engine/types";
 import { KpiCard } from "@/components/dashboard/kpi-card";
 import { SignalBadge } from "@/components/dashboard/signal-badge";
 import { InsightCard } from "@/components/dashboard/insight-card";
@@ -22,7 +22,7 @@ export default async function SitePage() {
   const session = await auth();
   if (!session) redirect("/login");
 
-  const userId = (session as any).userId as number;
+  const userId = getSessionUserId(session)!;
 
   // Check access
   const subscription = await getSubscription(userId);
@@ -32,19 +32,34 @@ export default async function SitePage() {
     subscription?.trialEndsAt || null
   );
 
+  // ── Access guard: don't load paid data without access ──
+  if (!access.site) {
+    return (
+      <div className="relative">
+        <PaywallOverlay planName="Сводка.Сайт" price="990" />
+        <div className="space-y-10">
+          <h1 className="text-[26px] font-bold tracking-tight">Сайт</h1>
+          <div className="grid grid-cols-2 gap-5 lg:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-24 rounded-xl bg-muted/40 animate-pulse" />
+            ))}
+          </div>
+          <div className="h-64 rounded-xl bg-muted/40 animate-pulse" />
+        </div>
+      </div>
+    );
+  }
+
   const projects = await getProjectsByType(userId, "metrika");
   const project = projects[0]; // Use first metrika project
 
   if (!project) {
     return (
-      <div className="relative">
-        {!access.site && <PaywallOverlay planName="Сводка.Сайт" price="990" />}
-        <div className="space-y-6">
-          <h1 className="text-[26px] font-bold tracking-tight">Сайт</h1>
-          <p className="text-muted-foreground">
-            Нет подключённых счётчиков Метрики. Добавьте в настройках.
-          </p>
-        </div>
+      <div className="space-y-6">
+        <h1 className="text-[26px] font-bold tracking-tight">Сайт</h1>
+        <p className="text-muted-foreground">
+          Нет подключённых счётчиков Метрики. Добавьте в настройках.
+        </p>
       </div>
     );
   }
@@ -61,7 +76,7 @@ export default async function SitePage() {
 
   const settings = JSON.parse(project.settingsJson) as MetrikaSettings;
   const yesterday = getYesterday();
-  const weekAgo = getWeekAgo(yesterday);
+  const baseline = getBaselineRange(yesterday);
 
   // Visible KPIs
   const visibleKpis = settings.visible_kpis || DEFAULT_METRIKA_KPIS;
@@ -81,8 +96,8 @@ export default async function SitePage() {
     }),
     getStats(token, {
       counterId: settings.counter_id,
-      date1: formatDateForApi(weekAgo),
-      date2: formatDateForApi(yesterday),
+      date1: formatDateForApi(baseline.from),
+      date2: formatDateForApi(baseline.to),
       metrics: settings.metrics,
       goalIds: settings.goals.map((g) => g.id),
     }),
@@ -129,8 +144,6 @@ export default async function SitePage() {
 
   return (
     <div className="relative">
-      {!access.site && <PaywallOverlay planName="Сводка.Сайт" price="990" />}
-
       <div className="space-y-10">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">

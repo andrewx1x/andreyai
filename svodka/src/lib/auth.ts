@@ -134,8 +134,10 @@ export const authConfig: NextAuthConfig = {
     async session({ session, token }) {
       if (token.userId) {
         session.user.id = String(token.userId);
-        (session as any).userId = token.userId as number;
-        (session as any).yandexId = token.yandexId as string;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (session as Record<string, any>).userId = token.userId as number;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (session as Record<string, any>).yandexId = token.yandexId as string;
       }
       return session;
     },
@@ -146,3 +148,10 @@ export const authConfig: NextAuthConfig = {
 };
 
 export const { handlers, signIn, signOut, auth } = NextAuth(authConfig);
+
+/** Extract userId from session. Returns null if not authenticated. */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function getSessionUserId(session: any): number | null {
+  if (!session) return null;
+  return session.userId as number ?? null;
+}

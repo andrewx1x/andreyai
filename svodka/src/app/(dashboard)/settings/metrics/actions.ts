@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@/lib/auth";
+import { auth, getSessionUserId } from "@/lib/auth";
 import { getProjectById } from "@/lib/db/queries/projects";
 import { db } from "@/lib/db";
 import { projects } from "@/lib/db/schema";
@@ -14,7 +14,7 @@ export async function updateVisibleKpis(
   const session = await auth();
   if (!session) return { error: "Не авторизован" };
 
-  const userId = (session as any).userId as number;
+  const userId = getSessionUserId(session)!;
   const project = await getProjectById(projectId);
 
   if (!project || project.userId !== userId) {

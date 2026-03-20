@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,22 +9,14 @@ import { Badge } from "@/components/ui/badge";
 import { fetchUserCounters, setupProjects } from "@/app/onboarding/actions";
 import type { MetrikaCounter } from "@/lib/engine/metrika/api";
 
-interface OnboardingWizardProps {
-  userId: number;
-}
-
-export function OnboardingWizard({ userId }: OnboardingWizardProps) {
+export function OnboardingWizard() {
   const router = useRouter();
   const [step, setStep] = useState<"loading" | "select" | "saving">("loading");
   const [counters, setCounters] = useState<MetrikaCounter[]>([]);
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadCounters();
-  }, []);
-
-  async function loadCounters() {
+  const loadCounters = useCallback(async () => {
     const result = await fetchUserCounters();
     if (result.error) {
       setError(result.error);
@@ -35,7 +27,12 @@ export function OnboardingWizard({ userId }: OnboardingWizardProps) {
     // Select all by default
     setSelected(new Set(result.counters.map((c) => c.id)));
     setStep("select");
-  }
+  }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- async data fetch on mount
+    loadCounters();
+  }, [loadCounters]);
 
   function toggleCounter(id: number) {
     setSelected((prev) => {

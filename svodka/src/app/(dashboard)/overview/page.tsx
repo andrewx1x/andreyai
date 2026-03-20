@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { auth, getSessionUserId } from "@/lib/auth";
 import { getProjectsByUser } from "@/lib/db/queries/projects";
 import { getDecryptedToken } from "@/lib/db/queries/tokens";
 import { getSubscription } from "@/lib/db/queries/subscriptions";
 import { getScreenAccess } from "@/lib/subscription";
-import { getStats as getMetrikaStats, getTopTrafficSources, formatDateForApi, getYesterday, getWeekAgo } from "@/lib/engine/metrika/api";
+import { getStats as getMetrikaStats, getTopTrafficSources, formatDateForApi, getYesterday, getBaselineRange } from "@/lib/engine/metrika/api";
 import { extractSignals as extractMetrikaSignals } from "@/lib/engine/metrika/signals";
 import { getStats as getDirectStats, getCampaignStats, formatDateForApi as formatDirectDate, getDateRange } from "@/lib/engine/direct/api";
 import { extractSignals as extractDirectSignals } from "@/lib/engine/direct/signals";
@@ -19,8 +19,7 @@ import { InsightCard } from "@/components/dashboard/insight-card";
 import { SignalBadge } from "@/components/dashboard/signal-badge";
 import { PaywallOverlay } from "@/components/shared/paywall-overlay";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { buttonVariants } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle, AlertTriangle, Info } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -29,7 +28,7 @@ export default async function OverviewPage() {
   const session = await auth();
   if (!session) redirect("/login");
 
-  const userId = (session as any).userId as number;
+  const userId = getSessionUserId(session)!;
 
   const subscription = await getSubscription(userId);
   const access = getScreenAccess(
@@ -37,6 +36,30 @@ export default async function OverviewPage() {
     subscription?.status || null,
     subscription?.trialEndsAt || null
   );
+
+  // ── Access guard: don't load paid data without access ──
+  if (!access.overview) {
+    return (
+      <div className="relative">
+        <PaywallOverlay planName="Сводка.Всё" price="1 490" />
+        <div className="space-y-10">
+          <div className="flex items-center gap-4">
+            <h1 className="text-[26px] font-bold tracking-tight">Обзор</h1>
+          </div>
+          <div className="grid grid-cols-2 gap-5 lg:grid-cols-5">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="h-24 rounded-xl bg-muted/40 animate-pulse" />
+            ))}
+          </div>
+          <div className="space-y-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="h-20 rounded-xl bg-muted/40 animate-pulse" />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const projects = await getProjectsByUser(userId);
   const metrikaProject = projects.find((p) => p.type === "metrika");
@@ -52,7 +75,7 @@ export default async function OverviewPage() {
   if (metrikaProject && token) {
     const settings = JSON.parse(metrikaProject.settingsJson) as MetrikaSettings;
     const yesterday = getYesterday();
-    const weekAgo = getWeekAgo(yesterday);
+    const baseline = getBaselineRange(yesterday);
 
     const [currentResult, prevResult, sourcesResult] = await Promise.all([
       getMetrikaStats(token, {
@@ -64,8 +87,8 @@ export default async function OverviewPage() {
       }),
       getMetrikaStats(token, {
         counterId: settings.counter_id,
-        date1: formatDateForApi(weekAgo),
-        date2: formatDateForApi(yesterday),
+        date1: formatDateForApi(baseline.from),
+        date2: formatDateForApi(baseline.to),
         metrics: settings.metrics,
         goalIds: settings.goals.map((g) => g.id),
       }),
@@ -154,8 +177,6 @@ export default async function OverviewPage() {
 
   return (
     <div className="relative">
-      {!access.overview && <PaywallOverlay planName="Сводка.Всё" price="1 490" />}
-
       <div className="space-y-10">
         {/* ── Status header ── */}
         <div className="flex items-center justify-between">

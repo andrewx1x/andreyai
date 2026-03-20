@@ -17,7 +17,7 @@ Telegram-боты были предыдущей версией продукта.
 | Email | Resend + HTML шаблоны |
 | Cron | Vercel Cron (→ Timeweb cron) |
 | Hosting | Vercel (тест) → Timeweb (прод) |
-| Платежи | Робокасса (заложена, не активирована) |
+| Платежи | ЮKassa (заложена, не активирована) |
 
 ## Структура кода
 
@@ -46,4 +46,4 @@ src/
 |---|---|---|
 | 7-дневный триал | `lib/trial.ts` → `TRIAL_ENABLED` | На Timeweb |
 | Welcome email | `lib/email/index.ts` → `sendWelcomeEmail` | На Timeweb |
-| Робокасса | `api/webhooks/payment` → `ROBOKASSA_ENABLED` | После ПНД + юрдоки |
+| ЮKassa | `api/webhooks/payment` → `YUKASSA_ENABLED` | После ПНД + юрдоки |

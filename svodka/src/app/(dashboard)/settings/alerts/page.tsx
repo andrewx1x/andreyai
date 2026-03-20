@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { auth, getSessionUserId } from "@/lib/auth";
 import { getProjectsByUser } from "@/lib/db/queries/projects";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertSettingsForm } from "@/components/settings/alert-settings-form";
@@ -8,7 +8,7 @@ export default async function AlertsPage() {
   const session = await auth();
   if (!session) redirect("/login");
 
-  const userId = (session as any).userId as number;
+  const userId = getSessionUserId(session)!;
   const projects = await getProjectsByUser(userId);
 
   return (

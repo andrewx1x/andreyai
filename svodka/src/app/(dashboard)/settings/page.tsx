@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { auth, signOut } from "@/lib/auth";
+import { auth, signOut, getSessionUserId } from "@/lib/auth";
 import { getProjectsByUser } from "@/lib/db/queries/projects";
 import { getSubscription } from "@/lib/db/queries/subscriptions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,7 +12,7 @@ export default async function SettingsPage() {
   const session = await auth();
   if (!session) redirect("/login");
 
-  const userId = (session as any).userId as number;
+  const userId = getSessionUserId(session)!;
   const projects = await getProjectsByUser(userId);
   const subscription = await getSubscription(userId);
 

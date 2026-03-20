@@ -206,6 +206,20 @@ export function getYesterday(): Date {
   return date;
 }
 
+/**
+ * Returns the start of the 7-day baseline window.
+ * Baseline = 7 completed days before `date`.
+ * If date = yesterday (Mar 19), baseline = Mar 12..Mar 18 (7 full days).
+ */
+export function getBaselineRange(date: Date): { from: Date; to: Date } {
+  const to = new Date(date);
+  to.setDate(to.getDate() - 1); // day before `date`
+  const from = new Date(to);
+  from.setDate(from.getDate() - 6); // 7 days total
+  return { from, to };
+}
+
+/** @deprecated Use getBaselineRange instead */
 export function getWeekAgo(date: Date): Date {
   const result = new Date(date);
   result.setDate(result.getDate() - 7);
