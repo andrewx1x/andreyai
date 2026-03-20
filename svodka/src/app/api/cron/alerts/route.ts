@@ -3,17 +3,14 @@ import { db } from "@/lib/db";
 import { projects, tokens, users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { decryptToken } from "@/lib/engine/crypto";
-import { getStats as getMetrikaStats, formatDateForApi, getYesterday, getBaselineRange } from "@/lib/engine/metrika/api";
-import { getStats as getDirectStats, formatDateForApi as formatDirectDate, getDateRange } from "@/lib/engine/direct/api";
-import { extractSignals as extractMetrikaSignals } from "@/lib/engine/metrika/signals";
-import { extractSignals as extractDirectSignals } from "@/lib/engine/direct/signals";
+import { collectProjectSignals } from "@/lib/engine/collect";
 import { buildCockpit } from "@/lib/engine/insights";
 import { canSendAlert, markAlertSent } from "@/lib/db/queries/alerts";
 import { saveSignalsAsEvents } from "@/lib/db/queries/events";
 import { sendAlertEmail } from "@/lib/email";
 import { buildAlertEmailHtml, buildAlertSubject } from "@/lib/email/templates/alert";
 import { log } from "@/lib/logger";
-import type { MetrikaSettings, DirectSettings, Signal } from "@/lib/engine/types";
+import type { Signal } from "@/lib/engine/types";
 
 const CRON_SECRET = process.env.CRON_SECRET;
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://svodka.app";
@@ -130,106 +127,36 @@ export async function GET(request: Request) {
         continue;
       }
 
-      // Collect signals from ALL user projects
+      // Collect signals from ALL user projects using shared collect module
       const metrikaSignals: Signal[] = [];
       const directSignals: Signal[] = [];
 
       for (const project of userProjects) {
         try {
-          let settings: MetrikaSettings | DirectSettings;
-          try {
-            settings = JSON.parse(project.settingsJson);
-          } catch {
-            log.error("cron.alerts", "Invalid settingsJson", { projectId: project.id });
-            errors++;
-            continue;
-          }
-
+          const settings = JSON.parse(project.settingsJson);
           if (!settings.alerts?.enabled) {
             skipped++;
             continue;
           }
 
-          let projectSignals: Signal[] = [];
+          const result = await collectProjectSignals(token, project);
 
-          if (project.type === "metrika") {
-            const ms = settings as MetrikaSettings;
-            const yesterday = getYesterday();
-            const baseline = getBaselineRange(yesterday);
+          if (result.error) {
+            log.error("cron.alerts", result.error, { projectId: project.id });
+            errors++;
+            continue;
+          }
 
-            const [currentResult, prevResult] = await Promise.all([
-              getMetrikaStats(token, {
-                counterId: ms.counter_id,
-                date1: formatDateForApi(yesterday),
-                date2: formatDateForApi(yesterday),
-                metrics: ms.metrics,
-                goalIds: ms.goals?.map((g) => g.id) || [],
-              }),
-              getMetrikaStats(token, {
-                counterId: ms.counter_id,
-                date1: formatDateForApi(baseline.from),
-                date2: formatDateForApi(baseline.to),
-                metrics: ms.metrics,
-                goalIds: ms.goals?.map((g) => g.id) || [],
-              }),
-            ]);
-
-            if (!currentResult.ok || !currentResult.data) {
-              log.error("cron.alerts", "Metrika fetch failed", { projectId: project.id, error: currentResult.error });
-              errors++;
-              continue;
-            }
-
-            const prev = prevResult.data
-              ? {
-                  ...prevResult.data,
-                  visits: Math.round(prevResult.data.visits / 7),
-                  users: Math.round(prevResult.data.users / 7),
-                  pageviews: Math.round(prevResult.data.pageviews / 7),
-                }
-              : currentResult.data;
-
-            projectSignals = extractMetrikaSignals(currentResult.data, prev, ms.alerts?.thresholds);
-            metrikaSignals.push(...projectSignals);
-          } else if (project.type === "direct") {
-            const ds = settings as DirectSettings;
-            const currentRange = getDateRange(ds.compare_period || "day", 0);
-            const previousRange = getDateRange(ds.compare_period || "day", 1);
-            const campaignIds = ds.campaigns === "all" ? undefined : ds.campaigns;
-
-            const [currentResult, previousResult] = await Promise.all([
-              getDirectStats(token, ds.login, {
-                dateFrom: formatDirectDate(currentRange.from),
-                dateTo: formatDirectDate(currentRange.to),
-                campaignIds,
-                includeConversions: true,
-              }),
-              getDirectStats(token, ds.login, {
-                dateFrom: formatDirectDate(previousRange.from),
-                dateTo: formatDirectDate(previousRange.to),
-                campaignIds,
-                includeConversions: true,
-              }),
-            ]);
-
-            if (!currentResult.ok || !currentResult.data) {
-              log.error("cron.alerts", "Direct fetch failed", { projectId: project.id, error: currentResult.error });
-              errors++;
-              continue;
-            }
-
-            projectSignals = extractDirectSignals(
-              currentResult.data,
-              previousResult.data || currentResult.data,
-              ds.alerts?.thresholds
-            );
-            directSignals.push(...projectSignals);
+          if (result.channel === "site") {
+            metrikaSignals.push(...result.signals);
+          } else {
+            directSignals.push(...result.signals);
           }
 
           // Save per-project signals as events (audit trail)
-          if (projectSignals.length > 0) {
-            await saveSignalsAsEvents(project.id, projectSignals);
-            signalsFound += projectSignals.length;
+          if (result.signals.length > 0) {
+            await saveSignalsAsEvents(project.id, result.signals);
+            signalsFound += result.signals.length;
           }
         } catch (error) {
           const msg = error instanceof Error ? error.message : "Unknown error";
