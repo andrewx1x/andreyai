@@ -5,8 +5,8 @@ import { eq } from "drizzle-orm";
 /** Trial duration in days. Set to 0 to disable trial expiry (infinite trial). */
 const TRIAL_DAYS = 7;
 
-/** Whether trial is currently enforced. Set to true on Timeweb. */
-const TRIAL_ENABLED = false;
+/** Whether trial is currently enforced. */
+const TRIAL_ENABLED = true;
 
 /**
  * Create trial subscription for new user.

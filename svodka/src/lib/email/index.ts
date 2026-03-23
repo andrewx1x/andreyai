@@ -32,16 +32,9 @@ export const sendAlertEmail = sendEmail;
 
 /**
  * Send welcome email to new user.
- * Currently disabled — will be activated on Timeweb.
- * To activate: remove the early return below.
  */
 export async function sendWelcomeEmail(to: string, userName: string) {
-  // TODO: Активировать на Timeweb
-  console.log("[Email] Welcome email disabled (pre-launch), would send to:", to);
-  return { ok: false, reason: "disabled" } as const;
-
-  // Uncomment to activate:
-  // const appUrl = process.env.NEXTAUTH_URL || "https://svodka.app";
-  // const html = buildWelcomeEmailHtml(userName, appUrl);
-  // return sendEmail(to, "Добро пожаловать в Сводку!", html);
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://svodka.app";
+  const html = buildWelcomeEmailHtml(userName, appUrl);
+  return sendEmail(to, "Добро пожаловать в Сводку!", html);
 }

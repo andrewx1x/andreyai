@@ -137,7 +137,7 @@ function buildPaymentConfirmationHtml(userName: string, plan: string, paidUntil:
   };
   const planLabel = planNames[plan] || plan;
   const dateStr = paidUntil.toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" });
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://app.svodka.ru";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://svodka.app";
 
   return `
 <!DOCTYPE html>
