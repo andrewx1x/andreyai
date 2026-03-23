@@ -8,6 +8,10 @@ const projects = [
     type: "metrika",
     isActive: true,
     details: "Счётчик #12345678",
+    lastSync: "23 мар, 09:15",
+    syncStatus: "ok" as const,
+    goals: 3,
+    metrics: 6,
   },
   {
     id: 2,
@@ -15,8 +19,15 @@ const projects = [
     type: "direct",
     isActive: true,
     details: "Логин: demo-agency",
+    lastSync: "23 мар, 09:12",
+    syncStatus: "ok" as const,
+    campaigns: 4,
+    metrics: 5,
   },
 ];
+
+const syncStatusLabel = { ok: "Синхронизировано", error: "Ошибка", pending: "Ожидание" } as const;
+const syncStatusColor = { ok: "bg-emerald-500", error: "bg-red-500", pending: "bg-amber-500" } as const;
 
 export default function DemoProjectsPage() {
   return (
@@ -46,6 +57,26 @@ export default function DemoProjectsPage() {
             <div className="flex items-center gap-2 text-sm">
               <span className="text-muted-foreground">Детали:</span>
               <span>{project.details}</span>
+            </div>
+            {/* Health status */}
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-muted-foreground">Статус:</span>
+              <span className="flex items-center gap-1.5">
+                <span className={`w-2 h-2 rounded-full ${syncStatusColor[project.syncStatus]}`} />
+                {syncStatusLabel[project.syncStatus]}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-muted-foreground">Последняя синхронизация:</span>
+              <span>{project.lastSync}</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-muted-foreground">
+                {project.type === "metrika" ? "Целей:" : "Кампаний:"}
+              </span>
+              <span>{project.type === "metrika" ? project.goals : project.campaigns}</span>
+              <span className="text-muted-foreground ml-2">Метрик:</span>
+              <span>{project.metrics}</span>
             </div>
           </CardContent>
         </Card>

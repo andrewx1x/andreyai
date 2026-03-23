@@ -10,13 +10,21 @@ interface OverviewContentProps {
   problems: Problem[];
   actions: Action[];
   insight: InsightData;
+  updatedAt?: string; // ISO timestamp
 }
 
-export function OverviewContent({ status, problems, actions, insight }: OverviewContentProps) {
+export function OverviewContent({ status, problems, actions, insight, updatedAt }: OverviewContentProps) {
   const criticalCount = problems.filter((p) => p.priority === "critical").length;
 
   return (
     <div className="space-y-10">
+      {/* ── Время обновления ── */}
+      {updatedAt && (
+        <p className="text-xs text-muted-foreground -mb-6">
+          Данные обновлены: {new Date(updatedAt).toLocaleString("ru-RU", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+        </p>
+      )}
+
       {/* ── Светофор ── */}
       <StatusHero
         status={status}

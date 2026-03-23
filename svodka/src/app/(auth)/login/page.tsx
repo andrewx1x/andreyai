@@ -7,7 +7,7 @@ export default function LoginPage() {
         <div className="space-y-2 text-center">
           <h1 className="text-3xl font-bold">Сводка</h1>
           <p className="text-muted-foreground">
-            Контроль рекламы и сайта без входа в Яндекс
+            Вход через Яндекс OAuth — доступ только на чтение, пароль не передаётся
           </p>
         </div>
 
@@ -32,7 +32,7 @@ export default function LoginPage() {
         </form>
 
         <p className="text-center text-xs text-muted-foreground">
-          Одним действием вы авторизуетесь и подключаете доступ к Метрике и Директу
+          Одним действием вы подключаете Метрику и Директ. Можно отключить доступ в любой момент.
         </p>
       </div>
     </div>

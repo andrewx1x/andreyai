@@ -195,6 +195,7 @@ export default function DemoOverviewPage() {
         problems={problems}
         actions={actions}
         insight={insight}
+        updatedAt={new Date().toISOString()}
       />
     </div>
   );

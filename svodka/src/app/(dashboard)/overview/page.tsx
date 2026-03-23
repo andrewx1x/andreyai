@@ -43,6 +43,7 @@ export default async function OverviewPage() {
   const token = await getDecryptedToken(userId);
 
   // ── Live-fetch: collect signals and build cockpit ──
+  const now = new Date().toISOString();
   const { cockpit } = token
     ? await collectUserCockpit(token, projects)
     : { cockpit: { status: "healthy" as const, problems: [], actions: [], insight: { status: "neutral" as const, message: "Подключите Яндекс для получения данных." } } };
@@ -55,6 +56,7 @@ export default async function OverviewPage() {
         problems={cockpit.problems}
         actions={cockpit.actions}
         insight={cockpit.insight}
+        updatedAt={now}
       />
     </div>
   );
