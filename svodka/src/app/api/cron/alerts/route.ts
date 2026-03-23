@@ -13,7 +13,7 @@ import { log } from "@/lib/logger";
 import type { Signal } from "@/lib/engine/types";
 
 const CRON_SECRET = process.env.CRON_SECRET;
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://svodka.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://app.andreyai.ru";
 
 export async function GET(request: Request) {
   // --- Auth ---

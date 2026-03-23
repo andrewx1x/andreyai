@@ -9,7 +9,7 @@ function getResend(): Resend | null {
   return _resend;
 }
 
-const FROM_EMAIL = process.env.EMAIL_FROM || "Сводка <alerts@svodka.app>";
+const FROM_EMAIL = process.env.EMAIL_FROM || "Сводка <alerts@andreyai.ru>";
 
 export async function sendEmail(to: string, subject: string, html: string) {
   const resend = getResend();
@@ -34,7 +34,7 @@ export const sendAlertEmail = sendEmail;
  * Send welcome email to new user.
  */
 export async function sendWelcomeEmail(to: string, userName: string) {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://svodka.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://app.andreyai.ru";
   const html = buildWelcomeEmailHtml(userName, appUrl);
   return sendEmail(to, "Добро пожаловать в Сводку!", html);
 }
