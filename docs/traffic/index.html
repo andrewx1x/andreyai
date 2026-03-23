@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Сводка.Трафик — контроль трафика без ручной аналитики</title>
     <meta name="description" content="Подключите Яндекс.Метрику — Сводка найдёт падения, аномалии и проблемы с конверсией. Автоматические сигналы и диагностика.">
-    <link rel="canonical" href="https://andreyai.ru/svodka/traffic/">
+    <link rel="canonical" href="https://andreyai.ru/traffic/">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Сводка.Трафик — контроль трафика без ручной аналитики">
     <meta property="og:description" content="Подключите Метрику — Сводка сама найдёт падения, аномалии и проблемы с конверсией.">
@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="../../logo-new-outlined.png">
+    <link rel="icon" type="image/png" href="../logo-new-outlined.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -47,15 +47,16 @@
 <!-- NAV -->
 <nav class="fixed w-full z-50 glass border-b border-slate-200/60">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
-        <a href="/svodka/" class="flex items-center gap-2">
+        <a href="/" class="flex items-center gap-2">
             <div class="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center text-white font-bold text-sm">С</div>
             <span class="font-extrabold text-xl tracking-tight">Сводка</span>
         </a>
         <div class="hidden md:flex items-center space-x-6">
-            <a href="/svodka/" class="text-sm font-medium text-slate-600 hover:text-emerald-600 transition">Все продукты</a>
-            <a href="/svodka/traffic/" class="text-sm font-semibold text-emerald-600">Трафик</a>
-            <a href="/svodka/ads/" class="text-sm font-medium text-slate-600 hover:text-emerald-600 transition">Реклама</a>
+            <a href="/" class="text-sm font-medium text-slate-600 hover:text-emerald-600 transition">Все продукты</a>
+            <a href="/traffic/" class="text-sm font-semibold text-emerald-600">Трафик</a>
+            <a href="/ads/" class="text-sm font-medium text-slate-600 hover:text-emerald-600 transition">Реклама</a>
         <a href="https://app.andreyai.ru/demo" class="text-sm font-medium text-slate-600 hover:text-emerald-600 transition">Демо</a>
+            <a href="/portfolio/" class="text-sm font-medium text-slate-600 hover:text-emerald-600 transition">Портфолио</a>
         </div>
         <a href="https://app.andreyai.ru/login" class="px-5 py-2 bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold rounded-lg transition-all shadow-sm">Попробовать</a>
     </div>
@@ -211,7 +212,7 @@
                     <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Стоимость заявки, CTR, расход</li>
                     <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Диагностика по кампаниям</li>
                 </ul>
-                <a href="/svodka/ads/" class="block w-full py-2.5 text-center text-sm font-semibold rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors">Подробнее</a>
+                <a href="/ads/" class="block w-full py-2.5 text-center text-sm font-semibold rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors">Подробнее</a>
             </div>
             <div class="rounded-2xl border border-slate-200 bg-white p-7">
                 <div class="text-sm font-semibold text-blue-600 mb-1">Пакет</div>
@@ -243,10 +244,10 @@
 <footer class="border-t border-slate-200 bg-white py-10">
     <div class="max-w-5xl mx-auto px-4 sm:px-6">
         <div class="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-slate-500 mb-6">
-            <a href="/svodka/" class="hover:text-emerald-600 transition">Все продукты</a>
-            <a href="/svodka/ads/" class="hover:text-emerald-600 transition">Реклама</a>
+            <a href="/" class="hover:text-emerald-600 transition">Все продукты</a>
+            <a href="/ads/" class="hover:text-emerald-600 transition">Реклама</a>
           <a href="https://app.andreyai.ru/demo" class="hover:text-emerald-600 transition">Демо</a>
-            <a href="/" class="hover:text-emerald-600 transition">Портфолио</a>
+            <a href="/portfolio/" class="hover:text-emerald-600 transition">Портфолио</a>
         </div>
         <p class="text-xs text-slate-400 text-center max-w-3xl mx-auto mb-4">Сводка не является продуктом компании Яндекс. &laquo;Яндекс&raquo;, &laquo;Яндекс.Метрика&raquo; — зарегистрированные товарные знаки ООО &laquo;Яндекс&raquo;.</p>
         <p class="text-xs text-slate-400 text-center">&copy; <script>document.write(new Date().getFullYear())</script> Сводка. Андрей Поляков.</p>

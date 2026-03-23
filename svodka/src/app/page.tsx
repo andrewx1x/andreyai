@@ -12,6 +12,6 @@ export default async function Home() {
   }
 
   // Not authenticated — redirect to login
-  // Landing page lives on the main domain (andreyai.ru/svodka/)
+  // Landing page lives on the main domain (andreyai.ru)
   redirect("/login");
 }
