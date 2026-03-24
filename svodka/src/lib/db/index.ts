@@ -5,11 +5,18 @@ import * as schema from "./schema";
 
 let _db: LibSQLDatabase<typeof schema> | null = null;
 
+/**
+ * Lazy DB initialization.
+ * Supports both Turso cloud (libsql://...) and local SQLite file (file:...).
+ * On VPS we use local SQLite: TURSO_DATABASE_URL=file:/root/andreyai/svodka/data/svodka.db
+ */
 export function getDb() {
   if (!_db) {
+    const url = process.env.TURSO_DATABASE_URL || "file:local.db";
     const client = createClient({
-      url: process.env.TURSO_DATABASE_URL || "file:local.db",
-      authToken: process.env.TURSO_AUTH_TOKEN,
+      url,
+      // authToken only needed for Turso cloud, not for local file: URLs
+      authToken: url.startsWith("file:") ? undefined : process.env.TURSO_AUTH_TOKEN,
     });
     _db = drizzle(client, { schema });
   }

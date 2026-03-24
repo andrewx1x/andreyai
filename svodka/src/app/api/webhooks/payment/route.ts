@@ -13,9 +13,10 @@ import { sendEmail } from "@/lib/email";
  *
  * Flow:
  *   1. ЮKassa sends POST with JSON notification
- *   2. We verify it's from ЮKassa (IP check + idempotency key)
- *   3. On event "payment.succeeded" — activate subscription
- *   4. Respond with 200 OK
+ *   2. On event "payment.succeeded" — activate subscription
+ *   3. Respond with 200 OK
+ *
+ * TODO: Add IP whitelist check (ЮKassa IPs) and idempotency key deduplication
  *
  * Metadata convention:
  *   payment.metadata.userId — our internal user ID
