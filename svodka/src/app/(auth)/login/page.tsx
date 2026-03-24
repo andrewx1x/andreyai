@@ -160,6 +160,14 @@ export default function LoginPage() {
             </div>
           </div>
 
+          {/* Юридическая информация */}
+          <p className="text-center text-xs text-slate-400">
+            Нажимая «Войти через Яндекс», вы принимаете{" "}
+            <Link href="https://andreyai.ru/legal/terms.html" className="underline hover:text-slate-600">условия использования</Link>
+            {" "}и{" "}
+            <Link href="https://andreyai.ru/legal/privacy.html" className="underline hover:text-slate-600">политику конфиденциальности</Link>
+          </p>
+
           {/* Ссылки */}
           <div className="flex items-center justify-center gap-4 text-sm">
             <Link href="https://andreyai.ru" className="text-slate-400 hover:text-slate-600 transition">
