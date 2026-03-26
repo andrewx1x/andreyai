@@ -92,12 +92,11 @@ export const authConfig: NextAuthConfig = {
           console.error("[Auth] Failed to activate trial for userId:", userId, trialError);
         }
 
-        try {
-          if (user.email) {
-            await sendWelcomeEmail(user.email, user.name || "");
-          }
-        } catch (emailError) {
-          console.error("[Auth] Failed to send welcome email:", emailError);
+        // Fire-and-forget: don't block OAuth callback on email
+        if (user.email) {
+          sendWelcomeEmail(user.email, user.name || "").catch((emailError) => {
+            console.error("[Auth] Failed to send welcome email:", emailError);
+          });
         }
       }
 
