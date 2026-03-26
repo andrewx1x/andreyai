@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { DangerZone } from "./danger-zone";
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -113,6 +114,15 @@ export default async function SettingsPage() {
               ))}
             </div>
           )}
+        </CardContent>
+      </Card>
+      {/* Danger Zone */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Данные и доступ</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <DangerZone />
         </CardContent>
       </Card>
     </div>

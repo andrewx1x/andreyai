@@ -86,6 +86,38 @@ export default function DemoSettingsPage() {
           </div>
         </CardContent>
       </Card>
+      {/* Danger Zone */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Данные и доступ</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-sm font-medium">Отключить доступ к Яндексу</div>
+              <div className="text-xs text-muted-foreground">
+                Токен будет удалён. Данные перестанут обновляться.
+              </div>
+            </div>
+            <button className="inline-flex items-center rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium opacity-50 cursor-not-allowed">
+              Отключить
+            </button>
+          </div>
+          <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-sm font-medium text-red-800">Удалить аккаунт</div>
+                <div className="text-xs text-red-600">
+                  Все данные будут удалены без возможности восстановления.
+                </div>
+              </div>
+              <button className="inline-flex items-center rounded-md bg-red-600 px-3 py-1.5 text-sm font-medium text-white opacity-50 cursor-not-allowed">
+                Удалить
+              </button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
