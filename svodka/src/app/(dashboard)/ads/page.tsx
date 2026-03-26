@@ -75,7 +75,7 @@ export default async function AdsPage() {
   }
 
   const settings = JSON.parse(project.settingsJson) as DirectSettings;
-  const period = settings.compare_period || "day";
+  const period = settings.compare_period || "week";
   const currentRange = getDateRange(period, 0);
   const previousRange = getDateRange(period, 1);
 

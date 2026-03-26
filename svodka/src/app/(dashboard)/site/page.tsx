@@ -4,7 +4,7 @@ import { getProjectsByType } from "@/lib/db/queries/projects";
 import { getDecryptedToken } from "@/lib/db/queries/tokens";
 import { getSubscription } from "@/lib/db/queries/subscriptions";
 import { getScreenAccess } from "@/lib/subscription";
-import { getStats, getTopTrafficSources, getDailyStats, formatDateForApi, getYesterday, getBaselineRange } from "@/lib/engine/metrika/api";
+import { getStats, getTopTrafficSources, getDailyStats, formatDateForApi, getYesterday } from "@/lib/engine/metrika/api";
 import { extractSignals, generateInsight } from "@/lib/engine/metrika/signals";
 import { formatNumber, formatPercent, formatDuration, calcChange } from "@/lib/engine/format";
 import type { MetrikaSettings } from "@/lib/engine/types";
@@ -77,12 +77,19 @@ export default async function SitePage() {
 
   const settings = JSON.parse(project.settingsJson) as MetrikaSettings;
   const yesterday = getYesterday();
-  const baseline = getBaselineRange(yesterday);
+
+  // Current period: last 7 completed days (yesterday - 6 ... yesterday)
+  const currentFrom = new Date(yesterday);
+  currentFrom.setDate(currentFrom.getDate() - 6);
+  // Previous period: 7 days before that
+  const prevTo = new Date(currentFrom);
+  prevTo.setDate(prevTo.getDate() - 1);
+  const prevFrom = new Date(prevTo);
+  prevFrom.setDate(prevFrom.getDate() - 6);
 
   // Visible KPIs
   const visibleKpis = settings.visible_kpis || DEFAULT_METRIKA_KPIS;
 
-  // Fetch current and previous data
   // Date range for daily chart: last 14 days
   const twoWeeksAgo = new Date(yesterday);
   twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 13);
@@ -90,19 +97,19 @@ export default async function SitePage() {
   const [currentResult, previousResult, sourcesResult, dailyResult] = await Promise.all([
     getStats(token, {
       counterId: settings.counter_id,
-      date1: formatDateForApi(yesterday),
+      date1: formatDateForApi(currentFrom),
       date2: formatDateForApi(yesterday),
       metrics: settings.metrics,
       goalIds: settings.goals.map((g) => g.id),
     }),
     getStats(token, {
       counterId: settings.counter_id,
-      date1: formatDateForApi(baseline.from),
-      date2: formatDateForApi(baseline.to),
+      date1: formatDateForApi(prevFrom),
+      date2: formatDateForApi(prevTo),
       metrics: settings.metrics,
       goalIds: settings.goals.map((g) => g.id),
     }),
-    getTopTrafficSources(token, settings.counter_id, formatDateForApi(yesterday), formatDateForApi(yesterday)),
+    getTopTrafficSources(token, settings.counter_id, formatDateForApi(currentFrom), formatDateForApi(yesterday)),
     getDailyStats(token, settings.counter_id, formatDateForApi(twoWeeksAgo), formatDateForApi(yesterday)),
   ]);
 
@@ -116,15 +123,7 @@ export default async function SitePage() {
   }
 
   const current = currentResult.data;
-  // Normalize 7-day data to daily average
-  const prev = previousResult.data
-    ? {
-        ...previousResult.data,
-        visits: Math.round(previousResult.data.visits / 7),
-        users: Math.round(previousResult.data.users / 7),
-        pageviews: Math.round(previousResult.data.pageviews / 7),
-      }
-    : current;
+  const prev = previousResult.data || current;
 
   const sources = sourcesResult.data || [];
   const dailyData = dailyResult.data || [];

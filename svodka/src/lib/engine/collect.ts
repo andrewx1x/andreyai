@@ -1,7 +1,7 @@
 // Shared data collection: fetches Metrika + Direct signals for a user's projects
 // Used by overview page (live) and cron/alerts
 
-import { getStats as getMetrikaStats, formatDateForApi, getYesterday, getBaselineRange } from "@/lib/engine/metrika/api";
+import { getStats as getMetrikaStats, formatDateForApi, getYesterday } from "@/lib/engine/metrika/api";
 import { extractSignals as extractMetrikaSignals } from "@/lib/engine/metrika/signals";
 import { getStats as getDirectStats, formatDateForApi as formatDirectDate, getDateRange } from "@/lib/engine/direct/api";
 import { extractSignals as extractDirectSignals } from "@/lib/engine/direct/signals";
@@ -38,20 +38,27 @@ export async function collectProjectSignals(
   if (project.type === "metrika") {
     const ms = settings as MetrikaSettings;
     const yesterday = getYesterday();
-    const baseline = getBaselineRange(yesterday);
+    // Current: last 7 completed days
+    const currentFrom = new Date(yesterday);
+    currentFrom.setDate(currentFrom.getDate() - 6);
+    // Previous: 7 days before that
+    const prevTo = new Date(currentFrom);
+    prevTo.setDate(prevTo.getDate() - 1);
+    const prevFrom = new Date(prevTo);
+    prevFrom.setDate(prevFrom.getDate() - 6);
 
     const [currentResult, prevResult] = await Promise.all([
       getMetrikaStats(token, {
         counterId: ms.counter_id,
-        date1: formatDateForApi(yesterday),
+        date1: formatDateForApi(currentFrom),
         date2: formatDateForApi(yesterday),
         metrics: ms.metrics,
         goalIds: ms.goals?.map((g) => g.id) || [],
       }),
       getMetrikaStats(token, {
         counterId: ms.counter_id,
-        date1: formatDateForApi(baseline.from),
-        date2: formatDateForApi(baseline.to),
+        date1: formatDateForApi(prevFrom),
+        date2: formatDateForApi(prevTo),
         metrics: ms.metrics,
         goalIds: ms.goals?.map((g) => g.id) || [],
       }),
@@ -61,14 +68,7 @@ export async function collectProjectSignals(
       return { signals: [], channel: "site", error: `Metrika fetch failed: ${currentResult.error}` };
     }
 
-    const prev = prevResult.data
-      ? {
-          ...prevResult.data,
-          visits: Math.round(prevResult.data.visits / 7),
-          users: Math.round(prevResult.data.users / 7),
-          pageviews: Math.round((prevResult.data.pageviews || 0) / 7),
-        }
-      : currentResult.data;
+    const prev = prevResult.data || currentResult.data;
 
     const sources: { source: string; visits: number }[] = [];
     const signals = extractMetrikaSignals(currentResult.data, prev, ms.alerts?.thresholds, sources);
@@ -77,7 +77,7 @@ export async function collectProjectSignals(
 
   if (project.type === "direct") {
     const ds = settings as DirectSettings;
-    const period = ds.compare_period || "day";
+    const period = ds.compare_period || "week";
     const currentRange = getDateRange(period, 0);
     const previousRange = getDateRange(period, 1);
     const campaignIds = ds.campaigns === "all" ? undefined : ds.campaigns;
