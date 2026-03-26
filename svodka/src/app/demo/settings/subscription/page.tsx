@@ -47,7 +47,7 @@ export default function DemoSubscriptionPage() {
               className={cn(
                 "relative transition-shadow",
                 isCurrent && "border-indigo-300 shadow-md",
-                plan.recommended && "ring-2 ring-indigo-200"
+                plan.recommended && "ring-2 ring-indigo-200 overflow-visible"
               )}
             >
               {plan.recommended && (

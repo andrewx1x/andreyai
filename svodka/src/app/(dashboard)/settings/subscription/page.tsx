@@ -83,7 +83,7 @@ export default async function SubscriptionPage() {
           return (
             <Card
               key={plan.id}
-              className={`relative ${plan.popular ? "border-primary shadow-md" : ""}`}
+              className={`relative ${plan.popular ? "border-primary shadow-md overflow-visible" : ""}`}
             >
               {plan.popular && (
                 <Badge className="absolute -top-3 right-4">Выгодно</Badge>
