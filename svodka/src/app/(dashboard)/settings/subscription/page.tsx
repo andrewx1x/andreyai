@@ -83,13 +83,13 @@ export default async function SubscriptionPage() {
           return (
             <Card
               key={plan.id}
-              className={plan.popular ? "border-primary shadow-md" : ""}
+              className={`relative ${plan.popular ? "border-primary shadow-md" : ""}`}
             >
+              {plan.popular && (
+                <Badge className="absolute -top-3 right-4">Выгодно</Badge>
+              )}
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-base">{plan.name}</CardTitle>
-                  {plan.popular && <Badge>Выгодно</Badge>}
-                </div>
+                <CardTitle className="text-base">{plan.name}</CardTitle>
                 <div className="text-3xl font-bold">
                   {plan.price}{" "}
                   <span className="text-base font-normal text-muted-foreground">

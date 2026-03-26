@@ -43,6 +43,7 @@ const yandexProvider = {
 };
 
 export const authConfig: NextAuthConfig = {
+  trustHost: true,
   providers: [yandexProvider],
   pages: {
     signIn: "/login",
