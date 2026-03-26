@@ -16,6 +16,7 @@ const yandexProvider = {
     params: {
       response_type: "code",
       force_confirm: "yes",
+      scope: "login:info login:email metrika:read direct:api",
     },
   },
   token: "https://oauth.yandex.ru/token",
