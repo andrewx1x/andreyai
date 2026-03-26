@@ -16,13 +16,15 @@ const CRON_SECRET = process.env.CRON_SECRET;
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://app.andreyai.ru";
 
 export async function GET(request: Request) {
-  // --- Auth ---
-  if (CRON_SECRET) {
-    const authHeader = request.headers.get("authorization");
-    if (authHeader !== `Bearer ${CRON_SECRET}`) {
-      log.warn("cron.alerts", "Unauthorized attempt");
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  // --- Auth (fail-closed: CRON_SECRET must be set) ---
+  if (!CRON_SECRET) {
+    log.error("cron.alerts", "CRON_SECRET not configured");
+    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
+  }
+  const authHeader = request.headers.get("authorization");
+  if (authHeader !== `Bearer ${CRON_SECRET}`) {
+    log.warn("cron.alerts", "Unauthorized attempt");
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const encryptionKey = process.env.ENCRYPTION_KEY;

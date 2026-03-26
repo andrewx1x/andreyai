@@ -12,13 +12,15 @@ import type { MetrikaSettings, DirectSettings } from "@/lib/engine/types";
 const CRON_SECRET = process.env.CRON_SECRET;
 
 export async function GET(request: Request) {
-  // --- Auth ---
-  if (CRON_SECRET) {
-    const authHeader = request.headers.get("authorization");
-    if (authHeader !== `Bearer ${CRON_SECRET}`) {
-      log.warn("cron.collect", "Unauthorized attempt");
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  // --- Auth (fail-closed: CRON_SECRET must be set) ---
+  if (!CRON_SECRET) {
+    log.error("cron.collect", "CRON_SECRET not configured");
+    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 });
+  }
+  const authHeader = request.headers.get("authorization");
+  if (authHeader !== `Bearer ${CRON_SECRET}`) {
+    log.warn("cron.collect", "Unauthorized attempt");
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const encryptionKey = process.env.ENCRYPTION_KEY;

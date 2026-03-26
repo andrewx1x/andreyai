@@ -11,26 +11,44 @@ import { sendEmail } from "@/lib/email";
  *
  * Docs: https://yookassa.ru/developers/using-api/webhooks
  *
+ * Security:
+ *   - IP whitelist: only ЮKassa IPs can call this endpoint
+ *   - Idempotency: duplicate payment.id is rejected
+ *
  * Flow:
  *   1. ЮKassa sends POST with JSON notification
- *   2. On event "payment.succeeded" — activate subscription
- *   3. Respond with 200 OK
- *
- * TODO: Add IP whitelist check (ЮKassa IPs) and idempotency key deduplication
- *
- * Metadata convention:
- *   payment.metadata.userId — our internal user ID
- *   payment.metadata.plan — "site" | "ads" | "bundle"
- *
- * To activate on Timeweb:
- *   1. Set YUKASSA_SHOP_ID and YUKASSA_SECRET_KEY in env
- *   2. Set YUKASSA_ENABLED=true
- *   3. Configure webhook URL in ЮKassa dashboard → https://YOUR_DOMAIN/api/webhooks/payment
+ *   2. Verify source IP is in ЮKassa range
+ *   3. On event "payment.succeeded" — activate subscription
+ *   4. Respond with 200 OK
  */
 
-const _YUKASSA_SHOP_ID = process.env.YUKASSA_SHOP_ID;
-const _YUKASSA_SECRET_KEY = process.env.YUKASSA_SECRET_KEY;
 const YUKASSA_ENABLED = process.env.YUKASSA_ENABLED === "true";
+
+// ЮKassa IP ranges (https://yookassa.ru/developers/using-api/webhooks#ip)
+const YUKASSA_IP_RANGES = [
+  "185.71.76.", "185.71.77.",   // 185.71.76.0/27, 185.71.77.0/27
+  "77.75.153.",                  // 77.75.153.0/25
+  "77.75.156.",                  // 77.75.156.11, 77.75.156.35
+];
+
+// In-memory set of processed payment IDs (survives until PM2 restart)
+const processedPayments = new Set<string>();
+
+function isYookassaIp(ip: string): boolean {
+  if (!ip) return false;
+  // Strip IPv6 prefix if present
+  const cleanIp = ip.replace(/^::ffff:/, "");
+  return YUKASSA_IP_RANGES.some((range) => cleanIp.startsWith(range));
+}
+
+function getClientIp(request: Request): string {
+  // Nginx sets X-Real-IP; fallback to X-Forwarded-For
+  const realIp = request.headers.get("x-real-ip");
+  if (realIp) return realIp.trim();
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (forwarded) return forwarded.split(",")[0].trim();
+  return "";
+}
 
 // Plan mapping: metadata.plan → subscription config
 const PLAN_MAP: Record<string, { plan: "site" | "ads" | "bundle"; days: number }> = {
@@ -55,13 +73,20 @@ interface YookassaNotification {
 
 export async function POST(request: Request) {
   try {
+    // --- IP whitelist check ---
+    const clientIp = getClientIp(request);
+    if (!isYookassaIp(clientIp)) {
+      log.warn("webhook.payment", "Blocked: IP not in ЮKassa whitelist", { ip: clientIp });
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const body: YookassaNotification = await request.json();
 
     log.info("webhook.payment", "ЮKassa webhook received", {
       event: body.event,
       paymentId: body.object?.id,
       status: body.object?.status,
-      enabled: YUKASSA_ENABLED,
+      ip: clientIp,
     });
 
     // --- Guard: not activated yet ---
@@ -77,6 +102,12 @@ export async function POST(request: Request) {
     }
 
     const payment = body.object;
+
+    // --- Idempotency: skip already processed payments ---
+    if (processedPayments.has(payment.id)) {
+      log.info("webhook.payment", "Duplicate payment, skipping", { paymentId: payment.id });
+      return NextResponse.json({ ok: true });
+    }
     const metadata = payment.metadata || {};
     const userIdStr = metadata.userId || metadata.user_id;
     const planKey = metadata.plan || "bundle";
@@ -99,6 +130,13 @@ export async function POST(request: Request) {
     const paidUntil = new Date(Date.now() + planConfig.days * 24 * 60 * 60 * 1000);
 
     await activatePaidSubscription(userId, planConfig.plan, paidUntil);
+    processedPayments.add(payment.id);
+
+    // Prevent unbounded memory growth (keep last 10k)
+    if (processedPayments.size > 10000) {
+      const first = processedPayments.values().next().value;
+      if (first) processedPayments.delete(first);
+    }
 
     log.info("webhook.payment", "Payment processed successfully", {
       userId,

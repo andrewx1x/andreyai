@@ -11,4 +11,7 @@ svodka/docs/
 dist/
 out/
 *.log
+*.db
+*.db-journal
+*.db-wal
 nul
