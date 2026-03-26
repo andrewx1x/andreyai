@@ -1,25 +1,35 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import { buildWelcomeEmailHtml } from "./templates/welcome";
 
-let _resend: Resend | null = null;
+let _transporter: nodemailer.Transporter | null = null;
 
-function getResend(): Resend | null {
-  if (!process.env.RESEND_API_KEY) return null;
-  if (!_resend) _resend = new Resend(process.env.RESEND_API_KEY);
-  return _resend;
+function getTransporter(): nodemailer.Transporter | null {
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASSWORD;
+  if (!user || !pass) return null;
+
+  if (!_transporter) {
+    _transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || "smtp.yandex.ru",
+      port: Number(process.env.SMTP_PORT) || 465,
+      secure: true,
+      auth: { user, pass },
+    });
+  }
+  return _transporter;
 }
 
-const FROM_EMAIL = process.env.EMAIL_FROM || "Сводка <alerts@andreyai.ru>";
+const FROM_EMAIL = process.env.EMAIL_FROM || `Сводка <${process.env.SMTP_USER || "svodka.alerts@yandex.ru"}>`;
 
 export async function sendEmail(to: string, subject: string, html: string) {
-  const resend = getResend();
-  if (!resend) {
-    console.log("[Email] RESEND_API_KEY not set, skipping:", subject);
-    return { ok: false, reason: "no_api_key" } as const;
+  const transporter = getTransporter();
+  if (!transporter) {
+    console.log("[Email] SMTP not configured, skipping:", subject);
+    return { ok: false, reason: "no_smtp" } as const;
   }
 
   try {
-    await resend.emails.send({ from: FROM_EMAIL, to, subject, html });
+    await transporter.sendMail({ from: FROM_EMAIL, to, subject, html });
     return { ok: true } as const;
   } catch (error) {
     console.error("[Email] Failed to send:", error);
