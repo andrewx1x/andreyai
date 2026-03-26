@@ -11,7 +11,7 @@ const yandexProvider = {
   id: "yandex",
   name: "Яндекс",
   type: "oauth" as const,
-  checks: ["state"] as const,
+  checks: ["state"] as ("state" | "pkce" | "none")[],
   authorization: {
     url: "https://oauth.yandex.ru/authorize",
     params: {
