@@ -6,12 +6,12 @@
     <title>Андрей Поляков — ИИ-автоматизация для бизнеса</title>
     <meta
       name="description"
-      content="Автоматизирую бизнес-процессы с помощью ИИ. Telegram-боты, отчёты, дашборды. 7 лет опыта в рекламе."
+      content="Автоматизирую бизнес-процессы с помощью ИИ. Telegram-боты, отчёты, дашборды, ИИ-агенты. 7 лет опыта в рекламе."
     />
     <meta property="og:title" content="Андрей Поляков — ИИ-автоматизация для бизнеса" />
     <meta
       property="og:description"
-      content="Автоматизирую бизнес-процессы с помощью ИИ. Telegram-боты, отчёты, дашборды."
+      content="Автоматизирую бизнес-процессы с помощью ИИ. Telegram-боты, отчёты, дашборды, ИИ-агенты."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://andreyai.ru/portfolio/" />
@@ -45,6 +45,7 @@
         --radius: 20px;
         --font-body: "Manrope", "Segoe UI", sans-serif;
         --font-display: "Cormorant Garamond", "Times New Roman", serif;
+        --ease-smooth: cubic-bezier(0.32, 0.72, 0, 1);
       }
 
       * {
@@ -74,7 +75,7 @@
       }
 
       .container {
-        width: min(1120px, 100% - 48px);
+        width: min(1220px, 100% - 48px);
         margin: 0 auto;
       }
 
@@ -124,7 +125,7 @@
         padding: 8px 12px;
         border-radius: 999px;
         border: 1px solid transparent;
-        transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+        transition: transform 0.3s var(--ease-smooth), background 0.3s var(--ease-smooth), border-color 0.3s var(--ease-smooth);
       }
 
       .nav-links a:hover {
@@ -217,7 +218,7 @@
         font-weight: 700;
         letter-spacing: 0.01em;
         box-shadow: 0 12px 26px rgba(15, 118, 110, 0.28);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        transition: transform 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth);
       }
 
       .cta:hover {
@@ -365,7 +366,7 @@
         border-radius: 999px;
         cursor: pointer;
         font-size: 14px;
-        transition: border 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        transition: border 0.3s var(--ease-smooth), color 0.3s var(--ease-smooth), transform 0.3s var(--ease-smooth);
       }
 
       .chip[aria-pressed="true"] {
@@ -380,30 +381,18 @@
 
       .projects-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 28px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
       }
 
+      /* Double bezel card */
       .project-card {
-        background: var(--card);
-        border-radius: 22px;
-        padding: 24px;
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow-sm);
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        background: rgba(15, 23, 42, 0.03);
+        border: 1px solid rgba(219, 227, 241, 0.5);
+        padding: 6px;
+        border-radius: 24px;
+        transition: transform 0.5s var(--ease-smooth), box-shadow 0.5s var(--ease-smooth);
         position: relative;
-        overflow: hidden;
-      }
-
-      .project-card::before {
-        content: "";
-        position: absolute;
-        inset: 0 0 auto 0;
-        height: 3px;
-        background: linear-gradient(90deg, var(--accent), var(--accent-3));
       }
 
       .project-card:hover {
@@ -411,8 +400,33 @@
         box-shadow: var(--shadow-lg);
       }
 
+      .project-card:active {
+        transform: scale(0.98);
+      }
+
+      .project-card-inner {
+        background: var(--card);
+        border-radius: 20px;
+        box-shadow: inset 0 1px 1px rgba(255,255,255,0.6), var(--shadow-sm);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 16px;
+        position: relative;
+        height: 100%;
+      }
+
+      .project-card-inner::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--accent), var(--accent-3));
+      }
+
       .project-image {
-        border-radius: 16px;
+        border-radius: 14px;
         overflow: hidden;
         border: 1px solid rgba(226, 232, 240, 0.7);
         background: #f1f5f9;
@@ -420,71 +434,82 @@
 
       .project-image img {
         width: 100%;
-        height: auto;
-        object-fit: contain;
+        height: 180px;
+        object-fit: cover;
       }
 
       .project-tags {
         display: flex;
         flex-wrap: wrap;
-        gap: 8px;
-        font-size: 12px;
+        gap: 6px;
+        font-size: 11px;
         color: var(--muted);
       }
 
       .project-tags span {
         background: rgba(15, 23, 42, 0.05);
-        padding: 4px 10px;
+        padding: 3px 9px;
         border-radius: 999px;
       }
 
       .project-title {
-        font-size: 20px;
+        font-size: 17px;
         font-weight: 700;
         margin: 0;
+        line-height: 1.25;
       }
 
       .project-desc {
         color: var(--muted);
         margin: 0;
-        font-size: 15px;
-        line-height: 1.6;
+        font-size: 13px;
+        line-height: 1.55;
       }
 
       .project-note {
         margin: -2px 0 0;
-        font-size: 12px;
+        font-size: 11px;
         color: #0f766e;
         background: rgba(15, 118, 110, 0.1);
         border: 1px solid rgba(15, 118, 110, 0.18);
         border-radius: 999px;
         width: fit-content;
-        padding: 4px 10px;
+        padding: 3px 9px;
       }
 
       .project-actions {
         display: flex;
         flex-wrap: wrap;
-        gap: 10px;
+        gap: 8px;
+        margin-top: auto;
       }
 
       .btn {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         border-radius: 12px;
         border: 1px solid var(--border);
-        padding: 8px 14px;
+        padding: 7px 13px;
         font-weight: 600;
-        font-size: 14px;
+        font-size: 13px;
         background: #fff;
         cursor: pointer;
-        transition: transform 0.2s ease, border 0.2s ease;
+        transition: transform 0.3s var(--ease-smooth), border 0.3s var(--ease-smooth);
       }
 
       .btn:hover {
         transform: translateY(-1px);
         border-color: rgba(15, 118, 110, 0.25);
+      }
+
+      .btn .arrow-icon {
+        display: inline-block;
+        transition: transform 0.3s var(--ease-smooth);
+      }
+
+      .btn:hover .arrow-icon {
+        transform: translate(2px, -2px);
       }
 
       .btn.primary {
@@ -650,7 +675,7 @@
         border: 1px solid var(--border);
         background: #fff;
         font-weight: 600;
-        transition: transform 0.2s ease, border-color 0.2s ease;
+        transition: transform 0.3s var(--ease-smooth), border-color 0.3s var(--ease-smooth);
       }
 
       .contact-link:hover {
@@ -671,15 +696,31 @@
         color: var(--muted);
       }
 
+      /* Staggered reveal animation */
+      @keyframes revealUp {
+        from {
+          opacity: 0;
+          transform: translateY(24px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
       .reveal {
         opacity: 0;
         transform: translateY(20px);
-        transition: opacity 0.6s ease, transform 0.6s ease;
+        transition: opacity 0.6s var(--ease-smooth), transform 0.6s var(--ease-smooth);
       }
 
       .reveal.visible {
         opacity: 1;
         transform: translateY(0);
+      }
+
+      .projects-grid .project-card.reveal.visible {
+        animation: revealUp 0.6s var(--ease-smooth) both;
       }
 
       @media (max-width: 900px) {
@@ -692,7 +733,7 @@
         }
 
         .projects-grid {
-          grid-template-columns: 1fr;
+          grid-template-columns: repeat(2, 1fr);
         }
 
         .nav {
@@ -703,7 +744,7 @@
 
       @media (max-width: 600px) {
         .container {
-          width: min(100% - 32px, 1120px);
+          width: min(100% - 32px, 1220px);
         }
 
         .hero {
@@ -753,8 +794,6 @@
           <a href="#skills">Навыки</a>
           <a href="#credentials">Опыт</a>
           <a href="#contacts">Контакты</a>
-          <!-- <a href="/" style="color: var(--accent); font-weight: 600;">Сводка</a> -->
-          <!-- <a href="https://app.andreyai.ru/demo" style="color: var(--accent); font-weight: 600;">Демо</a> -->
         </nav>
       </div>
     </header>
@@ -763,12 +802,12 @@
       <section class="hero">
         <div class="container hero-grid">
           <div class="reveal">
-            <span class="badge">7 лет в рекламе · ИИ-автоматизация</span>
+            <span class="badge">7 лет в рекламе · 12 проектов · ИИ-автоматизация</span>
             <h1>Понимаю бизнес изнутри и&nbsp;автоматизирую то, что тормозит</h1>
             <p class="lead">
               7 лет я управлял рекламой в Яндекс.Директе и знаю, на что уходит
               время в бизнесе. Теперь создаю ИИ-инструменты, которые снимают
-              рутину: боты, автоотчёты, интеграции.
+              рутину: боты, дашборды, автоотчёты, голосовые помощники и автономные агенты.
             </p>
             <a
               class="cta"
@@ -780,7 +819,7 @@
             </a>
             <div class="hero-proof">
               <span>7 лет в Яндекс.Директе</span>
-              <span>6 реализованных проектов</span>
+              <span>12 реализованных проектов</span>
               <span>Прямой контакт в Telegram</span>
             </div>
           </div>
@@ -841,151 +880,282 @@
           </p>
 
           <div class="project-filters" role="group" aria-label="Фильтр проектов">
-            <button class="chip" data-filter="all" aria-pressed="true">
-              Все
-            </button>
+            <button class="chip" data-filter="all" aria-pressed="true">Все</button>
             <button class="chip" data-filter="bots" aria-pressed="false">Боты</button>
             <button class="chip" data-filter="web" aria-pressed="false">Веб</button>
-            <button class="chip" data-filter="ai" aria-pressed="false">ИИ-инструменты</button>
+            <button class="chip" data-filter="ai-tools" aria-pressed="false">ИИ-инструменты</button>
             <button class="chip" data-filter="integrations" aria-pressed="false">Интеграции</button>
+            <button class="chip" data-filter="agents" aria-pressed="false">Агенты</button>
+            <button class="chip" data-filter="analytics" aria-pressed="false">Аналитика</button>
           </div>
 
           <div class="projects-grid">
-  <article class="project-card reveal" data-tags="bots integrations ai">
-    <div class="project-image">
-      <img src="../assets/projects/bot1.png" alt="Telegram-бот для расписания" />
-    </div>
-    <div class="project-tags">
-      <span>Приоритет</span>
-      <span>Бот</span>
-      <span>Интеграции</span>
-      <span>ИИ</span>
-    </div>
-    <h3 class="project-title">Telegram-бот расписания трансляций</h3>
-    <p class="project-desc">
-      Что решает: убирает ручные напоминания об эфирах.
-      Как работает: отслеживает расписание и шлёт уведомления вовремя.
-      Как адаптирую: подключу ваши данные и настрою сценарии под команду.
-    </p>
-    <p class="project-note">Статус: учебный проект (демо).</p>
-    <div class="project-actions">
-      <a class="btn" href="https://t.me/andrewqaz" target="_blank" rel="noopener noreferrer">Запросить демо</a>
-      <button class="btn" type="button" data-modal="bot">Кейс</button>
+
+  <!-- Project 1 -->
+  <article class="project-card reveal" data-tags="bots integrations ai-tools">
+    <div class="project-card-inner">
+      <div class="project-image">
+        <img src="../assets/projects/bot1.png" alt="Telegram-бот для расписания" />
+      </div>
+      <div class="project-tags">
+        <span>Бот</span>
+        <span>Интеграции</span>
+        <span>ИИ</span>
+      </div>
+      <h3 class="project-title">Telegram-бот расписания трансляций</h3>
+      <p class="project-desc">
+        Что решает: убирает ручные напоминания об эфирах.
+        Как работает: отслеживает расписание и шлёт уведомления вовремя.
+        Как адаптирую: подключу ваши данные и настрою сценарии под команду.
+      </p>
+      <div class="project-actions">
+        <a class="btn" href="https://t.me/andrewqaz" target="_blank" rel="noopener noreferrer">Запросить демо</a>
+        <button class="btn" type="button" data-modal="bot">Кейс</button>
+      </div>
     </div>
   </article>
 
+  <!-- Project 2 -->
   <article class="project-card reveal" data-tags="bots integrations">
-    <div class="project-image">
-      <img src="../assets/projects/bot2.png" alt="Бот мониторинга Cloudflare" />
-    </div>
-    <div class="project-tags">
-      <span>Приоритет</span>
-      <span>Бот</span>
-      <span>Интеграции</span>
-      <span>Мониторинг</span>
-    </div>
-    <h3 class="project-title">Бот мониторинга Cloudflare</h3>
-    <p class="project-desc">
-      Что решает: предупреждает о риске превышения лимитов.
-      Как работает: собирает метрики и шлёт отчёты с алертами.
-      Как адаптирую: настрою пороги, формат отчётов и нужные сервисы.
-    </p>
-    <p class="project-note">Статус: учебный проект (демо).</p>
-    <div class="project-actions">
-      <a class="btn" href="https://t.me/andrewqaz" target="_blank" rel="noopener noreferrer">Запросить демо</a>
-      <button class="btn" type="button" data-modal="cf-metrics">Кейс</button>
-    </div>
-  </article>
-
-  <article class="project-card reveal" data-tags="ai integrations web">
-    <div class="project-image">
-      <img src="../assets/projects/bot3.png" alt="ИИ-помощник в браузере" />
-    </div>
-    <div class="project-tags">
-      <span>Приоритет</span>
-      <span>ИИ</span>
-      <span>Расширение</span>
-      <span>Интеграции</span>
-    </div>
-    <h3 class="project-title">ИИ-помощник в браузере</h3>
-    <p class="project-desc">
-      Что решает: сокращает время на поиск информации.
-      Как работает: читает контекст страницы и отвечает в чате.
-      Как адаптирую: добавлю ваши промпты, источники и логику ответов.
-    </p>
-    <p class="project-note">Статус: учебный проект (демо).</p>
-    <div class="project-actions">
-      <a class="btn" href="https://t.me/andrewqaz" target="_blank" rel="noopener noreferrer">Запросить демо</a>
-      <button class="btn" type="button" data-modal="assistant">Кейс</button>
+    <div class="project-card-inner">
+      <div class="project-image">
+        <img src="../assets/projects/bot2.png" alt="Бот мониторинга Cloudflare" />
+      </div>
+      <div class="project-tags">
+        <span>Бот</span>
+        <span>Интеграции</span>
+        <span>Мониторинг</span>
+      </div>
+      <h3 class="project-title">Бот мониторинга Cloudflare</h3>
+      <p class="project-desc">
+        Что решает: предупреждает о риске превышения лимитов.
+        Как работает: собирает метрики и шлёт отчёты с алертами.
+        Как адаптирую: настрою пороги, формат отчётов и нужные сервисы.
+      </p>
+      <div class="project-actions">
+        <a class="btn" href="https://t.me/andrewqaz" target="_blank" rel="noopener noreferrer">Запросить демо</a>
+        <button class="btn" type="button" data-modal="cf-metrics">Кейс</button>
+      </div>
     </div>
   </article>
 
-  <article class="project-card reveal" data-tags="ai web integrations">
-    <div class="project-image">
-      <img src="../assets/projects/bot4.png" alt="Сервис кратких конспектов" />
-    </div>
-    <div class="project-tags">
-      <span>Приоритет</span>
-      <span>ИИ</span>
-      <span>Веб</span>
-      <span>Сводки</span>
-    </div>
-    <h3 class="project-title">Конспекты видео за минуту</h3>
-    <p class="project-desc">
-      Что решает: даёт суть длинных видео за минуты.
-      Как работает: берёт транскрипт и делает короткий конспект.
-      Как адаптирую: настрою формат сводки под ваш процесс.
-    </p>
-    <p class="project-note">Статус: учебный проект (демо).</p>
-    <div class="project-actions">
-      <a class="btn primary" href="https://summary.vercel.app/" target="_blank" rel="noopener noreferrer">Посмотреть</a>
-      <button class="btn" type="button" data-modal="summary">Кейс</button>
+  <!-- Project 3 -->
+  <article class="project-card reveal" data-tags="ai-tools integrations web">
+    <div class="project-card-inner">
+      <div class="project-image">
+        <img src="../assets/projects/bot3.png" alt="ИИ-помощник в браузере" />
+      </div>
+      <div class="project-tags">
+        <span>ИИ</span>
+        <span>Расширение</span>
+        <span>Интеграции</span>
+      </div>
+      <h3 class="project-title">ИИ-помощник в браузере</h3>
+      <p class="project-desc">
+        Что решает: сокращает время на поиск информации.
+        Как работает: читает контекст страницы и отвечает в чате.
+        Как адаптирую: добавлю ваши промпты, источники и логику ответов.
+      </p>
+      <div class="project-actions">
+        <a class="btn" href="https://t.me/andrewqaz" target="_blank" rel="noopener noreferrer">Запросить демо</a>
+        <button class="btn" type="button" data-modal="assistant">Кейс</button>
+      </div>
     </div>
   </article>
 
+  <!-- Project 4 -->
+  <article class="project-card reveal" data-tags="ai-tools web integrations">
+    <div class="project-card-inner">
+      <div class="project-image">
+        <img src="../assets/projects/bot4.png" alt="Сервис кратких конспектов" />
+      </div>
+      <div class="project-tags">
+        <span>ИИ</span>
+        <span>Веб</span>
+        <span>Сводки</span>
+      </div>
+      <h3 class="project-title">Конспекты видео за минуту</h3>
+      <p class="project-desc">
+        Что решает: даёт суть длинных видео за минуты.
+        Как работает: берёт транскрипт и делает короткий конспект.
+        Как адаптирую: настрою формат сводки под ваш процесс.
+      </p>
+      <div class="project-actions">
+        <a class="btn primary" href="https://summary.vercel.app/" target="_blank" rel="noopener noreferrer">Посмотреть <span class="arrow-icon">&#8599;</span></a>
+        <button class="btn" type="button" data-modal="summary">Кейс</button>
+      </div>
+    </div>
+  </article>
+
+  <!-- Project 5 -->
   <article class="project-card reveal" data-tags="web">
-    <div class="project-image">
-      <img src="../assets/projects/bot6.png" alt="Сайт кофейни" />
-    </div>
-    <div class="project-tags">
-      <span>Веб</span>
-      <span>Лендинг</span>
-    </div>
-    <h3 class="project-title">Сайт для кофейни</h3>
-    <p class="project-desc">
-      Что решает: даёт понятную онлайн-витрину с контактами.
-      Как работает: показывает меню, преимущества и CTA на одном экране.
-      Как адаптирую: соберу структуру и стиль под ваш бренд.
-    </p>
-    <p class="project-note">Статус: учебный проект (демо).</p>
-    <div class="project-actions">
-      <a class="btn primary" href="https://andrewx1x.github.io/Site-Coffe-Profile/" target="_blank" rel="noopener noreferrer">Посмотреть</a>
-      <button class="btn" type="button" data-modal="coffee">Кейс</button>
+    <div class="project-card-inner">
+      <div class="project-image">
+        <img src="../assets/projects/bot6.png" alt="Сайт кофейни" />
+      </div>
+      <div class="project-tags">
+        <span>Веб</span>
+        <span>Лендинг</span>
+      </div>
+      <h3 class="project-title">Сайт для кофейни</h3>
+      <p class="project-desc">
+        Что решает: даёт понятную онлайн-витрину с контактами.
+        Как работает: показывает меню, преимущества и CTA на одном экране.
+        Как адаптирую: соберу структуру и стиль под ваш бренд.
+      </p>
+      <div class="project-actions">
+        <a class="btn primary" href="https://andrewx1x.github.io/Site-Coffe-Profile/" target="_blank" rel="noopener noreferrer">Посмотреть <span class="arrow-icon">&#8599;</span></a>
+        <button class="btn" type="button" data-modal="coffee">Кейс</button>
+      </div>
     </div>
   </article>
 
+  <!-- Project 6 -->
   <article class="project-card reveal" data-tags="web">
-    <div class="project-image">
-      <img src="../assets/projects/bot5.png" alt="Онлайн-игра для компаний" />
-    </div>
-    <div class="project-tags">
-      <span>Веб</span>
-      <span>Realtime</span>
-      <span>Игра</span>
-    </div>
-    <h3 class="project-title">Онлайн-игра для компаний</h3>
-    <p class="project-desc">
-      Что решает: даёт готовый формат командного вовлечения онлайн.
-      Как работает: комнаты, роли и realtime-сценарии для участников.
-      Как адаптирую: изменю механику и интерфейс под ваш формат.
-    </p>
-    <p class="project-note">Статус: учебный проект (демо).</p>
-    <div class="project-actions">
-      <a class="btn" href="https://t.me/andrewqaz" target="_blank" rel="noopener noreferrer">Запросить демо</a>
-      <button class="btn" type="button" data-modal="quiz">Кейс</button>
+    <div class="project-card-inner">
+      <div class="project-image">
+        <img src="../assets/projects/bot5.png" alt="Онлайн-игра для компаний" />
+      </div>
+      <div class="project-tags">
+        <span>Веб</span>
+        <span>Realtime</span>
+        <span>Игра</span>
+      </div>
+      <h3 class="project-title">Онлайн-игра для компаний</h3>
+      <p class="project-desc">
+        Что решает: даёт готовый формат командного вовлечения онлайн.
+        Как работает: комнаты, роли и realtime-сценарии для участников.
+        Как адаптирую: изменю механику и интерфейс под ваш формат.
+      </p>
+      <div class="project-actions">
+        <a class="btn" href="https://t.me/andrewqaz" target="_blank" rel="noopener noreferrer">Запросить демо</a>
+        <button class="btn" type="button" data-modal="quiz">Кейс</button>
+      </div>
     </div>
   </article>
-</div>
+
+  <!-- Project 7: Reports -->
+  <article class="project-card reveal" data-tags="web analytics">
+    <div class="project-card-inner">
+      <div class="project-image">
+        <img src="../assets/projects/reports.png" alt="Отчёты Яндекс Директ" />
+      </div>
+      <div class="project-tags">
+        <span>Веб</span>
+        <span>Аналитика</span>
+      </div>
+      <h3 class="project-title">Отчёты Яндекс Директ</h3>
+      <p class="project-desc">
+        <strong>Проблема:</strong> Менеджеры тратят часы на ручной сбор данных из Яндекс Директа для клиентских отчётов. <strong>Решение:</strong> Веб-приложение с админкой — загружаешь Excel из Директа, система строит интерактивный отчёт с графиками, показателями и динамикой. Каждый клиент получает свою ссылку. <strong>Стек:</strong> Next.js, SQLite, Recharts.
+      </p>
+      <div class="project-actions">
+        <a class="btn primary" href="https://andreyai.ru/reports/admin" target="_blank" rel="noopener noreferrer">Открыть <span class="arrow-icon">&#8599;</span></a>
+      </div>
+    </div>
+  </article>
+
+  <!-- Project 8: Law firm -->
+  <article class="project-card reveal" data-tags="web">
+    <div class="project-card-inner">
+      <div class="project-image">
+        <img src="../assets/projects/lawfirm.png" alt="Сайт юридической фирмы" />
+      </div>
+      <div class="project-tags">
+        <span>Веб</span>
+        <span>Лендинг</span>
+      </div>
+      <h3 class="project-title">Сайт юридической фирмы</h3>
+      <p class="project-desc">
+        <strong>Проблема:</strong> Юридической фирме нужен сайт, который вызывает доверие с первых секунд. <strong>Решение:</strong> Премиальный лендинг со стратегической подачей и изысканным визуалом: glassmorphism, мягкие градиенты, вложенная архитектура карточек. <strong>Стек:</strong> HTML, Tailwind CSS, Phosphor Icons.
+      </p>
+      <div class="project-actions">
+        <a class="btn primary" href="https://serene-bamboo-vqjy.here.now/" target="_blank" rel="noopener noreferrer">Открыть сайт <span class="arrow-icon">&#8599;</span></a>
+      </div>
+    </div>
+  </article>
+
+  <!-- Project 9: SMM Dashboard -->
+  <article class="project-card reveal" data-tags="web analytics integrations">
+    <div class="project-card-inner">
+      <div class="project-image">
+        <img src="../assets/projects/dashboard.png" alt="SMM-дашборд аналитики" />
+      </div>
+      <div class="project-tags">
+        <span>Веб</span>
+        <span>Аналитика</span>
+        <span>Интеграции</span>
+      </div>
+      <h3 class="project-title">SMM-дашборд аналитики</h3>
+      <p class="project-desc">
+        <strong>Проблема:</strong> SMM-менеджер вручную собирает метрики из YouTube, VK и Telegram — долго, неудобно, данные разрозненные. <strong>Решение:</strong> Единый дашборд, который автоматически собирает статистику всех площадок, показывает динамику и проводит ИИ-аудит контента. <strong>Стек:</strong> Next.js, Cloudflare Workers, D1, OpenRouter.
+      </p>
+      <div class="project-actions">
+        <a class="btn primary" href="https://dashboardprofile24.vercel.app" target="_blank" rel="noopener noreferrer">Открыть дашборд <span class="arrow-icon">&#8599;</span></a>
+      </div>
+    </div>
+  </article>
+
+  <!-- Project 10: Local AI Agent -->
+  <article class="project-card reveal" data-tags="ai-tools agents">
+    <div class="project-card-inner">
+      <div class="project-image">
+        <img src="../assets/projects/local-agent.png" alt="Локальный ИИ-агент новостей" />
+      </div>
+      <div class="project-tags">
+        <span>ИИ</span>
+        <span>Агент</span>
+      </div>
+      <h3 class="project-title">Локальный ИИ-агент новостей</h3>
+      <p class="project-desc">
+        <strong>Проблема:</strong> Специалист тратит время на мониторинг новостей и написание постов вручную. <strong>Решение:</strong> Автономный ИИ-агент, работающий полностью на своём компьютере. Собирает новости из RSS, GitHub и HuggingFace, классифицирует, генерирует посты и статьи через локальную LLM. Публикует в Notion. <strong>Стек:</strong> Python, FastAPI, LM Studio, SQLite.
+      </p>
+      <div class="project-actions">
+        <a class="btn" href="https://t.me/andrewqaz" target="_blank" rel="noopener noreferrer">Запросить демо</a>
+      </div>
+    </div>
+  </article>
+
+  <!-- Project 11: Voice Assistant -->
+  <article class="project-card reveal" data-tags="ai-tools integrations">
+    <div class="project-card-inner">
+      <div class="project-image">
+        <img src="../assets/projects/voice.png" alt="Голосовой ИИ-помощник" />
+      </div>
+      <div class="project-tags">
+        <span>ИИ</span>
+        <span>Интеграции</span>
+      </div>
+      <h3 class="project-title">Голосовой ИИ-помощник</h3>
+      <p class="project-desc">
+        <strong>Проблема:</strong> Текстовый ввод не всегда удобен — иногда быстрее сказать голосом. <strong>Решение:</strong> Голосовой агент, который записывает речь, транскрибирует через Whisper, ведёт диалог через LLM и возвращает ответ. Развёрнут на HuggingFace Spaces. <strong>Стек:</strong> Next.js, FastAPI, Whisper, OpenRouter, Docker.
+      </p>
+      <div class="project-actions">
+        <a class="btn primary" href="https://huggingface.co/spaces/andrewx1x/andreyvoice" target="_blank" rel="noopener noreferrer">Открыть <span class="arrow-icon">&#8599;</span></a>
+      </div>
+    </div>
+  </article>
+
+  <!-- Project 12: Email Agent -->
+  <article class="project-card reveal" data-tags="ai-tools agents">
+    <div class="project-card-inner">
+      <div class="project-image">
+        <img src="../assets/projects/email-agent.png" alt="Email-агент безопасности" />
+      </div>
+      <div class="project-tags">
+        <span>ИИ</span>
+        <span>Агент</span>
+      </div>
+      <h3 class="project-title">Email-агент безопасности</h3>
+      <p class="project-desc">
+        <strong>Проблема:</strong> Почтовый ящик забит — важные письма теряются среди спама и рассылок. <strong>Решение:</strong> ИИ-агент с 4-уровневой защитой, который читает Gmail, классифицирует письма (важное/работа/рассылка/спам) и показывает результат в live-панели. Работает через Codex CLI — никакого доступа в интернет, только почта. <strong>Стек:</strong> TypeScript, Fastify, Codex CLI, Composio MCP.
+      </p>
+      <div class="project-actions">
+        <a class="btn" href="https://t.me/andrewqaz" target="_blank" rel="noopener noreferrer">Запросить демо</a>
+      </div>
+    </div>
+  </article>
+
+          </div>
         </div>
       </section>
 
@@ -1035,7 +1205,7 @@
           </div>
           <p class="tech-line reveal">
             Технически: TypeScript, Python, Next.js, Telegram Bot API,
-            Cloudflare Workers, Supabase, FastAPI, LangGraph, Gemini API
+            Cloudflare Workers, Supabase, FastAPI, LangGraph, Gemini API, LLM, Agents
           </p>
         </div>
       </section>
@@ -1052,9 +1222,9 @@
               </p>
             </div>
             <div class="panel reveal">
-              <div class="credential-year">6</div>
+              <div class="credential-year">12</div>
               <p>
-                Реализованных проектов: боты, веб-сервисы, ИИ-помощники —
+                Реализованных проектов: боты, веб-сервисы, ИИ-помощники, агенты —
                 от идеи до рабочего инструмента.
               </p>
             </div>
@@ -1114,13 +1284,13 @@
           <a href="/" style="color: var(--accent);">Сводка — SaaS-продукты</a>
           <a href="https://t.me/andrewqaz" target="_blank" rel="noopener noreferrer">Telegram</a>
         </div>
-        © <span id="year"></span> Андрей Поляков. Статичный сайт без сбора данных.
+        &copy; <span id="year"></span> Андрей Поляков. Статичный сайт без сбора данных.
       </div>
     </footer>
 
     <div class="modal" id="projectModal" aria-hidden="true" role="dialog" aria-modal="true">
       <div class="modal-dialog" role="document" tabindex="-1">
-        <button class="modal-close" type="button" aria-label="Закрыть">×</button>
+        <button class="modal-close" type="button" aria-label="Закрыть">&times;</button>
         <h3 class="modal-title" id="modalTitle"></h3>
         <div class="modal-grid" id="modalBody"></div>
       </div>
@@ -1189,7 +1359,7 @@
           cards.forEach((card) => {
             const tags = card.getAttribute("data-tags") || "";
             const matches = filter === "all" || tags.includes(filter);
-            card.style.display = matches ? "flex" : "none";
+            card.style.display = matches ? "" : "none";
           });
         });
       });
@@ -1270,17 +1440,25 @@
         }
       });
 
+      /* Staggered reveal */
       const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (!prefersReducedMotion) {
         const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
               if (entry.isIntersecting) {
-                entry.target.classList.add("visible");
+                /* Apply staggered delay for project cards */
+                const card = entry.target;
+                if (card.classList.contains("project-card")) {
+                  const allCards = Array.from(document.querySelectorAll(".project-card"));
+                  const idx = allCards.indexOf(card);
+                  card.style.animationDelay = (idx % 3) * 0.1 + "s";
+                }
+                card.classList.add("visible");
               }
             });
           },
-          { threshold: 0.1 }
+          { threshold: 0.08 }
         );
 
         document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
